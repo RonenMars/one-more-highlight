@@ -1,0 +1,106 @@
+{
+  "name": "one-more-highlight",
+  "version": "0.1.0",
+  "description": "Multi-state substring highlighting for React. Highlight every match in one style, plus specific occurrences (by index, range, or list) in another.",
+  "keywords": [
+    "react",
+    "highlight",
+    "highlighter",
+    "search",
+    "substring",
+    "mark",
+    "typescript",
+    "multi-state",
+    "react-highlight",
+    "react-highlight-words"
+  ],
+  "homepage": "https://github.com/RonenMars/one-more-highlight#readme",
+  "bugs": {
+    "url": "https://github.com/RonenMars/one-more-highlight/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RonenMars/one-more-highlight.git"
+  },
+  "license": "MIT",
+  "author": "Ronen Mars",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint:pkg": "publint && attw --pack .",
+    "size": "size-limit",
+    "verify": "pnpm typecheck && pnpm test && pnpm build && pnpm lint:pkg && pnpm size",
+    "changeset": "changeset",
+    "release": "pnpm build && changeset publish"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "escape-string-regexp": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.17.4",
+    "@changesets/cli": "^2.27.10",
+    "@size-limit/preset-small-lib": "^11.1.6",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "fast-check": "^3.23.2",
+    "jsdom": "^25.0.1",
+    "publint": "^0.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "size-limit": "^11.1.6",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "size-limit": [
+    {
+      "name": "ESM (full)",
+      "path": "dist/index.js",
+      "limit": "3 KB"
+    },
+    {
+      "name": "CJS (full)",
+      "path": "dist/index.cjs",
+      "limit": "3 KB"
+    }
+  ],
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

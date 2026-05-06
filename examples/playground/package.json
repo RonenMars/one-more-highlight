@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "pnpm --filter one-more-highlight build",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
   },

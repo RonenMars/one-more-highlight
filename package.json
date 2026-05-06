@@ -95,7 +95,7 @@
       "limit": "3 KB"
     }
   ],
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@10.33.4",
   "engines": {
     "node": ">=18"
   },

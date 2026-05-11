@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/RonenMars/one-more-highlight/compare/v0.3.0...v0.3.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* **playground:** use published npm package instead of workspace ref for CodeSandbox ([cec3ab0](https://github.com/RonenMars/one-more-highlight/commit/cec3ab0e20489fe1f1003fbe478e688dba49bd86))
+
 # [0.3.0](https://github.com/RonenMars/one-more-highlight/compare/v0.2.1...v0.3.0) (2026-05-11)
 
 

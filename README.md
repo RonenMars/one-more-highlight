@@ -17,9 +17,7 @@ Highlight every occurrence of a substring in one style, **and** highlight specif
 
 ## Why this exists
 
-`react-highlight` (akiran) hasn't been touched since 2018 and predates React 18. `react-highlight-words` (bvaughn) is solid and battle-tested but ships no TypeScript types and has no first-class API for *"highlight every match in style A **and** match #N in style B."* You can hack it in via `findChunks`, but it's awkward.
-
-**`one-more-highlight`** is the modern alternative:
+**`one-more-highlight`** gives you:
 
 - **TypeScript-first** — full types, discriminated unions, `match.one/range/many` builders that narrow correctly.
 - **Multi-state styling** as the headline feature — every match gets a base style, plus layered styles selected by index, range, or arbitrary list. Styles compose.

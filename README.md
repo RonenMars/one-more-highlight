@@ -9,14 +9,6 @@
 
 Highlight every occurrence of a substring in one style, **and** highlight specific occurrences — by **single index**, **index range**, or **arbitrary list of indices** — in another style. TypeScript-first, headless-friendly, ~2KB brotlied, zero CSS shipped.
 
-```
-         _____ ____  __    ____    _____  ___    _____ ____
-        / ___// __ \/ /   / __ \  /  _/  /   |  /__  // __ \
-        \__ \/ / / / /   / / / /  / /   / /| |    / // /_/ /
-       ___/ / /_/ / /___/ /_/ /  / /   / ___ |   / // _, _/
-      /____/\____/_____/\____/ /___/  /_/  |_|  /_//_/ |_|
-```
-
 > *Dedicated to Chester Bennington. Inspired by the idea that every small light matters.*
 >
 > — *"I tried so hard and got so far…"* — we built this so the right words could shine.

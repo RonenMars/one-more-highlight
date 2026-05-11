@@ -1,2 +1,6 @@
 packages:
   - examples/*
+allowBuilds:
+  esbuild: false
+onlyBuiltDependencies:
+  - esbuild

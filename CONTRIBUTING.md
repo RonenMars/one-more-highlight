@@ -56,7 +56,7 @@ examples/playground/  Vite + React 19 demo
 2. **Write a failing test first.** Every behavior change should be reproducible from a test in `tests/`.
 3. **Make the change in the smallest possible diff.** See "Coding standards" below.
 4. **Run `pnpm verify`** until it's green.
-5. **Add a changeset** (`pnpm changeset`) describing the change. Use `patch` for fixes, `minor` for additive features, `major` only after discussion.
+5. **Use conventional commit format** — `fix:` for patches, `feat:` for minor additions, `feat!:` or `BREAKING CHANGE:` footer for majors. semantic-release reads these to determine the version bump automatically. commitlint enforces the format on every local commit via husky.
 6. **Open a PR** with a clear description of *why*, not just *what*.
 
 ## Coding standards

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+all_staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$all_staged_files" ]; then
+    echo "ℹ️  No staged files found."
+    exit 0
+fi
+
+if ! npx lint-staged; then
+    staged_files=$(echo "$all_staged_files" | grep -E '\.(ts|tsx)$')
+
+    if [ -n "$staged_files" ]; then
+        if npx eslint --fix $staged_files; then
+            git add $staged_files
+            echo "✅ Linting issues fixed and files re-staged. Commit will proceed."
+            exit 0
+        else
+            echo "❌ Failed to fix linting issues."
+            exit 1
+        fi
+    else
+        echo "✅ No TypeScript files to lint. Allowing commit to proceed."
+        exit 0
+    fi
+fi

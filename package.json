@@ -1,6 +1,6 @@
 {
   "name": "one-more-highlight",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "description": "Multi-state substring highlighting for React. Highlight every match in one style, plus specific occurrences (by index, range, or list) in another.",
   "keywords": [
     "react",
@@ -55,8 +55,10 @@
     "lint:pkg": "publint && attw --pack .",
     "size": "size-limit",
     "verify": "pnpm typecheck && pnpm test && pnpm build && pnpm lint:pkg && pnpm size",
-    "changeset": "changeset",
-    "release": "pnpm build && changeset publish"
+    "prepare": "husky",
+    "lint": "eslint src tests",
+    "lint:fix": "eslint src tests --fix",
+    "release": "semantic-release"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -67,17 +69,29 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.4",
-    "@changesets/cli": "^2.27.10",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@eslint/js": "^10.0.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@size-limit/preset-small-lib": "^11.1.6",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.18.2",
+    "commitlint": "^19.6.1",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
     "fast-check": "^3.23.2",
+    "globals": "^17.6.0",
+    "husky": "^9.1.7",
     "jsdom": "^25.0.1",
+    "lint-staged": "^15.4.3",
     "publint": "^0.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "semantic-release": "^24.2.3",
     "size-limit": "^11.1.6",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
@@ -95,12 +109,17 @@
       "limit": "3 KB"
     }
   ],
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@11.0.9+sha512.34ce82e6780233cf9cad8685029a8f81d2e06196c5a9bad98879f7424940c6817c4e4524fb7d38b8553ceed48b9758b8ebaf1abd3600c232c4c8cf7366086f38",
   "engines": {
     "node": ">=18"
   },
   "publishConfig": {
     "access": "public",
     "provenance": true
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint"
+    ]
   }
 }

@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/RonenMars/one-more-highlight/compare/v0.2.1...v0.3.0) (2026-05-11)
+
+
+### Features
+
+* **docs:** default to dark mode ([905478f](https://github.com/RonenMars/one-more-highlight/commit/905478fd28f9f2bb1d37acdbf5abe9a9e0cb0537))
+
 ## [0.2.1](https://github.com/RonenMars/one-more-highlight/compare/v0.2.0...v0.2.1) (2026-05-11)
 
 

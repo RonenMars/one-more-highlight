@@ -38,7 +38,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://codesandbox.io/s/5qcclq',
+          href: 'https://codesandbox.io/p/sandbox/github/RonenMars/one-more-highlight/tree/main/examples/playground',
           label: 'Playground',
           position: 'left',
         },

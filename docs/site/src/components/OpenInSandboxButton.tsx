@@ -1,6 +1,7 @@
 import React from 'react';
 
-const CODESANDBOX_URL = 'https://codesandbox.io/s/5qcclq';
+const CODESANDBOX_URL =
+  'https://codesandbox.io/p/sandbox/github/RonenMars/one-more-highlight/tree/main/examples/playground';
 
 export function OpenInSandboxButton() {
   return (

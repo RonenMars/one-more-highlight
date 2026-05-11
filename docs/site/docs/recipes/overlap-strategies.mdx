@@ -2,8 +2,6 @@
 sidebar_position: 3
 ---
 
-import { MultiStateDemo } from '@site/src/components/LiveDemo/MultiStateDemo';
-
 # Overlap strategies
 
 When multiple `searchWords` entries match overlapping ranges, the `overlapStrategy` prop controls how they are resolved.
@@ -26,7 +24,7 @@ Use `merge` when you want clean, non-overlapping rendered output and don't need 
 
 ## `nest`
 
-Each match is kept as an individually addressable segment. When matches overlap, they are split at overlap boundaries, producing segments that belong to subsets of the overlapping matches. More segments, fully typed.
+Each match is kept as an individually addressable segment. Overlapping matches are not split — both marks are emitted in their entirety and may overlap in the DOM.
 
 ```tsx
 <Highlight
@@ -35,11 +33,11 @@ Each match is kept as an individually addressable segment. When matches overlap,
   overlapStrategy="nest"
   highlightClassName="hl"
 />
-// → <mark>ab</mark><mark>cd</mark><mark>e</mark>f
-// Segment "ab" belongs to "abc" match; "cd" belongs to both; "e" belongs to "cde"
+// → <mark>abc</mark><mark>cde</mark>f
+// Both marks exist; "abc" and "cde" overlap at "c"
 ```
 
-Use `nest` with `states` when you need to visually distinguish which match source produced each segment.
+Use `nest` with `states` when you need every match individually addressable by index (e.g. for keyboard navigation or per-match styling) and can tolerate overlapping DOM elements.
 
 ## `first-wins`
 

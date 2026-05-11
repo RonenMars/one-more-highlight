@@ -20,7 +20,7 @@ import { Highlight } from 'one-more-highlight';
   searchWords={['hello']}
   highlightClassName="my-highlight"
 />
-// → hello<mark class="my-highlight"> hello</mark> world <mark class="my-highlight">hello</mark>
+// → <mark class="my-highlight">hello</mark> world <mark class="my-highlight">hello</mark>
 ```
 
 ## Add multi-state styling

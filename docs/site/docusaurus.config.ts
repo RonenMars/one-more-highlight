@@ -38,7 +38,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://stackblitz.com/fork/github/RonenMars/one-more-highlight/tree/main/examples/stackblitz?title=one-more-highlight+playground&startScript=dev',
+          href: 'https://codesandbox.io/p/github/RonenMars/one-more-highlight/main?file=%2Fexamples%2Fplayground%2Fsrc%2FApp.tsx',
           label: 'Playground',
           position: 'left',
         },

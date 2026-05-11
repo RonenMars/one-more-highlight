@@ -33,6 +33,16 @@ const config: Config = {
       items: [
         { type: 'docSidebar', sidebarId: 'docs', position: 'left', label: 'Docs' },
         {
+          href: 'https://github.com/RonenMars/one-more-highlight/blob/main/CHANGELOG.md',
+          label: 'Changelog',
+          position: 'left',
+        },
+        {
+          href: 'https://stackblitz.com/fork/github/RonenMars/one-more-highlight/tree/main/examples/stackblitz?title=one-more-highlight+playground&startScript=dev',
+          label: 'Playground',
+          position: 'left',
+        },
+        {
           href: 'https://github.com/RonenMars/one-more-highlight',
           label: 'GitHub',
           position: 'right',

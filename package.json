@@ -14,7 +14,7 @@
     "react-highlight",
     "react-highlight-words"
   ],
-  "homepage": "https://github.com/RonenMars/one-more-highlight#readme",
+  "homepage": "https://one-more-highlight.vercel.app",
   "bugs": {
     "url": "https://github.com/RonenMars/one-more-highlight/issues"
   },

@@ -5,7 +5,10 @@ import { themes as prismThemes } from 'prism-react-renderer';
 const config: Config = {
   title: 'one-more-highlight',
   tagline: 'Multi-state substring highlighting for React.',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon-omh-32.png',
+  headTags: [
+    { tagName: 'link', attributes: { rel: 'apple-touch-icon', href: '/img/favicon-omh-180.png' } },
+  ],
   url: 'https://one-more-highlight.vercel.app',
   baseUrl: '/',
   onBrokenLinks: 'throw',

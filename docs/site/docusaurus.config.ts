@@ -49,6 +49,10 @@ const config: Config = {
       style: 'dark',
       copyright: `MIT © ${new Date().getFullYear()} Ronen Mars`,
     },
+    colorMode: {
+      defaultMode: 'dark',
+      respectPrefersColorScheme: false,
+    },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,

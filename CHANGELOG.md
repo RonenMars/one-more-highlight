@@ -1,3 +1,18 @@
+# [0.2.0](https://github.com/RonenMars/one-more-highlight/compare/v0.1.1...v0.2.0) (2026-05-11)
+
+
+### Bug Fixes
+
+* **docs:** correct nest strategy description and quick-start example ([6e3d095](https://github.com/RonenMars/one-more-highlight/commit/6e3d0959553b181729fc53471b1293a5a18d78b3))
+* **docs:** use theme-aware CSS vars in LiveDemo containers for dark mode ([90038d9](https://github.com/RonenMars/one-more-highlight/commit/90038d968013d07402f254d2c541ab44bcb55a1b))
+
+
+### Features
+
+* **docs:** configure Docusaurus navbar, footer, and sidebar ([69690d5](https://github.com/RonenMars/one-more-highlight/commit/69690d5ec65e6cffda65baa33eb5285fcce16615))
+* **docs:** replace default Docusaurus favicon with app icon ([d5d3a45](https://github.com/RonenMars/one-more-highlight/commit/d5d3a458a89e8555953be62a880da60cf2d35d55))
+* **docs:** scaffold Docusaurus site at docs/site/ ([a1a2579](https://github.com/RonenMars/one-more-highlight/commit/a1a2579f42524b7a00040a68bd79a780aa0857aa))
+
 ## [0.1.1](https://github.com/RonenMars/one-more-highlight/compare/v0.1.0...v0.1.1) (2026-05-11)
 
 

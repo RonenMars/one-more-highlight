@@ -8,9 +8,9 @@ const text =
 
 const style: React.CSSProperties = {
   padding: '1rem',
-  background: '#fafafa',
+  background: 'var(--ifm-background-surface-color)',
   borderRadius: '8px',
-  border: '1px solid #eee',
+  border: '1px solid var(--ifm-color-emphasis-200)',
   lineHeight: 1.6,
 };
 

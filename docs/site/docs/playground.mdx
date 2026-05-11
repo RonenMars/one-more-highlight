@@ -1,0 +1,29 @@
+---
+id: playground
+title: Playground
+---
+
+import { BasicDemo } from '@site/src/components/LiveDemo/BasicDemo';
+import { HeadlessDemo } from '@site/src/components/LiveDemo/HeadlessDemo';
+import { MultiStateDemo } from '@site/src/components/LiveDemo/MultiStateDemo';
+import { RenderPropDemo } from '@site/src/components/LiveDemo/RenderPropDemo';
+
+# Playground
+
+Live demos of every major feature. For full interactive editing, clone the repo and run `pnpm --filter one-more-highlight-playground dev`.
+
+## 1. Basic — every match highlighted
+
+<BasicDemo />
+
+## 2. Multi-state — base + active + preview + bookmarked
+
+<MultiStateDemo />
+
+## 3. Render prop — star badge on active match
+
+<RenderPropDemo />
+
+## 4. Headless hook — DIY rendering
+
+<HeadlessDemo />

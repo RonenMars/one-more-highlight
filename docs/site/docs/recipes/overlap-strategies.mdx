@@ -1,0 +1,58 @@
+---
+sidebar_position: 3
+---
+
+import { MultiStateDemo } from '@site/src/components/LiveDemo/MultiStateDemo';
+
+# Overlap strategies
+
+When multiple `searchWords` entries match overlapping ranges, the `overlapStrategy` prop controls how they are resolved.
+
+## `merge` (default)
+
+Overlapping matches are collapsed into a single segment spanning all of them. The resulting segment belongs to all matching states.
+
+```tsx
+<Highlight
+  text="abcdef"
+  searchWords={['abc', 'cde']}
+  overlapStrategy="merge"
+  highlightClassName="hl"
+/>
+// → <mark>abcde</mark>f
+```
+
+Use `merge` when you want clean, non-overlapping rendered output and don't need to distinguish individual match contributions.
+
+## `nest`
+
+Each match is kept as an individually addressable segment. When matches overlap, they are split at overlap boundaries, producing segments that belong to subsets of the overlapping matches. More segments, fully typed.
+
+```tsx
+<Highlight
+  text="abcdef"
+  searchWords={['abc', 'cde']}
+  overlapStrategy="nest"
+  highlightClassName="hl"
+/>
+// → <mark>ab</mark><mark>cd</mark><mark>e</mark>f
+// Segment "ab" belongs to "abc" match; "cd" belongs to both; "e" belongs to "cde"
+```
+
+Use `nest` with `states` when you need to visually distinguish which match source produced each segment.
+
+## `first-wins`
+
+Later matches that overlap an earlier match are dropped entirely.
+
+```tsx
+<Highlight
+  text="abcdef"
+  searchWords={['abc', 'cde']}
+  overlapStrategy="first-wins"
+  highlightClassName="hl"
+/>
+// → <mark>abc</mark>def  ("cde" dropped because it overlaps "abc")
+```
+
+Use `first-wins` when match priority is defined by the order of `searchWords` and overlaps should be resolved by simply discarding later ones.

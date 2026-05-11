@@ -1,6 +1,9 @@
 packages:
   - examples/*
+  - docs/site
 allowBuilds:
+  '@swc/core': true
+  core-js: false
   esbuild: false
 onlyBuiltDependencies:
   - esbuild

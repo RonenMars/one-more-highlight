@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/RonenMars/one-more-highlight/compare/v0.3.1...v0.3.2) (2026-05-11)
+
+
+### Bug Fixes
+
+* **docs:** switch playground to owned CodeSandbox sandbox (stable URL) ([7292c86](https://github.com/RonenMars/one-more-highlight/commit/7292c8638a3d3409f8f5517a9462a08c478fa3ec))
+
 ## [0.3.1](https://github.com/RonenMars/one-more-highlight/compare/v0.3.0...v0.3.1) (2026-05-11)
 
 

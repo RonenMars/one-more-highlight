@@ -40,4 +40,4 @@ import { Highlight, match } from 'one-more-highlight';
 // Match 1 gets only "hl-base".
 ```
 
-See the [Playground](/docs/playground) for live interactive demos, or continue to the [Guides](/docs/guides/basic-highlighting) for detailed walkthroughs.
+Continue to the [Guides](/docs/guides/basic-highlighting) for live demos and detailed walkthroughs.

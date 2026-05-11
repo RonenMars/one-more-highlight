@@ -32,7 +32,6 @@ const config: Config = {
       title: 'one-more-highlight',
       items: [
         { type: 'docSidebar', sidebarId: 'docs', position: 'left', label: 'Docs' },
-        { to: '/docs/playground', label: 'Playground', position: 'left' },
         {
           href: 'https://github.com/RonenMars/one-more-highlight',
           label: 'GitHub',

@@ -1,3 +1,10 @@
+## [0.2.1](https://github.com/RonenMars/one-more-highlight/compare/v0.2.0...v0.2.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* **ci:** build library before docs site on Vercel ([58b5efd](https://github.com/RonenMars/one-more-highlight/commit/58b5efd3647ef39412040aa2c78c38557545edc9))
+
 # [0.2.0](https://github.com/RonenMars/one-more-highlight/compare/v0.1.1...v0.2.0) (2026-05-11)
 
 

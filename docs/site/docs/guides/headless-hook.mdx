@@ -1,0 +1,78 @@
+---
+sidebar_position: 3
+---
+
+# Headless hook
+
+import { HeadlessDemo } from '@site/src/components/LiveDemo/HeadlessDemo';
+
+`useHighlight` returns `Segment[]` so you can render matches any way you want.
+
+<HeadlessDemo />
+
+## Usage
+
+```tsx
+import { useHighlight } from 'one-more-highlight';
+
+function MyHighlighter({ text, query }: { text: string; query: string }) {
+  const segments = useHighlight({ text, searchWords: [query] });
+
+  return (
+    <p>
+      {segments.map((s, i) =>
+        s.isMatch
+          ? <mark key={i}>{s.text}</mark>
+          : <span key={i}>{s.text}</span>
+      )}
+    </p>
+  );
+}
+```
+
+`useHighlight` accepts all the same options as `<Highlight>` minus the rendering props (`highlightTag`, `highlightClassName`, `renderMatch`, etc.).
+
+## Segment types
+
+```ts
+type Segment = MatchSegment | TextSegment;
+
+interface MatchSegment {
+  text: string;
+  isMatch: true;
+  matchIndex: number;               // 0-based document order
+  start: number;                    // character index in original text
+  end: number;
+  states: ReadonlyArray<string>;    // names of active states
+}
+
+interface TextSegment {
+  text: string;
+  isMatch: false;
+  start: number;
+  end: number;
+}
+```
+
+Segments are guaranteed to be contiguous and cover the full input text with no gaps.
+
+## With states
+
+```tsx
+const segments = useHighlight({
+  text,
+  searchWords: ['time'],
+  states: [
+    { name: 'active', ...match.one(2) },
+    { name: 'bookmarked', ...match.many([0, 3]) },
+  ],
+});
+
+segments.forEach(s => {
+  if (s.isMatch) {
+    console.log(s.matchIndex, s.states);
+    // e.g. 2, ['active']
+    // e.g. 0, ['bookmarked']
+  }
+});
+```

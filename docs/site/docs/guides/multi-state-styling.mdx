@@ -1,0 +1,54 @@
+---
+sidebar_position: 2
+---
+
+# Multi-state styling
+
+import { MultiStateDemo } from '@site/src/components/LiveDemo/MultiStateDemo';
+
+Every match gets a base style. Specific occurrences get additional layered styles on top.
+
+<MultiStateDemo />
+
+## How it works
+
+Pass a `states` array. Each entry has a `name`, a selector (`match.one`, `match.range`, or `match.many`), and a `className` and/or `style`:
+
+```tsx
+import { Highlight, match } from 'one-more-highlight';
+
+<Highlight
+  text={text}
+  searchWords={['time']}
+  highlightClassName="hl-base"
+  states={[
+    { name: 'preview',    ...match.range(0, 1), className: 'hl-preview' },
+    { name: 'active',     ...match.one(2),      className: 'hl-active' },
+    { name: 'bookmarked', ...match.many([3, 5]),className: 'hl-bookmark' },
+  ]}
+/>
+```
+
+Every match gets `hl-base`. Match #2 also gets `hl-active`. Matches #0 and #1 also get `hl-preview`. Matches #3 and #5 also get `hl-bookmark`.
+
+## Selectors
+
+| Builder | Selects |
+|---|---|
+| `match.one(i)` | A single match by zero-based index |
+| `match.range(a, b)` | Matches from index `a` to `b` (inclusive) |
+| `match.many([i, j, k])` | A specific list of match indices |
+
+Indexing is global document order — match #0 is the first occurrence in the text regardless of which `searchWords` entry produced it.
+
+## Multi-state composition
+
+A match can belong to multiple states simultaneously. Their `className`s are concatenated (via `clsx`) and their `style` objects are shallow-merged in declaration order:
+
+```tsx
+states={[
+  { name: 'a', ...match.one(0), className: 'text-bold', style: { color: 'red' } },
+  { name: 'b', ...match.one(0), style: { background: 'yellow' } },
+]}
+// Match 0 gets: className="hl-base text-bold", style={{ color: 'red', background: 'yellow' }}
+```

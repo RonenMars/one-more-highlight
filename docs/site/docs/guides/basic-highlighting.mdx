@@ -1,0 +1,67 @@
+---
+sidebar_position: 1
+---
+
+# Basic highlighting
+
+import { BasicDemo } from '@site/src/components/LiveDemo/BasicDemo';
+
+Highlight every occurrence of one or more search terms in a string.
+
+<BasicDemo />
+
+## Minimal example
+
+```tsx
+import { Highlight } from 'one-more-highlight';
+
+<Highlight
+  text="hello world hello"
+  searchWords={['hello']}
+  highlightClassName="my-mark"
+/>
+```
+
+Each matched substring is wrapped in a `<mark>` element with the class you pass to `highlightClassName`.
+
+## Multiple search terms
+
+```tsx
+<Highlight
+  text="The cat sat on the mat"
+  searchWords={['cat', 'mat']}
+  highlightClassName="hl"
+/>
+```
+
+All terms are matched in a single pass. Overlapping matches default to `merge` strategy.
+
+## Case sensitivity
+
+By default matching is case-insensitive. Pass `caseSensitive` to change this:
+
+```tsx
+<Highlight
+  text="Hello hello HELLO"
+  searchWords={['hello']}
+  highlightClassName="hl"
+  caseSensitive
+/>
+// Only matches "hello" (lowercase)
+```
+
+## Auto-escaping
+
+String terms are auto-escaped by default, so `'c++'` matches the literal string `c++` rather than being treated as a regex. Disable with `autoEscape={false}` if you want to pass regex syntax in string form.
+
+## Using RegExp directly
+
+```tsx
+<Highlight
+  text="color colour"
+  searchWords={[/colou?r/i]}
+  highlightClassName="hl"
+/>
+```
+
+RegExp objects are always cloned with the `g` flag forced on. The `y` (sticky) flag is dropped with a dev warning.

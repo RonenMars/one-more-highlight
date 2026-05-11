@@ -1,0 +1,54 @@
+---
+sidebar_position: 4
+---
+
+# Render prop
+
+import { RenderPropDemo } from '@site/src/components/LiveDemo/RenderPropDemo';
+
+`renderMatch` gives you full control over what each match renders — any React node, with access to the resolved className, style, and Tag.
+
+<RenderPropDemo />
+
+## Usage
+
+```tsx
+import { Highlight, match } from 'one-more-highlight';
+
+<Highlight
+  text={text}
+  searchWords={['time']}
+  highlightClassName="hl-base"
+  states={[{ name: 'active', ...match.one(2), className: 'hl-active' }]}
+  renderMatch={(seg, { className, style, Tag }) => (
+    <Tag className={className} style={style}>
+      {seg.text}
+      {seg.states.includes('active') && <ActiveBadge />}
+    </Tag>
+  )}
+/>
+```
+
+## Callback signature
+
+```ts
+renderMatch: (
+  seg: MatchSegment,
+  defaults: { className: string; style: CSSProperties; Tag: ElementType }
+) => ReactNode
+```
+
+- `seg` — the full `MatchSegment` (text, matchIndex, start, end, states)
+- `defaults.className` — the fully resolved className for this match (base + all active state classes)
+- `defaults.style` — the fully resolved style object
+- `defaults.Tag` — the element/component to use (the value of `highlightTag`, defaulting to `'mark'`)
+
+Return `null` to render the match as plain text.
+
+## Returning a string
+
+```tsx
+renderMatch={(seg) => seg.text.toUpperCase()}
+```
+
+Returning a plain string or number is valid — it renders the match as a text node with no wrapper element.

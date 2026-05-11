@@ -1,3 +1,10 @@
+## [0.3.3](https://github.com/RonenMars/one-more-highlight/compare/v0.3.2...v0.3.3) (2026-05-11)
+
+
+### Bug Fixes
+
+* **playground:** switch to live GitHub-linked sandbox URL ([e3303d9](https://github.com/RonenMars/one-more-highlight/commit/e3303d94f23891a883e26c28c3b252037c48194c))
+
 ## [0.3.2](https://github.com/RonenMars/one-more-highlight/compare/v0.3.1...v0.3.2) (2026-05-11)
 
 

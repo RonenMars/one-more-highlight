@@ -180,7 +180,7 @@ Spread one of these into a `HighlightState`:
 ```ts
 const states = [
   { name: 'active', ...match.one(2), className: 'is-active' },
-  { name: 'preview', ...match.range(0, 1), style: { background: '#fef9c3' } },
+  { name: 'preview', ...match.range(0, 1), style: { background: '#5EEAD4' } },
 ];
 ```
 

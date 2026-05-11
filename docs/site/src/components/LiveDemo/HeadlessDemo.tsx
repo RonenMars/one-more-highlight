@@ -28,7 +28,8 @@ export function HeadlessDemo() {
             <mark
               key={i}
               style={{
-                background: s.states.includes('active') ? '#fb923c' : '#fef9c3',
+                background: s.states.includes('active') ? '#FF8FB5' : '#FFEFA0',
+                color: '#1b1b1d',
                 padding: '0 2px',
                 borderRadius: '2px',
               }}

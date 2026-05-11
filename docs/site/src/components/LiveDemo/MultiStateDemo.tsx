@@ -20,11 +20,11 @@ export function MultiStateDemo() {
       <Highlight
         text={text}
         searchWords={['time']}
-        highlightStyle={{ background: '#fef9c3', padding: '0 2px', borderRadius: '2px' }}
+        highlightStyle={{ background: '#FFEFA0', color: '#1b1b1d', padding: '0 2px', borderRadius: '2px' }}
         states={[
-          { name: 'preview', ...match.range(0, 1), style: { background: '#bfdbfe' } },
-          { name: 'active', ...match.one(2), style: { background: '#fb923c', color: 'white', outline: '2px solid #c2410c' } },
-          { name: 'bookmarked', ...match.many([3, 5]), style: { textDecoration: 'underline', textDecorationColor: '#ec4899', textDecorationThickness: '2px' } },
+          { name: 'preview', ...match.range(0, 1), style: { background: '#5EEAD4', color: '#1b1b1d' } },
+          { name: 'active', ...match.one(2), style: { background: '#FF8FB5', color: '#1b1b1d', outline: '2px solid #cc3366' } },
+          { name: 'bookmarked', ...match.many([3, 5]), style: { textDecoration: 'underline', textDecorationColor: '#FF8FB5', textDecorationThickness: '2px' } },
         ]}
       />
     </div>

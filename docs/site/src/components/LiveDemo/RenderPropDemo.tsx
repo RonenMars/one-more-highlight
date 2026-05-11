@@ -20,8 +20,8 @@ export function RenderPropDemo() {
       <Highlight
         text={text}
         searchWords={['time']}
-        highlightStyle={{ background: '#fef9c3', padding: '0 2px', borderRadius: '2px' }}
-        states={[{ name: 'active', ...match.one(2), style: { background: '#fb923c', color: 'white' } }]}
+        highlightStyle={{ background: '#FFEFA0', color: '#1b1b1d', padding: '0 2px', borderRadius: '2px' }}
+        states={[{ name: 'active', ...match.one(2), style: { background: '#FF8FB5', color: '#1b1b1d' } }]}
         renderMatch={(seg, { className, style, Tag }) => {
           const TagAny = Tag as 'mark';
           return (

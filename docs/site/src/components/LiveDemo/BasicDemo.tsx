@@ -15,7 +15,8 @@ const style: React.CSSProperties = {
 };
 
 const markStyle: React.CSSProperties = {
-  background: '#fef9c3',
+  background: '#FFEFA0',
+  color: '#1b1b1d',
   padding: '0 2px',
   borderRadius: '2px',
 };

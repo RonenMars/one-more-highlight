@@ -1,5 +1,6 @@
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import { themes as prismThemes } from 'prism-react-renderer';
 
 const config: Config = {
   title: 'one-more-highlight',
@@ -45,7 +46,10 @@ const config: Config = {
       style: 'dark',
       copyright: `MIT © ${new Date().getFullYear()} Ronen Mars`,
     },
-    prism: { theme: require('prism-react-renderer').themes.github },
+    prism: {
+      theme: prismThemes.github,
+      darkTheme: prismThemes.dracula,
+    },
   } satisfies Preset.ThemeConfig,
 };
 

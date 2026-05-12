@@ -1,3 +1,11 @@
+## [0.3.4](https://github.com/RonenMars/one-more-highlight/compare/v0.3.3...v0.3.4) (2026-05-12)
+
+
+### Bug Fixes
+
+* **ci:** build library before semantic-release publish ([7b61cf3](https://github.com/RonenMars/one-more-highlight/commit/7b61cf375bad72dba9243b98e588743b3fe7df45))
+* **playground:** use workspace:* to link local package for dev ([c2f21eb](https://github.com/RonenMars/one-more-highlight/commit/c2f21eb22030a4c21138edd6387eb4af3444f153))
+
 ## [0.3.3](https://github.com/RonenMars/one-more-highlight/compare/v0.3.2...v0.3.3) (2026-05-11)
 
 

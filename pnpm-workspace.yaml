@@ -7,3 +7,5 @@ allowBuilds:
   esbuild: false
 onlyBuiltDependencies:
   - esbuild
+autoInstallPeers: true
+strictPeerDependencies: false

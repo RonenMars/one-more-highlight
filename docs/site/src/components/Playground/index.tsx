@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import * as BabelStandalone from '@babel/standalone';
+import * as OneMoreHighlight from 'one-more-highlight';
 
+// The demo code imports from this URL. The dynamicImport interceptor maps it to
+// the Webpack-bundled one-more-highlight so hooks share the page's React instance.
 const ESM_URL = 'https://esm.sh/one-more-highlight';
 
 const DEMOS: Record<string, string> = {
@@ -125,9 +128,11 @@ async function evalCode(code: string): Promise<EvalResult> {
 
     const fullBody = `${importLines.join('\n')}\n${bodyTransformed}\nreturn __exports_default;`;
 
-    // Playground: intentionally evaluates user-typed JSX code in the browser.
-    // new Function('url', 'return import(url)') bypasses bundler static analysis.
-    const dynamicImport = new Function('url', 'return import(url)'); // intentional: bypass bundler static analysis
+    // Intercept the ESM_URL to return the Webpack-bundled one-more-highlight — this
+    // ensures the Highlight component uses the page's React instance (same hooks dispatcher).
+    const rawImport = new Function('url', 'return import(url)'); // intentional: bypass bundler static analysis
+    const dynamicImport = (url: string) =>
+      url === ESM_URL ? Promise.resolve(OneMoreHighlight) : rawImport(url);
     const AsyncFn = Object.getPrototypeOf(async function () {}).constructor;
     // AsyncFunction body is implicitly async — top-level await is valid here.
     const fn = new AsyncFn('React', '__import', fullBody); // intentional: playground eval

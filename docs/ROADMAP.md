@@ -14,9 +14,7 @@ Build the React text-highlighting library that staff engineers actually want to 
 
 We are not trying to replace `react-highlight-words` for everyone — we are trying to be the obvious choice for anyone who needs typed multi-state highlighting on a modern stack.
 
-## Where we are — v0.1.0 (2026-05)
-
-The first publishable cut.
+## Where we are — v0.3.5 (2026-05)
 
 ### Shipped
 
@@ -28,6 +26,9 @@ The first publishable cut.
 - ESM + CJS dual build, `.d.ts` + `.d.cts`, `exports` map, `sideEffects: false`.
 - 52 tests across 8 suites, including 1000-iteration property-based fuzz.
 - 2.1 KB ESM / 2.45 KB CJS brotlied. Zero CSS shipped.
+- **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
+- **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
+- **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.
 
 ### Verified
 
@@ -37,18 +38,16 @@ The first publishable cut.
 - `pnpm lint:pkg` ✅ publint + attw all green
 - `pnpm size` ✅ under 3 KB brotlied budget
 
-## Near-term (v0.2 — v0.3)
+## Near-term (v0.3 — v0.4)
 
-Things that are clearly correct but not blocking v0.1.0 publish.
+### v0.3 — Quality of life (in progress)
 
-### v0.2 — Quality of life
-
-- [ ] **Storybook or live docs site** — interactive playground deployed to GitHub Pages or Vercel. Lets reviewers see the multi-state feature without cloning.
-- [ ] **CI pipeline** (GitHub Actions) — run `pnpm verify` on every PR; release on merge to `main` via `changesets`.
+- [x] **Live docs site** — deployed to Vercel with interactive demos.
+- [x] **CI pipeline** — GitHub Actions + semantic-release on `main`.
 - [ ] **Browser support matrix** documented in README — explicitly state Node 18+ for `escape-string-regexp` ESM, modern evergreen browsers for native `RegExp.escape`.
 - [ ] **Diacritic-insensitive search recipe** in README — show `sanitize: (s) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '')`.
 
-### v0.3 — Robustness polish
+### v0.4 — Robustness polish
 
 - [ ] **Strict mode dev warnings** — log a one-time warning when:
   - The same `RegExp` identity changes between renders (likely an inline `new RegExp(...)`).

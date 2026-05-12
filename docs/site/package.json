@@ -15,12 +15,14 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "one-more-highlight": "workspace:*",
+    "@babel/standalone": "^7.29.4",
     "@docusaurus/core": "3.10.1",
     "@docusaurus/faster": "3.10.1",
     "@docusaurus/preset-classic": "3.10.1",
     "@mdx-js/react": "^3.0.0",
+    "@monaco-editor/react": "^4.7.0",
     "clsx": "^2.0.0",
+    "one-more-highlight": "workspace:*",
     "prism-react-renderer": "^2.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

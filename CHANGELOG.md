@@ -1,3 +1,10 @@
+## [0.3.5](https://github.com/RonenMars/one-more-highlight/compare/v0.3.4...v0.3.5) (2026-05-12)
+
+
+### Bug Fixes
+
+* **playground:** use bundled one-more-highlight to avoid dual-React hooks error ([82566f3](https://github.com/RonenMars/one-more-highlight/commit/82566f377e0a6064843d7fb9ad345e9769e28f87))
+
 ## [0.3.4](https://github.com/RonenMars/one-more-highlight/compare/v0.3.3...v0.3.4) (2026-05-12)
 
 

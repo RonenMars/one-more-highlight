@@ -1,5 +1,7 @@
 # Playwright Visual Regression Tests Implementation Plan
 
+> **Status:** ✅ Completed 2026-05-13. All 12 tasks shipped — routed playground with light/dark themes, 10 demo components, 60 baseline snapshots (10 demos × 2 themes × 3 browsers), CI visual job on `macos-latest`. Released as part of v0.4.0.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Expand the playground app with React Router + new demo components + dark mode, then add cross-browser Playwright visual regression tests and a CI job.

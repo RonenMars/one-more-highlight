@@ -3,7 +3,7 @@ import { applyStates } from './applyStates.js';
 import { combineChunks } from './combineChunks.js';
 import { buildSegments } from './buildSegments.js';
 import { defaultFindChunks } from './findMatches.js';
-import type { HighlightState, Segment, UseHighlightOptions } from './types.js';
+import type { HighlightState, Segment, UseHighlightOptions, UseHighlightResult } from './types.js';
 
 const isDev = (): boolean =>
   typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
@@ -26,7 +26,7 @@ function statesKeyOf(states: ReadonlyArray<HighlightState> | undefined): string 
   }));
 }
 
-export function useHighlight(opts: UseHighlightOptions): ReadonlyArray<Segment> {
+export function useHighlight(opts: UseHighlightOptions): UseHighlightResult {
   const {
     text,
     searchWords,
@@ -38,23 +38,31 @@ export function useHighlight(opts: UseHighlightOptions): ReadonlyArray<Segment> 
     overlapStrategy = 'merge',
   } = opts;
 
-  const lastRegexIdentities = useRef<WeakMap<RegExp, number>>(new WeakMap());
+  // Track RegExp object identities across renders to warn when a new RegExp
+  // instance is created inline each render (same source/flags, different object).
+  const prevRegexes = useRef<Map<string, WeakRef<RegExp>>>(new Map());
   if (isDev()) {
-    let identityChanged = 0;
+    const next = new Map<string, WeakRef<RegExp>>();
     for (const w of searchWords) {
       if (w instanceof RegExp) {
-        const seen = lastRegexIdentities.current.get(w);
-        if (seen === undefined) lastRegexIdentities.current.set(w, 1);
-        else identityChanged++;
+        const key = `${w.source}/${w.flags}`;
+        const prev = prevRegexes.current.get(key)?.deref();
+        if (prev !== undefined && prev !== w) {
+          console.warn(
+            `[one-more-highlight] A new RegExp instance was passed for /${w.source}/${w.flags} on every render. ` +
+            'Move it outside the component or wrap it in useMemo to avoid unnecessary re-matching.',
+          );
+        }
+        next.set(key, new WeakRef(w));
       }
     }
-    void identityChanged;
+    prevRegexes.current = next;
   }
 
   const searchKey = searchKeyOf(searchWords);
   const stKey = statesKeyOf(states);
 
-  return useMemo<Segment[]>(() => {
+  const segments = useMemo<Segment[]>(() => {
     const finder = findChunks ?? defaultFindChunks;
     const raw = finder({
       searchWords,
@@ -68,4 +76,11 @@ export function useHighlight(opts: UseHighlightOptions): ReadonlyArray<Segment> 
     return buildSegments(text, tagged);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, searchKey, caseSensitive, autoEscape, sanitize, findChunks, stKey, overlapStrategy]);
+
+  const getMatchCount = useMemo(
+    () => () => segments.filter((s) => s.isMatch).length,
+    [segments],
+  );
+
+  return { segments, getMatchCount };
 }

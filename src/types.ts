@@ -57,6 +57,11 @@ export interface UseHighlightOptions {
   overlapStrategy?: OverlapStrategy;
 }
 
+export interface UseHighlightResult {
+  segments: ReadonlyArray<Segment>;
+  getMatchCount: () => number;
+}
+
 export interface HighlightTagProps {
   children: ReactNode;
   className?: string;

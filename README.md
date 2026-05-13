@@ -68,7 +68,7 @@ import { Highlight } from 'one-more-highlight';
 import { useHighlight } from 'one-more-highlight';
 
 function MyHighlighter({ text, query }: { text: string; query: string }) {
-  const segments = useHighlight({ text, searchWords: [query] });
+  const { segments } = useHighlight({ text, searchWords: [query] });
   return (
     <p>
       {segments.map((s, i) =>
@@ -141,9 +141,12 @@ Every match gets `hl-base`. Match `activeIdx` *also* gets `hl-active`. Matches 0
 | `className` | `string` | — | className on the root wrapper. |
 | `style` | `CSSProperties` | — | Inline style on the root wrapper. |
 
-### `useHighlight(options)` → `Segment[]`
+### `useHighlight(options)` → `{ segments, getMatchCount }`
 
-Same options as `<Highlight>` minus the rendering props. Returns alternating `MatchSegment` / `TextSegment` covering the full text.
+Same options as `<Highlight>` minus the rendering props. Returns an object with:
+
+- `segments` — alternating `MatchSegment` / `TextSegment` covering the full text.
+- `getMatchCount()` — returns the number of matching segments; useful for validating `states` config or rendering "X results" UI.
 
 ```ts
 type Segment = MatchSegment | TextSegment;
@@ -192,6 +195,35 @@ const states = [
 - **Regex defenses**: consumer-supplied `RegExp` is always cloned, the `g` flag is forced on, and the sticky `y` flag is dropped (with a dev warning). This prevents the mutable-`lastIndex` footgun.
 - **Accessibility**: default `<mark>` carries native `mark` semantics. When `highlightTag` is overridden to a non-semantic element, `role="mark"` is added automatically.
 - **SSR**: pipeline contains no `window`/`document` reads and produces deterministic markup.
+
+## Browser & runtime support
+
+| Environment | Requirement | Notes |
+| --- | --- | --- |
+| **Browsers** | Modern evergreen (Chrome 112+, Firefox 140+, Safari 16.4+) | `RegExp.escape()` is used natively where available (Chrome 134+, Firefox 134+, Safari 18.4+); older evergreens fall back to `escape-string-regexp`. |
+| **Node.js** | 18+ | `escape-string-regexp` v5 is ESM-only and requires Node 18+. If you need Node 16, pin `escape-string-regexp` to v4 and add it to your own dependencies. |
+| **React** | 18 or 19 | Peer dependency. |
+| **TypeScript** | 5.0+ | `exactOptionalPropertyTypes` and `verbatimModuleSyntax` are used internally; consumers do not need these flags. |
+
+## Recipes
+
+### Diacritic-insensitive search
+
+Strip diacritics from both the text and the search terms before matching, then render against the original text:
+
+```tsx
+const normalize = (s: string) =>
+  s.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+
+<Highlight
+  text="Héllo wörld"
+  searchWords={['hello', 'world']}
+  sanitize={normalize}
+/>
+// highlights "Héllo" and "wörld" despite the accents
+```
+
+`sanitize` is applied to both the text and each search word before matching. The highlighted output always uses the original, un-normalized text.
 
 ## Roadmap
 

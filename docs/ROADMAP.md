@@ -14,7 +14,7 @@ Build the React text-highlighting library that staff engineers actually want to 
 
 We are not trying to replace `react-highlight-words` for everyone — we are trying to be the obvious choice for anyone who needs typed multi-state highlighting on a modern stack.
 
-## Where we are — v0.3.5 (2026-05)
+## Where we are — v0.4 (2026-05)
 
 ### Shipped
 
@@ -44,17 +44,17 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 
 - [x] **Live docs site** — deployed to Vercel with interactive demos.
 - [x] **CI pipeline** — GitHub Actions + semantic-release on `main`.
-- [ ] **Browser support matrix** documented in README — explicitly state Node 18+ for `escape-string-regexp` ESM, modern evergreen browsers for native `RegExp.escape`.
-- [ ] **Diacritic-insensitive search recipe** in README — show `sanitize: (s) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '')`.
+- [x] **Browser support matrix** documented in README — explicitly state Node 18+ for `escape-string-regexp` ESM, modern evergreen browsers for native `RegExp.escape`.
+- [x] **Diacritic-insensitive search recipe** in README — show `sanitize: (s) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '')`.
 
 ### v0.4 — Robustness polish
 
-- [ ] **Strict mode dev warnings** — log a one-time warning when:
+- [x] **Strict mode dev warnings** — log a one-time warning when:
   - The same `RegExp` identity changes between renders (likely an inline `new RegExp(...)`).
   - A consumer passes a sticky `/foo/y` regex.
   - `states` references match indices beyond the actual match count.
-- [ ] **`getMatchCount()` helper** exported from `useHighlight` results so consumers can validate `states` config before passing it.
-- [ ] **`forwardRef` support** on `<Highlight>` — open issue on `react-highlight-words` (#127) suggests demand.
+- [x] **`getMatchCount()` helper** exported from `useHighlight` results so consumers can validate `states` config before passing it.
+- [x] **`forwardRef` support** on `<Highlight>` — open issue on `react-highlight-words` (#127) suggests demand.
 
 ## Mid-term (v1.0)
 

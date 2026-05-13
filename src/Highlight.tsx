@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import { Fragment, createElement } from 'react';
-import type { CSSProperties, ReactNode } from 'react';
+import { Fragment, createElement, forwardRef } from 'react';
+import type { CSSProperties, ElementRef, ReactNode } from 'react';
 import { useHighlight } from './useHighlight.js';
 import type {
   HighlightProps,
@@ -68,7 +68,10 @@ function renderMatchDefault(
   return createElement(Tag as never, props, seg.text);
 }
 
-export function Highlight(props: HighlightProps): ReactNode {
+export const Highlight = forwardRef<
+  ElementRef<'span'>,
+  HighlightProps
+>(function Highlight(props, ref) {
   const {
     text,
     searchWords,
@@ -90,7 +93,7 @@ export function Highlight(props: HighlightProps): ReactNode {
     style,
   } = props;
 
-  const segments = useHighlight({
+  const { segments } = useHighlight({
     text,
     searchWords,
     ...(caseSensitive !== undefined && { caseSensitive }),
@@ -124,5 +127,5 @@ export function Highlight(props: HighlightProps): ReactNode {
     return renderMatchDefault(seg, highlightTag, fullClassName, fullStyle, key);
   });
 
-  return createElement(as, { className, style }, ...children);
-}
+  return createElement(as, { ref, className, style }, ...children);
+});

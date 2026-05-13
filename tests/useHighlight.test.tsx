@@ -8,8 +8,8 @@ describe('useHighlight', () => {
     const { result } = renderHook(() =>
       useHighlight({ text: 'cat hat cat', searchWords: ['cat'] }),
     );
-    expect(result.current).toHaveLength(3);
-    expect(result.current[0]?.isMatch).toBe(true);
+    expect(result.current.segments).toHaveLength(3);
+    expect(result.current.segments[0]?.isMatch).toBe(true);
   });
 
   it('memoizes across renders with stable inputs', () => {
@@ -18,9 +18,9 @@ describe('useHighlight', () => {
     const { result, rerender } = renderHook(() =>
       useHighlight({ text, searchWords }),
     );
-    const first = result.current;
+    const first = result.current.segments;
     rerender();
-    expect(result.current).toBe(first);
+    expect(result.current.segments).toBe(first);
   });
 
   it('recomputes when text changes', () => {
@@ -28,10 +28,10 @@ describe('useHighlight', () => {
     const { result, rerender } = renderHook(() =>
       useHighlight({ text, searchWords: ['cat'] }),
     );
-    const first = result.current;
+    const first = result.current.segments;
     text = 'dog';
     rerender();
-    expect(result.current).not.toBe(first);
+    expect(result.current.segments).not.toBe(first);
   });
 
   it('applies states correctly', () => {
@@ -42,9 +42,16 @@ describe('useHighlight', () => {
         states: [{ name: 'active', ...match.one(1) }],
       }),
     );
-    const matches = result.current.filter((s) => s.isMatch);
+    const matches = result.current.segments.filter((s) => s.isMatch);
     expect(matches[0]?.isMatch && matches[0].states).toEqual([]);
     expect(matches[1]?.isMatch && matches[1].states).toEqual(['active']);
     expect(matches[2]?.isMatch && matches[2].states).toEqual([]);
+  });
+
+  it('getMatchCount returns the number of matching segments', () => {
+    const { result } = renderHook(() =>
+      useHighlight({ text: 'cat hat cat', searchWords: ['cat'] }),
+    );
+    expect(result.current.getMatchCount()).toBe(2);
   });
 });

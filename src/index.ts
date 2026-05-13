@@ -18,4 +18,5 @@ export type {
   Segment,
   TextSegment,
   UseHighlightOptions,
+  UseHighlightResult,
 } from './types.js';

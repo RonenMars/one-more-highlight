@@ -16,10 +16,22 @@
   --text: #fafafa;
   --surface: #2d2d2d;
   --border: #444;
-  --hl-yellow: #b8a000;
-  --hl-mint: #0d9488;
-  --hl-pink: #be185d;
-  --hl-orange: #d97706;
+  --hl-yellow: #ffe566;
+  --hl-mint: #5eead4;
+  --hl-pink: #ff8fb5;
+  --hl-orange: #ffbf69;
+  --hl-text: #1b1b1d;
+}
+
+[data-theme="dark"] mark,
+[data-theme="dark"] .hl-base,
+[data-theme="dark"] .hl-preview,
+[data-theme="dark"] .hl-active,
+[data-theme="dark"] .hl-bookmark,
+[data-theme="dark"] .hl-one,
+[data-theme="dark"] .hl-range,
+[data-theme="dark"] .hl-many {
+  color: var(--hl-text);
 }
 
 body {

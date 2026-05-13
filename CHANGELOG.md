@@ -1,3 +1,18 @@
+# [0.4.0](https://github.com/RonenMars/one-more-highlight/compare/v0.3.6...v0.4.0) (2026-05-13)
+
+
+### Bug Fixes
+
+* **playground:** update HeadlessDemo to useHighlight v0.4 API; alias local dist for build ([10c2aba](https://github.com/RonenMars/one-more-highlight/commit/10c2abadfc009432fea747ea927a87809d1db5da))
+
+
+### Features
+
+* **playground:** add CSS vars, react-router-dom, ThemeWrapper/Toggle, and 6 new demo components ([1175ab7](https://github.com/RonenMars/one-more-highlight/commit/1175ab7ca403b3863029aa1b02f7a78bd2b83794))
+* **playground:** wire React Router with light/dark URL routing ([ecfbe2c](https://github.com/RonenMars/one-more-highlight/commit/ecfbe2c27e2dd2708a016d6bf1a07d30c55eb60a))
+* v0.3 browser support docs + diacritic recipe; v0.4 forwardRef, getMatchCount, inline-RegExp dev warning ([da49eec](https://github.com/RonenMars/one-more-highlight/commit/da49eecdce2c66c2965b33fbd7f91eb59f437579))
+* **visual:** add Playwright config and spec files for all 10 demos × 2 themes ([da43bc4](https://github.com/RonenMars/one-more-highlight/commit/da43bc41d9097693b13979d86519d5971c73c767))
+
 ## [0.3.6](https://github.com/RonenMars/one-more-highlight/compare/v0.3.5...v0.3.6) (2026-05-13)
 
 

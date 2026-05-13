@@ -35,6 +35,40 @@ jobs:
       - name: Verify
         run: pnpm verify
 
+  visual:
+    name: Visual Regression
+    needs: [verify]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build library
+        run: pnpm build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run visual tests
+        run: pnpm test:visual
+
+      - name: Upload diff artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-diff
+          path: tests/visual/test-results/
+          retention-days: 7
+
   release:
     name: Release
     needs: [verify]

@@ -1,32 +1,69 @@
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { ThemeToggle } from './ThemeToggle.js';
+import { ThemeWrapper } from './ThemeWrapper.js';
 import { BasicDemo } from './demos/BasicDemo.js';
+import { CaseInsensitiveDemo } from './demos/CaseInsensitiveDemo.js';
 import { HeadlessDemo } from './demos/HeadlessDemo.js';
 import { MultiStateDemo } from './demos/MultiStateDemo.js';
+import { OverlapFirstDemo } from './demos/OverlapFirstDemo.js';
+import { OverlapMergeDemo } from './demos/OverlapMergeDemo.js';
+import { OverlapNestDemo } from './demos/OverlapNestDemo.js';
+import { RegexDemo } from './demos/RegexDemo.js';
 import { RenderPropDemo } from './demos/RenderPropDemo.js';
+import { SelectorsDemo } from './demos/SelectorsDemo.js';
+
+interface DemoPageProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+function DemoPage({ title, children }: DemoPageProps) {
+  return (
+    <div className="page">
+      <div className="demo-header">
+        <h2>{title}</h2>
+        <ThemeToggle />
+      </div>
+      <div data-testid="demo">{children}</div>
+    </div>
+  );
+}
+
+const demos = [
+  { path: 'basic',            title: 'Basic — every "time" highlighted',                   Component: BasicDemo },
+  { path: 'multi-state',      title: 'Multi-state — base + active + preview + bookmarked', Component: MultiStateDemo },
+  { path: 'render-prop',      title: 'Render-prop — star next to the active match',        Component: RenderPropDemo },
+  { path: 'headless',         title: 'Headless hook — DIY rendering',                      Component: HeadlessDemo },
+  { path: 'overlap-merge',    title: 'Overlap strategy: merge',                             Component: OverlapMergeDemo },
+  { path: 'overlap-nest',     title: 'Overlap strategy: nest',                              Component: OverlapNestDemo },
+  { path: 'overlap-first',    title: 'Overlap strategy: first-wins',                        Component: OverlapFirstDemo },
+  { path: 'regex',            title: 'RegExp search word — /\\btime\\b/i',                 Component: RegexDemo },
+  { path: 'case-insensitive', title: 'Case-sensitive vs case-insensitive',                  Component: CaseInsensitiveDemo },
+  { path: 'selectors',        title: 'Selectors — match.one / range / many',                Component: SelectorsDemo },
+];
 
 export function App() {
   return (
-    <main>
-      <h1>one-more-highlight · playground</h1>
-
-      <h2>1. Basic — every "time" highlighted</h2>
-      <div className="demo">
-        <BasicDemo />
-      </div>
-
-      <h2>2. Multi-state — base + active(2) + preview(0–1) + bookmarked(3,5)</h2>
-      <div className="demo">
-        <MultiStateDemo />
-      </div>
-
-      <h2>3. Render-prop — star next to the active match</h2>
-      <div className="demo">
-        <RenderPropDemo />
-      </div>
-
-      <h2>4. Headless hook — DIY rendering</h2>
-      <div className="demo">
-        <HeadlessDemo />
-      </div>
-    </main>
+    <ThemeWrapper>
+      <Routes>
+        {demos.flatMap(({ path, title, Component }) => [
+          <Route
+            key={path}
+            path={`/${path}`}
+            element={<DemoPage title={title}><Component /></DemoPage>}
+          />,
+          <Route
+            key={`dark/${path}`}
+            path={`/dark/${path}`}
+            element={<DemoPage title={title}><Component /></DemoPage>}
+          />,
+        ])}
+        <Route
+          path="*"
+          element={<DemoPage title='Basic — every "time" highlighted'><BasicDemo /></DemoPage>}
+        />
+      </Routes>
+    </ThemeWrapper>
   );
 }

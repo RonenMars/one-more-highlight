@@ -1,0 +1,96 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --text: #1b1b1d;
+  --surface: #f5f5f5;
+  --border: #e0e0e0;
+  --hl-yellow: #FFEFA0;
+  --hl-mint: #5EEAD4;
+  --hl-pink: #FF8FB5;
+  --hl-orange: #FFBF69;
+}
+
+[data-theme="dark"] {
+  --bg: #1b1b1d;
+  --text: #fafafa;
+  --surface: #2d2d2d;
+  --border: #444;
+  --hl-yellow: #b8a000;
+  --hl-mint: #0d9488;
+  --hl-pink: #be185d;
+  --hl-orange: #d97706;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.demo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.demo-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+[data-testid="demo"] {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  line-height: 1.8;
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.25rem 0.5rem;
+  color: var(--text);
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover { opacity: 0.75; }
+
+.hl-base     { background: var(--hl-yellow); border-radius: 2px; }
+.hl-preview  { background: var(--hl-mint); }
+.hl-active   { background: var(--hl-orange); outline: 2px solid currentColor; outline-offset: 1px; }
+.hl-bookmark { text-decoration: underline; }
+.hl-a        { background: var(--hl-yellow); }
+.hl-b        { background: var(--hl-mint); }
+.hl-one      { background: var(--hl-orange); }
+.hl-range    { background: var(--hl-mint); }
+.hl-many     { background: var(--hl-pink); }
+
+.demo-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.demo-col h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  opacity: 0.7;
+}

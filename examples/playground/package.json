@@ -11,7 +11,8 @@
   "dependencies": {
     "one-more-highlight": "latest",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.15.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

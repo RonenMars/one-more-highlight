@@ -29,6 +29,7 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
 - **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
 - **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.
+- **Playwright visual regression tests** — 10 demos × light/dark × Chromium/Firefox/WebKit on Mac; CI job on every PR and push to `main`.
 
 ### Verified
 

@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/RonenMars/one-more-highlight/compare/v0.4.0...v0.4.1) (2026-05-13)
+
+
+### Bug Fixes
+
+* **playground:** dark mode highlight contrast — bright colors + dark text on highlights ([2b093cd](https://github.com/RonenMars/one-more-highlight/commit/2b093cdc26666c7bc5b2adb5033fc8796a38a251))
+
 # [0.4.0](https://github.com/RonenMars/one-more-highlight/compare/v0.3.6...v0.4.0) (2026-05-13)
 
 

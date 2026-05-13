@@ -9,6 +9,10 @@
   --hl-mint: #5EEAD4;
   --hl-pink: #FF8FB5;
   --hl-orange: #FFBF69;
+  --hl-purple: #4c1d95;
+  --hl-violet: #a78bfa;
+  --hl-pink-dark: #cc3366;
+  --hl-text: #1b1b1d;
 }
 
 [data-theme="dark"] {
@@ -16,11 +20,13 @@
   --text: #fafafa;
   --surface: #2d2d2d;
   --border: #444;
-  --hl-yellow: #ffe566;
-  --hl-mint: #5eead4;
-  --hl-pink: #ff8fb5;
-  --hl-orange: #ffbf69;
-  --hl-text: #1b1b1d;
+  --hl-yellow: #FFEFA0;
+  --hl-mint: #5EEAD4;
+  --hl-pink: #FF8FB5;
+  --hl-orange: #FFBF69;
+  --hl-purple: #4c1d95;
+  --hl-violet: #a78bfa;
+  --hl-pink-dark: #cc3366;
 }
 
 [data-theme="dark"] mark,
@@ -28,6 +34,8 @@
 [data-theme="dark"] .hl-preview,
 [data-theme="dark"] .hl-active,
 [data-theme="dark"] .hl-bookmark,
+[data-theme="dark"] .hl-a,
+[data-theme="dark"] .hl-b,
 [data-theme="dark"] .hl-one,
 [data-theme="dark"] .hl-range,
 [data-theme="dark"] .hl-many {
@@ -85,7 +93,7 @@ body {
 
 .hl-base     { background: var(--hl-yellow); border-radius: 2px; }
 .hl-preview  { background: var(--hl-mint); }
-.hl-active   { background: var(--hl-orange); outline: 2px solid currentColor; outline-offset: 1px; }
+.hl-active   { background: var(--hl-orange); outline: 2px solid currentColor; }
 .hl-bookmark { text-decoration: underline; }
 .hl-a        { background: var(--hl-yellow); }
 .hl-b        { background: var(--hl-mint); }

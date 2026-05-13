@@ -7,12 +7,12 @@
     <style>
       body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
       h1 { font-size: 1.5rem; }
-      h2 { margin-top: 2rem; font-size: 1.1rem; color: #555; }
-      .demo { padding: 1rem; background: #fafafa; border-radius: 8px; border: 1px solid #eee; }
-      mark.hl-base { background: #fef9c3; padding: 0 2px; border-radius: 2px; }
-      mark.hl-active { background: #fb923c; color: white; outline: 2px solid #c2410c; }
-      mark.hl-preview { background: #bfdbfe; }
-      mark.hl-bookmark { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: #ec4899; }
+      h2 { margin-top: 2rem; font-size: 1.1rem; color: var(--text); opacity: 0.7; }
+      .demo { padding: 1rem; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); }
+      mark.hl-base { background: var(--hl-yellow); padding: 0 2px; border-radius: 2px; }
+      mark.hl-active { background: var(--hl-orange); color: var(--text); outline: 2px solid currentColor; }
+      mark.hl-preview { background: var(--hl-mint); }
+      mark.hl-bookmark { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--hl-pink); }
     </style>
   </head>
   <body>

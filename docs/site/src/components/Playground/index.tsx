@@ -20,7 +20,7 @@ export default function App() {
     <Highlight
       text={text}
       searchWords={['time']}
-      highlightStyle={{ background: '#FFEFA0', color: '#1b1b1d', padding: '0 2px', borderRadius: '2px' }}
+      highlightStyle={{ background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' }}
     />
   );
 }`,
@@ -37,11 +37,11 @@ export default function App() {
     <Highlight
       text={text}
       searchWords={['time']}
-      highlightStyle={{ background: '#FFEFA0', color: '#1b1b1d', padding: '0 2px', borderRadius: '2px' }}
+      highlightStyle={{ background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' }}
       states={[
-        { name: 'preview', ...match.range(0, 1), style: { background: '#5EEAD4', color: '#1b1b1d', padding: '0 2px', borderRadius: '2px' } },
-        { name: 'active', ...match.one(2), style: { background: '#FF8FB5', color: '#1b1b1d', padding: '0 3px', borderRadius: '3px', fontWeight: 'bold' } },
-        { name: 'bookmarked', ...match.many([3, 5]), style: { background: '#a78bfa', color: '#1b1b1d', padding: '0 2px', borderRadius: '2px' } },
+        { name: 'preview', ...match.range(0, 1), style: { background: 'var(--hl-mint)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' } },
+        { name: 'active', ...match.one(2), style: { background: 'var(--hl-pink)', color: 'var(--hl-text)', padding: '0 3px', borderRadius: '3px', fontWeight: 'bold' } },
+        { name: 'bookmarked', ...match.many([3, 5]), style: { background: 'var(--hl-violet)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' } },
       ]}
     />
   );
@@ -59,11 +59,11 @@ export default function App() {
     <Highlight
       text={text}
       searchWords={['time']}
-      highlightStyle={{ background: '#FFEFA0', color: '#1b1b1d', padding: '0 2px', borderRadius: '2px' }}
-      states={[{ name: 'active', ...match.one(2), style: { background: '#FF8FB5', color: '#1b1b1d' } }]}
+      highlightStyle={{ background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' }}
+      states={[{ name: 'active', ...match.one(2), style: { background: 'var(--hl-orange)', color: 'var(--hl-text)' } }]}
       renderMatch={(seg, { style, Tag }) => (
         <Tag style={style}>
-          {seg.text}{seg.states.includes('active') && <sup>★</sup>}
+          {seg.text}{seg.states.includes('active') && <sup style={{ color: 'var(--hl-purple)' }}>★</sup>}
         </Tag>
       )}
     />
@@ -87,7 +87,7 @@ export default function App() {
     <p style={{ margin: 0 }}>
       {segments.map((s, i) =>
         s.isMatch ? (
-          <mark key={i} style={{ background: s.states.includes('active') ? '#FF8FB5' : '#FFEFA0', color: '#1b1b1d', padding: '0 2px', borderRadius: '2px' }}>
+          <mark key={i} style={{ background: s.states.includes('active') ? 'var(--hl-pink)' : 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' }}>
             {s.text}
           </mark>
         ) : (

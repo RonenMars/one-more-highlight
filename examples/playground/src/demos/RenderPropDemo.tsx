@@ -17,7 +17,9 @@ export function RenderPropDemo() {
         return (
           <TagAny className={className} style={style}>
             {seg.text}
-            {seg.states.includes('active') && <sup>★</sup>}
+            {seg.states.includes('active') && (
+              <span aria-hidden style={{ color: 'var(--hl-purple)', fontSize: '0.8em' }}> ★</span>
+            )}
           </TagAny>
         );
       }}

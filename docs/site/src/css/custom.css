@@ -15,6 +15,20 @@
   --ifm-color-primary-lightest: #3cad6e;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  /* Highlight color tokens (match playground) */
+  --bg: #ffffff;
+  --text: #1b1b1d;
+  --surface: #f5f5f5;
+  --border: #e0e0e0;
+  --hl-yellow: #FFEFA0;
+  --hl-mint: #5EEAD4;
+  --hl-pink: #FF8FB5;
+  --hl-orange: #FFBF69;
+  --hl-purple: #4c1d95;
+  --hl-violet: #a78bfa;
+  --hl-pink-dark: #cc3366;
+  --hl-text: #1b1b1d;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -27,4 +41,30 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  /* Highlight color tokens (match playground dark) */
+  --bg: #1b1b1d;
+  --text: #fafafa;
+  --surface: #2d2d2d;
+  --border: #444;
+  --hl-yellow: #FFEFA0;
+  --hl-mint: #5EEAD4;
+  --hl-pink: #FF8FB5;
+  --hl-orange: #FFBF69;
+  --hl-purple: #4c1d95;
+  --hl-violet: #a78bfa;
+  --hl-pink-dark: #cc3366;
+}
+
+[data-theme='dark'] mark,
+[data-theme='dark'] .hl-base,
+[data-theme='dark'] .hl-preview,
+[data-theme='dark'] .hl-active,
+[data-theme='dark'] .hl-bookmark,
+[data-theme='dark'] .hl-a,
+[data-theme='dark'] .hl-b,
+[data-theme='dark'] .hl-one,
+[data-theme='dark'] .hl-range,
+[data-theme='dark'] .hl-many {
+  color: var(--hl-text);
 }

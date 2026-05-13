@@ -1,3 +1,10 @@
+## [0.3.6](https://github.com/RonenMars/one-more-highlight/compare/v0.3.5...v0.3.6) (2026-05-13)
+
+
+### Bug Fixes
+
+* **playground:** use latest instead of workspace:* for StackBlitz compatibility ([11bd3d6](https://github.com/RonenMars/one-more-highlight/commit/11bd3d6cc1ed189052a6d30a1765a9f59aff879f))
+
 ## [0.3.5](https://github.com/RonenMars/one-more-highlight/compare/v0.3.4...v0.3.5) (2026-05-12)
 
 

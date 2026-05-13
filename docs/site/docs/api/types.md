@@ -48,3 +48,16 @@ function MyHighlight(props: HighlightProps) {
 ## `UseHighlightOptions`
 
 Options type for `useHighlight`. A subset of `HighlightProps` without rendering props.
+
+## `UseHighlightResult`
+
+Return type of `useHighlight`.
+
+```ts
+interface UseHighlightResult {
+  segments: ReadonlyArray<Segment>;
+  getMatchCount: () => number;
+}
+```
+
+`getMatchCount()` returns the number of `MatchSegment` entries — useful for validating `states` indices or rendering "N results found" UI.

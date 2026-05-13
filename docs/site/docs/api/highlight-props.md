@@ -52,3 +52,5 @@ import { Highlight } from 'one-more-highlight';
 | `style` | `CSSProperties` | — | Inline style on the root wrapper. |
 
 Additional HTML attributes are forwarded to the root element.
+
+`<Highlight>` is wrapped with `forwardRef` — you can pass a `ref` and it will be attached to the root element (the `as` element, default `<span>`).

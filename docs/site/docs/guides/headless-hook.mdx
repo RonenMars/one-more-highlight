@@ -7,7 +7,7 @@ sidebar_position: 3
 import { HeadlessDemo } from '@site/src/components/LiveDemo/HeadlessDemo';
 import { OpenInSandboxButton } from '@site/src/components/OpenInSandboxButton';
 
-`useHighlight` returns `Segment[]` so you can render matches any way you want.
+`useHighlight` returns `{ segments, getMatchCount }` so you can render matches any way you want.
 
 <HeadlessDemo />
 <OpenInSandboxButton />
@@ -18,7 +18,7 @@ import { OpenInSandboxButton } from '@site/src/components/OpenInSandboxButton';
 import { useHighlight } from 'one-more-highlight';
 
 function MyHighlighter({ text, query }: { text: string; query: string }) {
-  const segments = useHighlight({ text, searchWords: [query] });
+  const { segments } = useHighlight({ text, searchWords: [query] });
 
   return (
     <p>
@@ -61,7 +61,7 @@ Segments are guaranteed to be contiguous and cover the full input text with no g
 ## With states
 
 ```tsx
-const segments = useHighlight({
+const { segments, getMatchCount } = useHighlight({
   text,
   searchWords: ['time'],
   states: [
@@ -69,6 +69,8 @@ const segments = useHighlight({
     { name: 'bookmarked', ...match.many([0, 3]) },
   ],
 });
+
+console.log(getMatchCount()); // e.g. 8
 
 segments.forEach(s => {
   if (s.isMatch) {

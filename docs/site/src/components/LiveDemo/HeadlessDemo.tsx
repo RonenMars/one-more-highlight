@@ -15,7 +15,7 @@ const containerStyle: React.CSSProperties = {
 };
 
 export function HeadlessDemo() {
-  const segments = useHighlight({
+  const { segments } = useHighlight({
     text,
     searchWords: ['time'],
     states: [{ name: 'active', ...match.one(2) }],

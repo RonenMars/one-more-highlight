@@ -8,12 +8,17 @@ sidebar_position: 2
 import { useHighlight } from 'one-more-highlight';
 ```
 
-Returns `Segment[]` covering the full input text. Each segment is either a `MatchSegment` or a `TextSegment`. Segments are contiguous with no gaps.
+Returns `{ segments, getMatchCount }`. `segments` covers the full input text as alternating `MatchSegment` / `TextSegment` with no gaps. `getMatchCount()` returns the number of matching segments — useful for validating `states` config or rendering "N results" UI.
 
 ## Signature
 
 ```ts
-function useHighlight(options: UseHighlightOptions): Segment[]
+function useHighlight(options: UseHighlightOptions): UseHighlightResult
+
+interface UseHighlightResult {
+  segments: ReadonlyArray<Segment>;
+  getMatchCount: () => number;
+}
 ```
 
 ## Options

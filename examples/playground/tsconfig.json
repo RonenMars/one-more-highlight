@@ -9,7 +9,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "one-more-highlight": ["../../dist/index.d.ts"]
+    }
   },
   "include": ["src"]
 }

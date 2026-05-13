@@ -6,7 +6,7 @@ const text =
   'never get that time back, making every time we meet a valuable time.';
 
 export function HeadlessDemo() {
-  const segments = useHighlight({
+  const { segments } = useHighlight({
     text,
     searchWords: ['time'],
     states: [{ name: 'active', ...match.one(2) }],

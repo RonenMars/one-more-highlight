@@ -14,11 +14,29 @@ export function RenderPropDemo() {
       states={[{ name: 'active', ...match.one(2), className: 'hl-active' }]}
       renderMatch={(seg, { className, style, Tag }) => {
         const TagAny = Tag as 'mark';
+        const isActive = seg.states.includes('active');
         return (
-          <TagAny className={className} style={style}>
+          <TagAny
+            className={className}
+            style={isActive ? { ...style, position: 'relative' } : style}
+          >
             {seg.text}
-            {seg.states.includes('active') && (
-              <span aria-hidden style={{ color: 'var(--hl-purple)', fontSize: '0.8em' }}> ★</span>
+            {isActive && (
+              <span
+                aria-hidden
+                className="hl-star"
+                style={{
+                  position: 'absolute',
+                  top: '-0.45em',
+                  right: '-0.45em',
+                  color: 'var(--hl-amber)',
+                  fontSize: '0.8em',
+                  pointerEvents: 'none',
+                  lineHeight: 1,
+                }}
+              >
+                ★
+              </span>
             )}
           </TagAny>
         );

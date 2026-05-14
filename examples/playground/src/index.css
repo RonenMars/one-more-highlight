@@ -86,6 +86,15 @@ body {
 
 .theme-toggle:hover { opacity: 0.75; }
 
+.hl-star {
+  -webkit-text-stroke: 1.5px #1b1b1d;
+  paint-order: stroke fill;
+}
+
+[data-theme="dark"] .hl-star {
+  -webkit-text-stroke: 1.5px #fafafa;
+}
+
 .hl-base     { background: var(--hl-yellow); border-radius: 2px; }
 .hl-preview  { background: var(--hl-pink); }
 .hl-active   { background: var(--hl-green); outline: 2px solid currentColor; }

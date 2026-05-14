@@ -35,14 +35,12 @@ Five projects run on every spec:
 as a 2×2 block of physical pixels — retina-equivalent. Mobile devices use
 the SDK's natural DPR (3 for both picks).
 
-> **Note on PNG dimensions:** specs use element-locator screenshots
-> (`expect(locator).toHaveScreenshot(...)`), and Playwright by default
-> rescales those back to CSS pixels for stable diffing. So the desktop PNGs
-> are still at 1× CSS-pixel dimensions even though the browser rendered
-> them at 2× DPR. The DPR setting improves internal text-rendering precision
-> (sub-pixel antialiasing) but doesn't double output file dimensions. Add
-> `{ scale: 'device' }` to a `toHaveScreenshot` call if you genuinely need
-> the 2× output for a specific snapshot.
+Snapshots are captured at **device pixels** (`scale: 'device'` set in
+`playwright.config.ts` under `expect.toHaveScreenshot`). That means a
+1280×316 element on a 2× DPR project produces a 2560×632 PNG, and a
+393×220 element on a 3× DPR iPhone produces a 1179×660 PNG. The PNGs match
+the physical pixel density the browser actually rendered — no
+downsampling, no resampling pass, retina-sharp on high-DPR displays.
 
 ## How baselines work
 

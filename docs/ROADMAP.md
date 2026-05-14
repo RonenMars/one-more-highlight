@@ -25,7 +25,7 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - Native-first `RegExp.escape()` with `escape-string-regexp` fallback.
 - ESM + CJS dual build, `.d.ts` + `.d.cts`, `exports` map, `sideEffects: false`.
 - 53 tests across 8 suites, including 1000-iteration property-based fuzz.
-- 2.1 KB ESM / 2.45 KB CJS brotlied. Zero CSS shipped.
+- 1.92 KB ESM / 2.27 KB CJS brotlied. Zero CSS shipped.
 - **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
 - **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
 - **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.

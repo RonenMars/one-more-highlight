@@ -4,10 +4,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-First--class-blue.svg)](#)
-[![bundle](https://img.shields.io/badge/bundle-2.1KB%20brotlied-green.svg)](#)
+[![bundle](https://img.shields.io/badge/bundle-1.92KB%20brotlied-green.svg)](#)
 [![tests](https://img.shields.io/badge/tests-52%20passing-green.svg)](#)
 
-Highlight every occurrence of a substring in one style, **and** highlight specific occurrences — by **single index**, **index range**, or **arbitrary list of indices** — in another style. TypeScript-first, headless-friendly, ~2KB brotlied, zero CSS shipped.
+Highlight every occurrence of a substring in one style, **and** highlight specific occurrences — by **single index**, **index range**, or **arbitrary list of indices** — in another style. TypeScript-first, headless-friendly, <2KB brotlied, zero CSS shipped.
 
 > *Dedicated to Chester Bennington. Inspired by the idea that every small light matters.*
 >
@@ -22,7 +22,7 @@ Highlight every occurrence of a substring in one style, **and** highlight specif
 - **TypeScript-first** — full types, discriminated unions, `match.one/range/many` builders that narrow correctly.
 - **Multi-state styling** as the headline feature — every match gets a base style, plus layered styles selected by index, range, or arbitrary list. Styles compose.
 - **Headless `useHighlight` hook** alongside the `<Highlight>` component, with a `renderMatch` render-prop for full per-match control.
-- **Tiny** — 2.1 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
+- **Tiny** — 1.92 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
 - **Modern** — React 18+/19, ESM + CJS dual build with `.d.ts` + `.d.cts`, tree-shakeable, SSR-safe.
 
 ```tsx

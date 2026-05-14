@@ -158,8 +158,8 @@ importers:
   examples/playground:
     dependencies:
       one-more-highlight:
-        specifier: latest
-        version: 0.3.2(react@19.2.5)
+        specifier: workspace:*
+        version: link:../..
       react:
         specifier: ^19.0.0
         version: 19.2.5
@@ -6066,12 +6066,6 @@ packages:
   on-headers@1.1.0:
     resolution: {integrity: sha512-737ZY3yNnXy37FHkQxPzt4UZ2UWPWiCZWLvFZ4fu5cueciegX0zGPnrlY6bwRg4FdQOe9YU8MkmJwGhoMybl8A==}
     engines: {node: '>= 0.8'}
-
-  one-more-highlight@0.3.2:
-    resolution: {integrity: sha512-F4cPZ47VJYI46Fuambh87N5bjXued5Bw6KPaQQTJvsFRFrYyZVcGeIG0Xjo9+6R3aYnNPhZnoVwmG/7kXHToyg==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      react: '>=18'
 
   onetime@5.1.2:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
@@ -15560,12 +15554,6 @@ snapshots:
       ee-first: 1.1.1
 
   on-headers@1.1.0: {}
-
-  one-more-highlight@0.3.2(react@19.2.5):
-    dependencies:
-      clsx: 2.1.1
-      escape-string-regexp: 5.0.0
-      react: 19.2.5
 
   onetime@5.1.2:
     dependencies:

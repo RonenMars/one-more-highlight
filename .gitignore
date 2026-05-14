@@ -40,6 +40,11 @@ pnpm-debug.log*
 .vite
 dist-ssr
 
+# Playwright
+/test-results
+/playwright-report
+/.playwright-mcp
+
 # Local-only / private
 .claude/local
 .claude/local-skills

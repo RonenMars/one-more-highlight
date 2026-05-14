@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/RonenMars/one-more-highlight/compare/v0.5.0...v0.5.1) (2026-05-14)
+
+
+### Performance Improvements
+
+* **src:** inline NODE_ENV checks for bundler DCE ([1fd407b](https://github.com/RonenMars/one-more-highlight/commit/1fd407b55710aaf3784d6aea1cd56f3edc8e0319))
+
 # [0.5.0](https://github.com/RonenMars/one-more-highlight/compare/v0.4.1...v0.5.0) (2026-05-14)
 
 

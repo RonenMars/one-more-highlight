@@ -124,6 +124,27 @@ mobile-android).
 | `pnpm size` | size-limit — enforces 3 KB brotlied budget |
 | `pnpm verify` | All of the above. **Run before committing.** |
 
+## Commit conventions — what triggers a release
+
+semantic-release reads commit messages on `main` to decide if there's a new
+npm version. Scope your commits so version bumps reflect *library* changes,
+not internal demo/doc/test changes.
+
+| Commit shape | Bumps version? | Use for |
+| --- | --- | --- |
+| `feat: …` or `feat(src): …` | Minor | New user-facing library feature |
+| `fix: …` or `fix(src): …` | Patch | Library bug fix consumers will see |
+| `feat!: …` / `BREAKING CHANGE:` footer | Major | Library API break |
+| `chore(playground): …` / `feat(playground): …` | **No bump** | Playground-only changes (`examples/playground/`) |
+| `chore(docs): …` / `feat(docs): …` | **No bump** | Docs site changes (`docs/site/`) |
+| `chore(visual): …` / `test(visual): …` | **No bump** | Visual regression infra (`tests/visual/`) |
+| `chore(workspaces): …` / `docs(workspaces): …` | **No bump** | Nested workspace config / CLAUDE.md edits |
+| `refactor: …` / `docs: …` / `chore: …` (no scope) | **No bump** | Repo-wide changes without runtime impact |
+
+The release-blocking rules live in `.releaserc.json` under
+`commit-analyzer.releaseRules`. If you're unsure whether a change should ship
+to npm, ask before tagging it `feat:` or `fix:` without a scope.
+
 ## What NOT to do
 
 - ❌ Add a new runtime dependency without explicit user approval.

@@ -3,5 +3,6 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "pnpm --filter one-more-highlight build && pnpm --filter one-more-highlight-docs build",
   "outputDirectory": "docs/site/build",
-  "framework": null
+  "framework": null,
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- docs/ src/ package.json pnpm-lock.yaml pnpm-workspace.yaml tsup.config.ts tsconfig.build.json tsconfig.json vercel.json"
 }

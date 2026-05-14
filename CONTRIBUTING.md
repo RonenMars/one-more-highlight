@@ -64,6 +64,22 @@ examples/playground/  Vite + React 19 demo
    release job in CI is blocked by visual regression. See
    [`tests/visual/README.md`](./tests/visual/README.md).
 5. **Use conventional commit format** — `fix:` for patches, `feat:` for minor additions, `feat!:` or `BREAKING CHANGE:` footer for majors. semantic-release reads these to determine the version bump automatically. commitlint enforces the format on every local commit via husky.
+
+   **Scope your commit to control whether it ships:** changes outside the library
+   (playground, docs site, visual tests, workspace config) must use a scope that
+   is configured as no-release in `.releaserc.json`:
+
+   | Scope | Path | Triggers release? |
+   | --- | --- | --- |
+   | (no scope) or `(src)` | `src/` | yes |
+   | `(playground)` | `examples/playground/` | no |
+   | `(docs)` | `docs/site/` | no |
+   | `(visual)` | `tests/visual/` | no |
+   | `(workspaces)` | nested CLAUDE.md / workspace config | no |
+
+   So a playground tweak is `chore(playground): …` or `feat(playground): …` and
+   will NOT bump the package version. A library bug fix is `fix: …` and WILL
+   trigger a patch release.
 6. **Open a PR** with a clear description of *why*, not just *what*.
 
 ## Coding standards

@@ -35,6 +35,7 @@ src/                  Library source
   Highlight.tsx       The component (default <mark>, render-prop, role fallback)
   index.ts            Public exports
 tests/                Vitest suites — one file per src module + ssr + fuzz
+tests/visual/         Playwright visual regression — see tests/visual/README.md
 examples/playground/  Vite + React 19 demo
 ```
 
@@ -45,6 +46,9 @@ examples/playground/  Vite + React 19 demo
 | `pnpm typecheck` | `tsc --noEmit` against `tsconfig.json` (covers src + tests) |
 | `pnpm test` | `vitest run` — all suites including 1000-iter fuzz |
 | `pnpm test:watch` | Vitest in watch mode |
+| `pnpm test:visual` | Playwright visual regression against committed baselines |
+| `pnpm test:visual:update` | Regenerate visual baselines — run after any visual change |
+| `pnpm test:visual:ui` | Open Playwright UI for interactive snapshot debugging |
 | `pnpm build` | `tsup` → ESM + CJS + `.d.ts` + `.d.cts` in `dist/` |
 | `pnpm lint:pkg` | `publint` + `attw --pack .` (publish-time package linting) |
 | `pnpm size` | `size-limit` — fails the build if bundles exceed 3 KB brotlied |
@@ -55,7 +59,10 @@ examples/playground/  Vite + React 19 demo
 1. **Branch off `main`.** Use a descriptive branch name (`fix-overlap-edge-case`, `add-grapheme-support`).
 2. **Write a failing test first.** Every behavior change should be reproducible from a test in `tests/`.
 3. **Make the change in the smallest possible diff.** See "Coding standards" below.
-4. **Run `pnpm verify`** until it's green.
+4. **Run `pnpm verify`** until it's green. For visual changes, also run
+   `pnpm test:visual:update` and commit the regenerated snapshots — the
+   release job in CI is blocked by visual regression. See
+   [`tests/visual/README.md`](./tests/visual/README.md).
 5. **Use conventional commit format** — `fix:` for patches, `feat:` for minor additions, `feat!:` or `BREAKING CHANGE:` footer for majors. semantic-release reads these to determine the version bump automatically. commitlint enforces the format on every local commit via husky.
 6. **Open a PR** with a clear description of *why*, not just *what*.
 

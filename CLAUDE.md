@@ -100,6 +100,8 @@ Each pure function is independently testable; tests in `tests/` mirror this stru
 | `pnpm typecheck` | `tsc --noEmit` (covers src + tests via shared tsconfig) |
 | `pnpm test` | Vitest run, all suites |
 | `pnpm test:watch` | Vitest watch |
+| `pnpm test:visual` | Playwright visual regression — desktop ×3 (2× DPR for rendering precision) + mobile-iphone + mobile-android (3× DPR, native viewports). See `tests/visual/README.md`. |
+| `pnpm test:visual:update` | Regenerate visual baselines after any rendering change. Commit the PNGs. |
 | `pnpm build` | tsup → ESM + CJS + `.d.ts` + `.d.cts` in `dist/` |
 | `pnpm lint:pkg` | publint + attw — publish-readiness checks |
 | `pnpm size` | size-limit — enforces 3 KB brotlied budget |

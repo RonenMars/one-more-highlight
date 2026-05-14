@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-First--class-blue.svg)](#)
 [![bundle](https://img.shields.io/badge/bundle-1.92KB%20brotlied-green.svg)](#)
-[![tests](https://img.shields.io/badge/tests-52%20passing-green.svg)](#)
+[![tests](https://img.shields.io/badge/tests-53%20passing-green.svg)](#)
 
 Highlight every occurrence of a substring in one style, **and** highlight specific occurrences — by **single index**, **index range**, or **arbitrary list of indices** — in another style. TypeScript-first, headless-friendly, <2KB brotlied, zero CSS shipped.
 

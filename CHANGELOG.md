@@ -1,3 +1,11 @@
+# [0.5.0](https://github.com/RonenMars/one-more-highlight/compare/v0.4.1...v0.5.0) (2026-05-14)
+
+
+### Features
+
+* **playground:** add index page listing all demos ([b16a893](https://github.com/RonenMars/one-more-highlight/commit/b16a89316b4053b32d9989f1d0ae8f1505021cf9))
+* **playground:** float active-match star at top-right with theme-aware stroke ([00dde93](https://github.com/RonenMars/one-more-highlight/commit/00dde936741e2d7f4542ccf913938a7b0a1049fb))
+
 ## [0.4.1](https://github.com/RonenMars/one-more-highlight/compare/v0.4.0...v0.4.1) (2026-05-13)
 
 

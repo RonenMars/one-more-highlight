@@ -1,6 +1,6 @@
 {
   "name": "one-more-highlight",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Multi-state substring highlighting for React. Highlight every match in one style, plus specific occurrences (by index, range, or list) in another.",
   "keywords": [
     "react",

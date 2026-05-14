@@ -16,7 +16,7 @@ examples/
     │   ├── index.css            All playground CSS, including the --hl-* tokens
     │   └── demos/               One file per demo (BasicDemo, MultiStateDemo, …)
     ├── index.html               Pre-React fallback CSS for the unhydrated state
-    └── package.json             depends on one-more-highlight via "workspace:*"
+    └── package.json             depends on one-more-highlight via "^<published-version>"
 ```
 
 ## Conventions
@@ -25,10 +25,18 @@ examples/
   and `/dark/<demo>` (dark). `ThemeWrapper` keys off the URL prefix, so dark
   mode is shareable as a URL — no client-side state. Adding a new demo means
   adding both routes via the `demos` array in `App.tsx`.
-- **Workspace dependency.** The playground pulls the library through
-  `"one-more-highlight": "workspace:*"` — symlinked to `../../`. Rebuild
-  the library (`pnpm build` at repo root) after changing library source;
-  Vite picks up the new `dist/` via the symlink without a restart.
+- **Published-version dependency, locally linked.** The playground depends on
+  `"one-more-highlight": "^<version>"` — the *published* npm range, not
+  `workspace:*` — so external playground environments (CodeSandbox, etc.)
+  can install it. Locally, `pnpm-workspace.yaml` sets
+  `linkWorkspacePackages: true` + `preferWorkspacePackages: true`, so pnpm
+  symlinks the workspace lib whenever its version matches the range. Rebuild
+  the library (`pnpm build` at repo root) after changing source; Vite picks
+  up the new `dist/` via the symlink without a restart.
+- **Release auto-sync.** `scripts/sync-playground-version.mjs` rewrites the
+  range to `^${rootVersion}` during the semantic-release `prepare` step
+  (see `.releaserc.json`). Don't hand-bump the playground dep — let the
+  release pipeline do it so it always tracks the just-published version.
 - **CSS tokens.** All highlight colors come from `--hl-*` variables in
   `index.css` (see root CLAUDE.md for the token list). Don't hardcode hex
   values inside demo `.tsx` files — reach for `var(--hl-yellow)` etc.

@@ -9,3 +9,5 @@ onlyBuiltDependencies:
   - esbuild
 autoInstallPeers: true
 strictPeerDependencies: false
+linkWorkspacePackages: true
+preferWorkspacePackages: true

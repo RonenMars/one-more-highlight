@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "one-more-highlight": "workspace:*",
+    "one-more-highlight": "^0.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.15.0"

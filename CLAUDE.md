@@ -68,6 +68,23 @@ Each pure function is independently testable; tests in `tests/` mirror this stru
 
 ## Doing common tasks
 
+### For every change — keep demos, tests, and snapshots in sync
+
+The library, the playground, the docs site, and the test suite are tightly
+coupled. A change in one usually obliges a change in another:
+
+| If you change… | Also update… |
+| --- | --- |
+| Library source affecting public API | A test in `tests/` + the relevant playground demo + the matching docs `LiveDemo`/guide |
+| Library source affecting rendering | The above + regenerate visual snapshots (`pnpm test:visual:update`) |
+| Playground demo styling | Visual snapshots for that demo |
+| `examples/playground/src/index.css` (tokens, classes) | `docs/site/src/css/custom.css` to keep them in sync + visual snapshots |
+| Anything visual | `pnpm test:visual` must be green before committing |
+
+See `tests/visual/README.md` for the snapshot workflow and the 5-project
+device matrix (desktop chromium/firefox/webkit + mobile-iphone +
+mobile-android).
+
 ### Adding a new prop to `<Highlight>`
 1. Add the typed prop to `HighlightProps` in `src/types.ts`. Use `?:` (optional) unless it's truly required.
 2. Thread it through `Highlight.tsx`. If it affects matching, plumb it through `UseHighlightOptions` and `useHighlight`.

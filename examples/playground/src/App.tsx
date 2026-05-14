@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle.js';
 import { ThemeWrapper } from './ThemeWrapper.js';
+import { Index } from './Index.js';
 import { BasicDemo } from './demos/BasicDemo.js';
 import { CaseInsensitiveDemo } from './demos/CaseInsensitiveDemo.js';
 import { HeadlessDemo } from './demos/HeadlessDemo.js';
@@ -47,6 +48,9 @@ export function App() {
   return (
     <ThemeWrapper>
       <Routes>
+        <Route path="/" element={<Index demos={demos} />} />
+        <Route path="/dark" element={<Index demos={demos} dark />} />
+        <Route path="/dark/" element={<Index demos={demos} dark />} />
         {demos.flatMap(({ path, title, Component }) => [
           <Route
             key={path}
@@ -59,10 +63,7 @@ export function App() {
             element={<DemoPage title={title}><Component /></DemoPage>}
           />,
         ])}
-        <Route
-          path="*"
-          element={<DemoPage title='Basic — every "time" highlighted'><BasicDemo /></DemoPage>}
-        />
+        <Route path="*" element={<Index demos={demos} />} />
       </Routes>
     </ThemeWrapper>
   );

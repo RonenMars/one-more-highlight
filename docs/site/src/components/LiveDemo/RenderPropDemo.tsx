@@ -21,13 +21,13 @@ export function RenderPropDemo() {
         text={text}
         searchWords={['time']}
         highlightStyle={{ background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' }}
-        states={[{ name: 'active', ...match.one(2), style: { background: 'var(--hl-orange)', color: 'var(--hl-text)' } }]}
+        states={[{ name: 'active', ...match.one(2), style: { background: 'var(--hl-green)', color: 'var(--hl-text)' } }]}
         renderMatch={(seg, { className, style, Tag }) => {
           const TagAny = Tag as 'mark';
           return (
             <TagAny className={className} style={style}>
               {seg.text}
-              {seg.states.includes('active') && <sup style={{ color: 'var(--hl-purple)' }}>★</sup>}
+              {seg.states.includes('active') && <sup style={{ color: 'var(--hl-amber)' }}>★</sup>}
             </TagAny>
           );
         }}

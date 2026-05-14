@@ -28,7 +28,7 @@ export function HeadlessDemo() {
             <mark
               key={i}
               style={{
-                background: s.states.includes('active') ? 'var(--hl-pink)' : 'var(--hl-yellow)',
+                background: s.states.includes('active') ? 'var(--hl-green)' : 'var(--hl-yellow)',
                 color: 'var(--hl-text)',
                 padding: '0 2px',
                 borderRadius: '2px',

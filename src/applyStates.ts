@@ -1,9 +1,6 @@
 import type { CombinedChunk } from './combineChunks.js';
 import type { HighlightState } from './types.js';
 
-const isDev = (): boolean =>
-  typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
-
 function selects(state: HighlightState, matchIndex: number): boolean {
   if ('index' in state) return state.index === matchIndex;
   if ('range' in state) {
@@ -25,7 +22,7 @@ function maybeWarnOutOfRange(
   states: ReadonlyArray<HighlightState>,
   matchCount: number,
 ): void {
-  if (!isDev() || warned.has(states)) return;
+  if (process.env.NODE_ENV === 'production' || warned.has(states)) return;
   for (const s of states) {
     if (highestSelected(s) >= matchCount) {
       console.warn(

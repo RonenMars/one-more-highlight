@@ -1,13 +1,10 @@
 import { escapeRegex } from './escapeRegex.js';
 import type { FindChunksInput, RawChunk } from './types.js';
 
-const isDev = (): boolean =>
-  typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
-
 function ensureGlobal(re: RegExp): RegExp {
   const flags = re.flags.includes('g') ? re.flags : re.flags + 'g';
   const safeFlags = flags.replace('y', '');
-  if (isDev() && re.flags.includes('y')) {
+  if (process.env.NODE_ENV !== 'production' && re.flags.includes('y')) {
     console.warn('[one-more-highlight] sticky (y) regex flag is dropped; matching uses global semantics.');
   }
   return new RegExp(re.source, safeFlags);

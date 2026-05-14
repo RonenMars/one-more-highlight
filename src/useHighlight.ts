@@ -5,9 +5,6 @@ import { buildSegments } from './buildSegments.js';
 import { defaultFindChunks } from './findMatches.js';
 import type { HighlightState, Segment, UseHighlightOptions, UseHighlightResult } from './types.js';
 
-const isDev = (): boolean =>
-  typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
-
 function searchKeyOf(searchWords: ReadonlyArray<string | RegExp>): string {
   return searchWords
     .map((w) => (typeof w === 'string' ? `s:${w}` : `r:${w.source}/${w.flags}`))
@@ -41,7 +38,7 @@ export function useHighlight(opts: UseHighlightOptions): UseHighlightResult {
   // Track RegExp object identities across renders to warn when a new RegExp
   // instance is created inline each render (same source/flags, different object).
   const prevRegexes = useRef<Map<string, WeakRef<RegExp>>>(new Map());
-  if (isDev()) {
+  if (process.env.NODE_ENV !== 'production') {
     const next = new Map<string, WeakRef<RegExp>>();
     for (const w of searchWords) {
       if (w instanceof RegExp) {

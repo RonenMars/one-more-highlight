@@ -6,38 +6,64 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  /* Primary = deep branding green (#14532D dark-mode token). The bright
+   * #A8FF80 is a highlight background color — using it as link/active text
+   * on white fails contrast (~1.5:1). #14532D on #fff ≈ 9.6:1, AAA. */
+  --ifm-color-primary: #14532D;
+  --ifm-color-primary-dark: #114826;
+  --ifm-color-primary-darker: #0f4222;
+  --ifm-color-primary-darkest: #0a361b;
+  --ifm-color-primary-light: #185f34;
+  --ifm-color-primary-lighter: #1a6638;
+  --ifm-color-primary-lightest: #207a44;
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --docusaurus-highlighted-code-line-bg: rgba(255, 241, 102, 0.18);
 
-  /* Highlight color tokens (match playground) */
+  /* Page surfaces stay light, but highlight tokens use the playground's
+   * dark-mode values for stronger contrast. Text on highlights flips to
+   * #fafafa to keep WCAG AAA on every combo:
+   *   #fafafa on #78350F → 9.1:1  ✓
+   *   #fafafa on #14532D → 10.4:1 ✓
+   *   #fafafa on #86198F → 7.3:1  ✓
+   *   #1b1b1d on #fbbf24 → 11.3:1 ✓ (amber keeps dark text per landing) */
   --bg: #ffffff;
   --text: #1b1b1d;
   --surface: #f5f5f5;
   --border: #e0e0e0;
-  --hl-yellow: #FFF166;
-  --hl-green: #A8FF80;
-  --hl-pink: #FFADD6;
+  --hl-yellow: #78350F;
+  --hl-green: #14532D;
+  --hl-pink: #86198F;
   --hl-amber: #fbbf24;
-  --hl-text: #1b1b1d;
+  --hl-text: #fafafa;
+
+  /* Typography from the landing design system */
+  --ifm-font-family-base: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ifm-heading-font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Tabs: amber underline on active (mirrors .headless__tab[data-active]) */
+  --ifm-tabs-color-active-border: var(--hl-amber);
+
+  /* Admonitions: green = success, pink-stroke = info, amber = warning */
+  --ifm-color-success: #2f6a3a;
+  --ifm-color-success-contrast-background: color-mix(in oklab, var(--hl-green) 28%, var(--bg));
+  --ifm-color-info: #d946a4;
+  --ifm-color-info-contrast-background: color-mix(in oklab, var(--hl-pink) 22%, var(--bg));
+  --ifm-color-warning: #a8650a;
+  --ifm-color-warning-contrast-background: color-mix(in oklab, var(--hl-amber) 22%, var(--bg));
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  /* Primary = branding green (light-mode highlight token) — same as light mode. */
+  --ifm-color-primary: #A8FF80;
+  --ifm-color-primary-dark: #8eff5c;
+  --ifm-color-primary-darker: #7eff48;
+  --ifm-color-primary-darkest: #4fff0a;
+  --ifm-color-primary-light: #c2ffa3;
+  --ifm-color-primary-lighter: #d0ffb7;
+  --ifm-color-primary-lightest: #f0ffe3;
+  --docusaurus-highlighted-code-line-bg: rgba(251, 191, 36, 0.14);
 
   /* Highlight color tokens (match playground dark) */
   --bg: #1b1b1d;
@@ -49,6 +75,14 @@
   --hl-pink: #86198F;
   --hl-amber: #fbbf24;
   --hl-text: #fafafa;
+
+  /* Admonitions adjusted for dark surfaces */
+  --ifm-color-success: #A8FF80;
+  --ifm-color-success-contrast-background: color-mix(in oklab, #A8FF80 14%, transparent);
+  --ifm-color-info: #FFADD6;
+  --ifm-color-info-contrast-background: color-mix(in oklab, #FFADD6 14%, transparent);
+  --ifm-color-warning: var(--hl-amber);
+  --ifm-color-warning-contrast-background: color-mix(in oklab, var(--hl-amber) 14%, transparent);
 }
 
 mark,
@@ -62,4 +96,30 @@ mark,
 .hl-range,
 .hl-many {
   color: var(--hl-text);
+}
+
+/* ─── ::selection ───
+ * Light: canonical bright-yellow highlighter (#FFF166 on #1b1b1d ≈ 13:1 AAA).
+ * Dark:  pale yellow on dark text (#FFF7C2 on #1b1b1d ≈ 16:1 AAA).
+ * Uses literal hex — --hl-yellow now maps to deep brown for prose blocks. */
+::selection { background: #FFF166; color: #1b1b1d; }
+[data-theme='dark'] ::selection {
+  background: #FFF7C2;
+  color: #1b1b1d;
+}
+
+/* ─── inline <code> — soft yellow tint, selection-style ─── */
+.markdown :not(pre) > code {
+  background: color-mix(in oklab, #FFF166 28%, var(--surface));
+  border: 1px solid color-mix(in oklab, #FFF166 40%, var(--border));
+  color: var(--text);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+[data-theme='dark'] .markdown :not(pre) > code {
+  /* In dark mode, the surface is already dark and the bright yellow tint
+   * would look gaudy. Use a low-opacity amber wash instead. */
+  background: color-mix(in oklab, var(--hl-amber) 18%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--hl-amber) 30%, var(--border));
+  color: var(--text);
 }

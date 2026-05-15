@@ -178,7 +178,7 @@ function PlaygroundInner({ initialDemo }: { initialDemo: string }) {
   const Editor = MonacoEditor.current;
 
   return (
-    <div style={{ border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '8px', overflow: 'hidden', marginBottom: '1.5rem' }}>
+    <div style={{ border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '8px', overflow: 'hidden', marginTop: '1.5rem', marginBottom: '1.5rem' }}>
       <div style={{ display: 'flex', borderBottom: '1px solid var(--ifm-color-emphasis-300)', background: 'var(--ifm-background-surface-color)', overflowX: 'auto' }}>
         {Object.keys(DEMOS).map((name) => (
           <button

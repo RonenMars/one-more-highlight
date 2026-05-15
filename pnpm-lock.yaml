@@ -161,7 +161,7 @@ importers:
   examples/playground:
     dependencies:
       one-more-highlight:
-        specifier: ^0.5.0
+        specifier: ^0.5.1
         version: link:../..
       react:
         specifier: ^19.0.0

@@ -1,5 +1,11 @@
 import { Highlight, match } from 'one-more-highlight';
 
+// Scenario: a side-by-side reference of the three match-selector helpers.
+// The text is intentionally repetitive (6 identical words) so each match
+// index is visible at a glance. In real apps, the same selectors target:
+//   • match.one(n)        — "the user is currently on the nth hit" (find-in-page)
+//   • match.range(lo, hi) — "highlight a contiguous span of results" (a column of a table)
+//   • match.many([...])   — "the user starred these specific hits" (bookmarks, multi-select)
 const text = 'time time time time time time';
 
 export function SelectorsDemo() {

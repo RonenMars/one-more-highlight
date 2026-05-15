@@ -41,7 +41,7 @@ Use `nest` with `states` when you need every match individually addressable by i
 
 ## `first-wins`
 
-Later matches that overlap an earlier match are dropped entirely.
+Later matches that overlap an earlier match are dropped entirely. The order of `searchWords` becomes a **priority ranking**: earlier terms claim overlapping ranges, later terms are discarded where they collide.
 
 ```tsx
 <Highlight
@@ -53,4 +53,53 @@ Later matches that overlap an earlier match are dropped entirely.
 // → <mark>abc</mark>def  ("cde" dropped because it overlaps "abc")
 ```
 
-Use `first-wins` when match priority is defined by the order of `searchWords` and overlaps should be resolved by simply discarding later ones.
+### Why this matters
+
+Most existing solutions only expose merge-style overlap resolution, with no way to express that some terms are more important than others. `first-wins` turns the `searchWords` array itself into a priority list — no extra prop, no custom matcher needed.
+
+### Use cases
+
+**Exact phrase preferred over loose matches.** Put the multi-word phrase first; single-word fallbacks only highlight where the phrase didn't already win.
+
+```tsx
+<Highlight
+  text="machine learning models use machine learning techniques"
+  searchWords={['machine learning', 'machine', 'learning']}
+  overlapStrategy="first-wins"
+  highlightClassName="hl"
+/>
+// → both "machine learning" phrases highlight as one span;
+//   no separate highlights for the words inside them
+```
+
+**Severity or warning terms preferred over a general search.** Stack `[...criticalTerms, ...userQuery]` so warnings claim overlapping spans whenever a critical term covers the same range as a user query term — leaving only the critical highlight visible.
+
+```tsx
+<Highlight
+  text="error: invalid input"
+  searchWords={[/\b(error|warning|invalid)\b/i, /input/i]}
+  overlapStrategy="first-wins"
+  highlightClassName="hl-critical"
+/>
+// "invalid" and "input" don't overlap, so both highlight;
+// if they ever shared a range, "invalid" would win.
+```
+
+**Currently-selected entity preferred over its siblings.** When highlighting all entity names from a list, put the active one first so it wins ties.
+
+```tsx
+<Highlight
+  text="React, React Router, React Native"
+  searchWords={[currentlySelected.name, ...allEntities.map((e) => e.name)]}
+  overlapStrategy="first-wins"
+  highlightClassName="hl"
+/>
+```
+
+### When to choose `first-wins` over `merge` / `nest`
+
+| Intent | Strategy |
+|---|---|
+| "Highlight every match; collapse overlaps into one span." | `merge` |
+| "Highlight every match; keep them individually addressable even if they overlap in the DOM." | `nest` |
+| "Earlier terms in my array are more important — discard later ones where they collide." | `first-wins` |

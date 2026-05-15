@@ -7,7 +7,15 @@ sidebar_position: 3
 import { HeadlessDemo } from '@site/src/components/LiveDemo/HeadlessDemo';
 import { OpenInSandboxButton } from '@site/src/components/OpenInSandboxButton';
 
-`useHighlight` returns `{ segments, getMatchCount }` so you can render matches any way you want.
+`useHighlight` returns `{ segments, getMatchCount }` — the same matching pipeline as `<Highlight>`, but with no rendering opinions. Reach for the hook when you need to wrap each match in something `<Highlight>`'s `renderMatch` can't easily express:
+
+- a `<button>` per match so clicking jumps the user to it
+- a `<a href="#match-3">` for shareable deep-links into long documents
+- table cells, list items, or virtualized rows
+- analytics attributes (`data-match-index`, `data-states`) on each segment
+- non-`<mark>` semantic tags
+
+The hook returns the structured segments; you stay in charge of the JSX.
 
 <HeadlessDemo />
 <OpenInSandboxButton />

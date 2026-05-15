@@ -1,10 +1,14 @@
 import { Highlight } from 'one-more-highlight';
 import React from 'react';
 
+// Scenario: a search-results page where the user typed "React" into the
+// search box. Every occurrence is highlighted with the same base style.
+// This is the simplest <Highlight> use — one search term, one style.
 const text =
-  'It is truly sometimes and time-to-time hard to realize that in this time of rapid change, ' +
-  'we must take the time to make time for what matters most, because once time passes, you can ' +
-  'never get that time back, making every time we meet a valuable time.';
+  'React is a JavaScript library for building user interfaces. ' +
+  'Most React apps use components, JSX, and the React hooks API. ' +
+  'You can adopt React incrementally — even a single React component ' +
+  'inside a legacy page is enough to feel the React rendering model.';
 
 const style: React.CSSProperties = {
   padding: '1.25rem 1.5rem',
@@ -26,7 +30,7 @@ export function BasicDemo() {
     <div style={style}>
       <Highlight
         text={text}
-        searchWords={['time']}
+        searchWords={['React']}
         highlightStyle={markStyle}
       />
     </div>

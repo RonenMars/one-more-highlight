@@ -1,10 +1,18 @@
 import { match, useHighlight } from 'one-more-highlight';
 import React from 'react';
 
+// Scenario: a documentation reader where each "useEffect" match is rendered
+// as a focusable <button> instead of a <mark>. In a real app, clicking the
+// button could scroll the reader to that hit or open a side panel. The
+// middle match is the "current" one, marked with aria-current="true".
+//
+// Why headless: <Highlight> emits <mark> elements. Here we need <button>
+// elements with semantic attributes. useHighlight returns the structured
+// segments and stays out of the rendering decision entirely.
 const text =
-  'It is truly sometimes and time-to-time hard to realize that in this time of rapid change, ' +
-  'we must take the time to make time for what matters most, because once time passes, you can ' +
-  'never get that time back, making every time we meet a valuable time.';
+  'A common React mistake: calling useEffect with no dependency array makes ' +
+  'it run after every render. Use the deps array to control when useEffect ' +
+  'fires, and return a cleanup function from useEffect to undo subscriptions.';
 
 const containerStyle: React.CSSProperties = {
   padding: '1.25rem 1.5rem',
@@ -14,28 +22,40 @@ const containerStyle: React.CSSProperties = {
   lineHeight: 1.8,
 };
 
+const matchBaseStyle: React.CSSProperties = {
+  font: 'inherit',
+  border: 0,
+  padding: '0 2px',
+  cursor: 'pointer',
+  color: 'var(--hl-text)',
+  borderRadius: '2px',
+};
+
 export function HeadlessDemo() {
-  const { segments } = useHighlight({
+  const { segments, getMatchCount } = useHighlight({
     text,
-    searchWords: ['time'],
-    states: [{ name: 'active', ...match.one(2) }],
+    searchWords: ['useEffect'],
+    states: [{ name: 'active', ...match.one(1) }],
   });
   return (
     <div style={containerStyle}>
+      <p style={{ margin: '0 0 0.5rem', opacity: 0.7, fontSize: '0.85em' }}>
+        {getMatchCount()} matches — middle one is the "current" hit
+      </p>
       <p style={{ margin: 0 }}>
         {segments.map((s, i) =>
           s.isMatch ? (
-            <mark
+            <button
               key={i}
+              type="button"
+              aria-current={s.states.includes('active') ? 'true' : undefined}
               style={{
+                ...matchBaseStyle,
                 background: s.states.includes('active') ? 'var(--hl-green)' : 'var(--hl-yellow)',
-                color: 'var(--hl-text)',
-                padding: '0 2px',
-                borderRadius: '2px',
               }}
             >
               {s.text}
-            </mark>
+            </button>
           ) : (
             <span key={i}>{s.text}</span>
           ),

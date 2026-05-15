@@ -1,19 +1,26 @@
 import { Highlight } from 'one-more-highlight';
 
-const text = 'The overlap between cat and catch is interesting — catfish too.';
+// Scenario: same article as the other overlap demos, same search for "Java"
+// and "JavaScript". The order of searchWords becomes a priority list.
+//
+// first-wins: "Java" is listed FIRST, so it wins every overlap. The "Script"
+// tail of "JavaScript" renders unhighlighted because "Java" already claimed
+// the leading 4 characters and "JavaScript" was discarded for overlapping.
+// Every surviving span is exactly 4 chars (yellow). Flip the array order
+// to ['JavaScript', 'Java'] to see the reverse — "JavaScript" wins instead.
+const text =
+  'Java came first, then JavaScript was named after it for marketing reasons. ' +
+  'Despite the name, Java and JavaScript are very different. Today JavaScript ' +
+  'powers the web and Java powers backend services.';
 
-// Per-term colors via renderMatch: cat=yellow, catch=pink. With `first-wins`,
-// the chunk that starts first (or, on tie, ends first) keeps the slot —
-// `cat` at index 28 wins over `catch` at index 28, so the `ch` in "catch"
-// renders unhighlighted.
 export function OverlapFirstDemo() {
   return (
     <Highlight
       text={text}
-      searchWords={['cat', 'catch']}
+      searchWords={['Java', 'JavaScript']}
       overlapStrategy="first-wins"
       renderMatch={(seg, { Tag }) => (
-        <Tag className={seg.termIndex === 1 ? 'hl-b' : 'hl-a'}>{seg.text}</Tag>
+        <Tag className={seg.end - seg.start > 4 ? 'hl-b' : 'hl-a'}>{seg.text}</Tag>
       )}
     />
   );

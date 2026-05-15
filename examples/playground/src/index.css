@@ -17,11 +17,11 @@
   --text: #fafafa;
   --surface: #2d2d2d;
   --border: #444;
-  --hl-yellow: #78350F;
-  --hl-green: #14532D;
-  --hl-pink: #86198F;
+  --hl-yellow: #FFF166;
+  --hl-green: #A8FF80;
+  --hl-pink: #FFADD6;
   --hl-amber: #fbbf24;
-  --hl-text: #fafafa;
+  --hl-text: #1b1b1d;
 }
 
 mark,
@@ -91,17 +91,14 @@ body {
 .theme-toggle:hover { opacity: 0.75; }
 
 .hl-star {
-  -webkit-text-stroke: 1.5px #1b1b1d;
+  -webkit-text-stroke: 1px #000;
   paint-order: stroke fill;
-}
-
-[data-theme="dark"] .hl-star {
-  -webkit-text-stroke: 1.5px #fafafa;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
 }
 
 .hl-base     { background: var(--hl-yellow); border-radius: 2px; }
 .hl-preview  { background: var(--hl-pink); }
-.hl-active   { background: var(--hl-green); outline: 2px solid currentColor; }
+.hl-active   { background: var(--hl-green); outline: 2px solid var(--text); }
 .hl-bookmark { text-decoration: underline; }
 .hl-a        { background: var(--hl-yellow); }
 .hl-b        { background: var(--hl-pink); }

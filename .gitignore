@@ -48,6 +48,7 @@ dist-ssr
 # Local-only / private
 .claude/local
 .claude/local-skills
+.claude/scheduled_tasks.lock
 .local
 .superpowers/
 .vercel

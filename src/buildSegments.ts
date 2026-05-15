@@ -26,6 +26,7 @@ export function buildSegments(
       text: text.slice(c.start, c.end),
       isMatch: true,
       matchIndex: c.matchIndex,
+      termIndex: c.termIndex,
       start: c.start,
       end: c.end,
       states: c.states,

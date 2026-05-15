@@ -155,6 +155,7 @@ interface MatchSegment {
   text: string;
   isMatch: true;
   matchIndex: number;        // 0-based document order
+  termIndex: number;         // index into searchWords that produced this match
   start: number;             // index in original text
   end: number;
   states: ReadonlyArray<string>;  // names of states this match belongs to

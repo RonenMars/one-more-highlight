@@ -10,6 +10,7 @@ export interface MatchSegment {
   text: string;
   isMatch: true;
   matchIndex: number;
+  termIndex: number;
   start: number;
   end: number;
   states: ReadonlyArray<string>;

@@ -2,10 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { buildSegments } from '../src/buildSegments.js';
 import type { TaggedChunk } from '../src/applyStates.js';
 
-const tagged = (start: number, end: number, matchIndex: number, states: string[] = []): TaggedChunk => ({
+const tagged = (
+  start: number,
+  end: number,
+  matchIndex: number,
+  states: string[] = [],
+  termIndex = 0,
+): TaggedChunk => ({
   start,
   end,
-  termIndex: 0,
+  termIndex,
   matchIndex,
   states,
 });
@@ -25,7 +31,7 @@ describe('buildSegments', () => {
     const r = buildSegments('hi cat go', [tagged(3, 6, 0)]);
     expect(r).toEqual([
       { text: 'hi ', isMatch: false, start: 0, end: 3 },
-      { text: 'cat', isMatch: true, matchIndex: 0, start: 3, end: 6, states: [] },
+      { text: 'cat', isMatch: true, matchIndex: 0, termIndex: 0, start: 3, end: 6, states: [] },
       { text: ' go', isMatch: false, start: 6, end: 9 },
     ]);
   });
@@ -56,5 +62,11 @@ describe('buildSegments', () => {
   it('preserves states on match segments', () => {
     const r = buildSegments('cat', [tagged(0, 3, 0, ['active', 'bookmarked'])]);
     expect(r[0]).toMatchObject({ isMatch: true, states: ['active', 'bookmarked'] });
+  });
+
+  it('exposes termIndex on match segments', () => {
+    const r = buildSegments('cat dog', [tagged(0, 3, 0, [], 0), tagged(4, 7, 1, [], 1)]);
+    expect(r[0]).toMatchObject({ isMatch: true, termIndex: 0 });
+    expect(r[2]).toMatchObject({ isMatch: true, termIndex: 1 });
   });
 });

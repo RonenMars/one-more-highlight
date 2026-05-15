@@ -63,7 +63,7 @@ export default function App() {
       states={[{ name: 'active', ...match.one(2), style: { background: 'var(--hl-green)', color: 'var(--hl-text)' } }]}
       renderMatch={(seg, { style, Tag }) => (
         <Tag style={style}>
-          {seg.text}{seg.states.includes('active') && <sup style={{ color: 'var(--hl-amber)' }}>★</sup>}
+          {seg.text}{seg.states.includes('active') && <sup style={{ color: 'var(--hl-amber)', WebkitTextStroke: '1px #000', paintOrder: 'stroke fill', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4))' }}>★</sup>}
         </Tag>
       )}
     />

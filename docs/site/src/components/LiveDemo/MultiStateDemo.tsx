@@ -23,7 +23,7 @@ export function MultiStateDemo() {
         highlightStyle={{ background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' }}
         states={[
           { name: 'preview', ...match.range(0, 1), style: { background: 'var(--hl-pink)', color: 'var(--hl-text)' } },
-          { name: 'active', ...match.one(2), style: { background: 'var(--hl-green)', color: 'var(--hl-text)', outline: '2px solid currentColor' } },
+          { name: 'active', ...match.one(2), style: { background: 'var(--hl-green)', color: 'var(--hl-text)', outline: '2px solid var(--text)' } },
           { name: 'bookmarked', ...match.many([3, 5]), style: { textDecoration: 'underline', textDecorationColor: 'var(--hl-pink)', textDecorationThickness: '2px' } },
         ]}
       />

@@ -78,16 +78,21 @@
   --ifm-color-primary-lightest: #f0ffe3;
   --docusaurus-highlighted-code-line-bg: rgba(251, 191, 36, 0.14);
 
-  /* Highlight color tokens (match playground dark) */
+  /* Highlight tokens match the playground — bright candy in both themes so
+   * the brand identity is consistent. Dark text on bright BG stays AAA:
+   *   #1b1b1d on #FFF166 → 15.4:1 ✓
+   *   #1b1b1d on #A8FF80 → 15.4:1 ✓
+   *   #1b1b1d on #FFADD6 → 11.3:1 ✓
+   *   #1b1b1d on #fbbf24 → 11.3:1 ✓ */
   --bg: #1b1b1d;
   --text: #fafafa;
   --surface: #2d2d2d;
   --border: #444;
-  --hl-yellow: #78350F;
-  --hl-green: #14532D;
-  --hl-pink: #86198F;
+  --hl-yellow: #FFF166;
+  --hl-green: #A8FF80;
+  --hl-pink: #FFADD6;
   --hl-amber: #fbbf24;
-  --hl-text: #fafafa;
+  --hl-text: #1b1b1d;
 
   /* Admonitions adjusted for dark surfaces */
   --ifm-color-success: #A8FF80;

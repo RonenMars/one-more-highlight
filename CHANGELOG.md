@@ -1,3 +1,15 @@
+# [0.6.0](https://github.com/RonenMars/one-more-highlight/compare/v0.5.1...v0.6.0) (2026-05-15)
+
+
+### Bug Fixes
+
+* **playground:** set data-theme on html/body so dark mode survives over-scroll ([19a34de](https://github.com/RonenMars/one-more-highlight/commit/19a34de1029176ec326c351b322dea704ed4de04))
+
+
+### Features
+
+* **src:** expose termIndex on MatchSegment ([77823a5](https://github.com/RonenMars/one-more-highlight/commit/77823a5083b791c0d60674dadce9a3e2a37d1dc4))
+
 ## [0.5.1](https://github.com/RonenMars/one-more-highlight/compare/v0.5.0...v0.5.1) (2026-05-14)
 
 

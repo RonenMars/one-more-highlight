@@ -37,6 +37,10 @@ mark,
   color: var(--hl-text);
 }
 
+html {
+  background: var(--bg);
+}
+
 body {
   background: var(--bg);
   color: var(--text);

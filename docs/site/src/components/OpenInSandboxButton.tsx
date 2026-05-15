@@ -9,14 +9,13 @@ export function OpenInSandboxButton() {
       href={STACKBLITZ_URL}
       target="_blank"
       rel="noopener noreferrer"
+      className="omh-stackblitz-button"
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         gap: '0.4rem',
         padding: '0.4rem 0.9rem',
         borderRadius: '6px',
-        background: '#0a4ba9',
-        color: '#ffffff',
         fontWeight: 600,
         fontSize: '0.85rem',
         textDecoration: 'none',

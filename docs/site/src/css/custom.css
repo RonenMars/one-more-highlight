@@ -20,36 +20,34 @@
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(255, 241, 102, 0.18);
 
-  /* Page surfaces: cool off-white (#f7f8fa ≈ oklch 0.97 0.003 250). Pure #fff
-   * against the deep-green brand is eye-straining on long reads; the soft
-   * gray lowers retinal load while keeping the prose neutral.
-   * Contrast: #1b1b1d on #f7f8fa → 15.7:1 (AAA). Catppuccin Mocha code
-   * panels (#1e1e2e) elevate as deliberate dark editor surfaces above it.
-   *
-   * Highlight tokens use the playground's dark-mode values for stronger
-   * contrast. Text on highlights flips to #fafafa to keep WCAG AAA:
-   *   #fafafa on #78350F → 9.1:1  ✓
-   *   #fafafa on #14532D → 10.4:1 ✓
-   *   #fafafa on #86198F → 7.3:1  ✓
-   *   #1b1b1d on #fbbf24 → 11.3:1 ✓ (amber keeps dark text per landing) */
-  --bg: #f7f8fa;
+  /* Surface and highlight tokens are fully synced with the playground —
+   * the docs site uses the same bright "highlighter on paper" palette so
+   * jumping between docs and playground feels like one product.
+   * AAA contrast on the synced palette:
+   *   #1b1b1d on #ffffff → 17.2:1  body prose
+   *   #1b1b1d on #FFF166 → 14.8:1  yellow chip
+   *   #1b1b1d on #A8FF80 → 14.2:1  green chip
+   *   #1b1b1d on #FFADD6 → 10.0:1  pink chip
+   *   #1b1b1d on #fbbf24 → 11.3:1  amber chip */
+  --bg: #ffffff;
   --text: #1b1b1d;
-  --surface: #eceef2;
-  --border: #dde0e5;
+  --surface: #f5f5f5;
+  --border: #e0e0e0;
   --ifm-background-color: var(--bg);
-  --ifm-background-surface-color: var(--bg);
+  --ifm-background-surface-color: var(--surface);
   --ifm-navbar-background-color: var(--bg);
   --ifm-footer-background-color: #2b2a29;
-  --hl-yellow: #78350F;
-  --hl-green: #14532D;
-  --hl-pink: #86198F;
+  --hl-yellow: #FFF166;
+  --hl-green: #A8FF80;
+  --hl-pink: #FFADD6;
   --hl-amber: #fbbf24;
-  --hl-text: #fafafa;
+  --hl-text: #1b1b1d;
 
-  /* Typography from the landing design system */
-  --ifm-font-family-base: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --ifm-font-family-monospace: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --ifm-heading-font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  /* Typography synced with the playground — system-ui for visual coherence
+   * when jumping between docs and playground. */
+  --ifm-font-family-base: system-ui, sans-serif;
+  --ifm-font-family-monospace: ui-monospace, SFMono-Regular, Menlo, 'JetBrains Mono', monospace;
+  --ifm-heading-font-family: system-ui, sans-serif;
 
   /* Tabs: amber underline on active (mirrors .headless__tab[data-active]) */
   --ifm-tabs-color-active-border: var(--hl-amber);
@@ -193,4 +191,17 @@ mark,
   color: #cdd6f4;
   background: #181825;
   border-bottom: 1px solid #313244;
+}
+
+/* ─── StackBlitz button — design-system emerald ───
+ * Light: emerald primary #115b2d on white text → 8.21:1 (AAA).
+ * Dark: dark text on bright green --ifm-color-primary #A8FF80 → 14.15:1 (AAA).
+ * Both modes hand the button to the same brand color the docs uses for
+ * links and active sidebar items. */
+.omh-stackblitz-button {
+  background: var(--ifm-color-primary);
+  color: #ffffff;
+}
+[data-theme='dark'] .omh-stackblitz-button {
+  color: #1b1b1d;
 }

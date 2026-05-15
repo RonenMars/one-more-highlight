@@ -8,11 +8,10 @@ const text =
 
 const containerStyle: React.CSSProperties = {
   padding: '1.25rem 1.5rem',
-  background: 'var(--ifm-background-surface-color)',
-  borderRadius: '10px',
-  border: '1px solid var(--ifm-color-emphasis-400)',
-  boxShadow: '0 1px 2px rgba(15, 18, 30, 0.04), 0 6px 16px rgba(15, 18, 30, 0.05)',
-  lineHeight: 1.6,
+  background: 'var(--surface)',
+  borderRadius: '8px',
+  border: '1px solid var(--border)',
+  lineHeight: 1.8,
 };
 
 export function MultiStateDemo() {

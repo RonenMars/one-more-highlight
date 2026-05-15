@@ -85,13 +85,15 @@ See `tests/visual/README.md` for the snapshot workflow and the 5-project
 device matrix (desktop chromium/firefox/webkit + mobile-iphone +
 mobile-android).
 
-**Palette divergence (intentional).** The playground keeps the bright
-"highlighter on paper" tokens in `:root` (`#FFF166 / #A8FF80 / #FFADD6`).
-The docs site `:root` repurposes the same token names to the *dark* values
-(`#78350F / #14532D / #86198F`) and flips `--hl-text` to `#fafafa`, so
-prose highlight blocks have AAA contrast on white surfaces. Don't "fix"
-this drift — `docs/site/src/css/custom.css` has the contrast ratios in its
-header comment.
+**Palette synced across surfaces.** The docs site and playground use the
+same `:root` highlight tokens (`#FFF166 / #A8FF80 / #FFADD6`) with
+`--hl-text: #1b1b1d`, so jumping between them feels like one product. The
+docs site adds its own Docusaurus-specific tokens on top (emerald primary
+`#115b2d`, Catppuccin Mocha code blocks `#1e1e2e`, sidebar/TOC colors)
+that the playground doesn't need. AAA contrast ratios for every
+text/background pair are listed in the header comments of
+`docs/site/src/css/custom.css`. When changing `--hl-*` tokens in either
+surface, update both files together.
 
 ### Adding a new prop to `<Highlight>`
 1. Add the typed prop to `HighlightProps` in `src/types.ts`. Use `?:` (optional) unless it's truly required.

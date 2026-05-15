@@ -6,30 +6,40 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  /* Primary = deep branding green (#14532D dark-mode token). The bright
-   * #A8FF80 is a highlight background color — using it as link/active text
-   * on white fails contrast (~1.5:1). #14532D on #fff ≈ 9.6:1, AAA. */
-  --ifm-color-primary: #14532D;
-  --ifm-color-primary-dark: #114826;
-  --ifm-color-primary-darker: #0f4222;
-  --ifm-color-primary-darkest: #0a361b;
-  --ifm-color-primary-light: #185f34;
-  --ifm-color-primary-lighter: #1a6638;
-  --ifm-color-primary-lightest: #207a44;
+  /* Primary = emerald tuned for AAA on the light gray page surface.
+   *   #115b2d on #f7f8fa → 7.55:1 (AAA normal text) ✓
+   * Lifted from the deep forest #14532D (9.6:1 — slightly muddy) but pulled
+   * back darker than #156534 (6.72:1 AA) so links and active items hit AAA. */
+  --ifm-color-primary: #115b2d;
+  --ifm-color-primary-dark: #0f5228;
+  --ifm-color-primary-darker: #0e4d26;
+  --ifm-color-primary-darkest: #0b3f1f;
+  --ifm-color-primary-light: #136432;
+  --ifm-color-primary-lighter: #146935;
+  --ifm-color-primary-lightest: #187c3f;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(255, 241, 102, 0.18);
 
-  /* Page surfaces stay light, but highlight tokens use the playground's
-   * dark-mode values for stronger contrast. Text on highlights flips to
-   * #fafafa to keep WCAG AAA on every combo:
+  /* Page surfaces: cool off-white (#f7f8fa ≈ oklch 0.97 0.003 250). Pure #fff
+   * against the deep-green brand is eye-straining on long reads; the soft
+   * gray lowers retinal load while keeping the prose neutral.
+   * Contrast: #1b1b1d on #f7f8fa → 15.7:1 (AAA). Catppuccin Mocha code
+   * panels (#1e1e2e) elevate as deliberate dark editor surfaces above it.
+   *
+   * Highlight tokens use the playground's dark-mode values for stronger
+   * contrast. Text on highlights flips to #fafafa to keep WCAG AAA:
    *   #fafafa on #78350F → 9.1:1  ✓
    *   #fafafa on #14532D → 10.4:1 ✓
    *   #fafafa on #86198F → 7.3:1  ✓
    *   #1b1b1d on #fbbf24 → 11.3:1 ✓ (amber keeps dark text per landing) */
-  --bg: #ffffff;
+  --bg: #f7f8fa;
   --text: #1b1b1d;
-  --surface: #f5f5f5;
-  --border: #e0e0e0;
+  --surface: #eceef2;
+  --border: #dde0e5;
+  --ifm-background-color: var(--bg);
+  --ifm-background-surface-color: var(--bg);
+  --ifm-navbar-background-color: var(--bg);
+  --ifm-footer-background-color: #2b2a29;
   --hl-yellow: #78350F;
   --hl-green: #14532D;
   --hl-pink: #86198F;
@@ -51,6 +61,11 @@
   --ifm-color-info-contrast-background: color-mix(in oklab, var(--hl-pink) 22%, var(--bg));
   --ifm-color-warning: #a8650a;
   --ifm-color-warning-contrast-background: color-mix(in oklab, var(--hl-amber) 22%, var(--bg));
+
+  /* AAA: sidebar inactive label + TOC text need ≥ 7:1 against --bg.
+   * Defaults #606770/#525860 are AA only on the light gray surface. */
+  --ifm-menu-color: #3f4248;
+  --ifm-toc-link-color: #3f4248;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -83,6 +98,10 @@
   --ifm-color-info-contrast-background: color-mix(in oklab, #FFADD6 14%, transparent);
   --ifm-color-warning: var(--hl-amber);
   --ifm-color-warning-contrast-background: color-mix(in oklab, var(--hl-amber) 14%, transparent);
+
+  /* AAA: sidebar/TOC text on dark #1b1b1d needs ≥ 7:1. #c8c8c8 hits 10.9:1. */
+  --ifm-menu-color: #c8c8c8;
+  --ifm-toc-link-color: #c8c8c8;
 }
 
 mark,
@@ -108,10 +127,14 @@ mark,
   color: #1b1b1d;
 }
 
-/* ─── inline <code> — soft yellow tint, selection-style ─── */
+/* ─── inline <code> — neutral chip ───
+ * Light: a touch lighter than --surface so chips read as raised against the
+ * gray page. The full ::selection yellow on every <code> made prose-dense
+ * pages flicker; a flat neutral keeps the family identity without competing
+ * with <mark>. Contrast: #1b1b1d text on #ecedf0 → 13:1 (AAA). */
 .markdown :not(pre) > code {
-  background: color-mix(in oklab, #FFF166 28%, var(--surface));
-  border: 1px solid color-mix(in oklab, #FFF166 40%, var(--border));
+  background: color-mix(in oklab, var(--surface) 70%, #ffffff);
+  border: 1px solid var(--border);
   color: var(--text);
   padding: 0.1em 0.35em;
   border-radius: 3px;
@@ -122,4 +145,52 @@ mark,
   background: color-mix(in oklab, var(--hl-amber) 18%, var(--surface));
   border: 1px solid color-mix(in oklab, var(--hl-amber) 30%, var(--border));
   color: var(--text);
+}
+
+/* ─── code blocks — Catppuccin Mocha panel ───
+ * Light mode uses the Catppuccin Mocha syntax theme (defined inline in
+ * docusaurus.config.ts → prism.theme). Panel bg is Mocha's `base` #1e1e2e
+ * with a `surface0` border so the panel reads as a deliberate editor pane
+ * against the light gray page.
+ *
+ * AAA contrast against the panel base #1e1e2e (luminance 0.0149):
+ *   text     #cdd6f4 → 15.0:1   keywords #cba6f7 → 10.7:1
+ *   string   #a6e3a1 → 12.3:1   peach    #fab387 → 11.0:1
+ *   yellow   #f9e2af → 14.0:1   pink     #f5c2e7 → 11.7:1
+ *   blue     #89b4fa →  8.1:1   teal     #94e2d5 → 12.1:1
+ *   red      #f38ba8 →  8.6:1   lavender #b4befe →  9.2:1
+ *   comment  #a6adc8 →  8.0:1 (subtext0; bumped from overlay2 for AAA) */
+[data-theme='light'] .theme-code-block,
+:root .theme-code-block {
+  --prism-background-color: #1e1e2e;
+  background-color: #1e1e2e !important;
+  border: 1px solid #313244;
+  box-shadow: 0 1px 2px rgba(15, 18, 30, 0.08), 0 4px 16px rgba(15, 18, 30, 0.06);
+}
+[data-theme='light'] .theme-code-block pre,
+:root .theme-code-block pre {
+  background-color: #1e1e2e !important;
+}
+:root {
+  /* Mocha `yellow` at low opacity for highlighted lines. */
+  --docusaurus-highlighted-code-line-bg: rgba(249, 226, 175, 0.12);
+}
+[data-theme='light'] .theme-code-block .token-line {
+  color: #cdd6f4;
+}
+/* Copy button + language badge — Mocha `text` on a faint surface tint. */
+[data-theme='light'] .theme-code-block .clean-btn,
+:root .theme-code-block .clean-btn {
+  color: #cdd6f4;
+  background: rgba(205, 214, 244, 0.08);
+}
+[data-theme='light'] .theme-code-block .clean-btn:hover,
+:root .theme-code-block .clean-btn:hover {
+  background: rgba(205, 214, 244, 0.16);
+}
+[data-theme='light'] .theme-code-block [class*='codeBlockTitle'],
+:root .theme-code-block [class*='codeBlockTitle'] {
+  color: #cdd6f4;
+  background: #181825;
+  border-bottom: 1px solid #313244;
 }

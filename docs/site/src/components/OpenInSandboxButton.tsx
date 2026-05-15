@@ -15,12 +15,13 @@ export function OpenInSandboxButton() {
         gap: '0.4rem',
         padding: '0.4rem 0.9rem',
         borderRadius: '6px',
-        background: '#1374ef',
-        color: '#fff',
+        background: '#0a4ba9',
+        color: '#ffffff',
         fontWeight: 600,
         fontSize: '0.85rem',
         textDecoration: 'none',
-        marginBottom: '1rem',
+        marginTop: '1.5rem',
+        marginBottom: '1.5rem',
       }}
     >
       <svg width="14" height="14" viewBox="0 0 28 28" fill="currentColor" aria-hidden="true">

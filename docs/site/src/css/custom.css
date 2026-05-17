@@ -23,12 +23,18 @@
   /* Surface and highlight tokens are fully synced with the playground —
    * the docs site uses the same bright "highlighter on paper" palette so
    * jumping between docs and playground feels like one product.
-   * AAA contrast on the synced palette:
-   *   #1b1b1d on #ffffff → 17.2:1  body prose
-   *   #1b1b1d on #FFF166 → 14.8:1  yellow chip
-   *   #1b1b1d on #A8FF80 → 14.2:1  green chip
-   *   #1b1b1d on #FFADD6 → 10.0:1  pink chip
-   *   #1b1b1d on #fbbf24 → 11.3:1  amber chip */
+   * AAA contrast on the synced palette (WCAG 2.x relative-luminance,
+   * AAA threshold for normal text = 7:1):
+   *   light theme — body text on bg
+   *     #1b1b1d on #ffffff → 17.20:1  body prose
+   *   light + dark theme — chip text on chip (--hl-text pinned in both):
+   *     #1b1b1d on #FFF166 → 14.76:1  yellow chip
+   *     #1b1b1d on #A8FF80 → 14.15:1  green chip
+   *     #1b1b1d on #fbbf24 → 10.30:1  amber chip
+   *     #1b1b1d on #FFADD6 →  9.99:1  pink chip
+   *   dark theme — body text on bg/surface (playground only):
+   *     #fafafa on #1b1b1d → 16.48:1  body prose
+   *     #fafafa on #2d2d2d → 13.19:1  surface */
   --bg: #ffffff;
   --text: #1b1b1d;
   --surface: #f5f5f5;

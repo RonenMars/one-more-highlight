@@ -193,7 +193,7 @@ const states = [
 - **Indexing is global document order.** Match #0 is the first match in the text regardless of which `searchWords` entry produced it.
 - **Out-of-range state indices** are silently ignored in production; a one-time `console.warn` fires in dev mode.
 - **Regex defenses**: consumer-supplied `RegExp` is always cloned, the `g` flag is forced on, and the sticky `y` flag is dropped (with a dev warning). This prevents the mutable-`lastIndex` footgun.
-- **Accessibility**: default `<mark>` carries native `mark` semantics. When `highlightTag` is overridden to a non-semantic element, `role="mark"` is added automatically.
+- **Accessibility**: default `<mark>` carries native `mark` semantics. When `highlightTag` is overridden to a non-semantic element, `role="mark"` is added automatically. The shipped playground and docs palettes are tuned to **WCAG 2.2 AAA** contrast (≥ 7:1 for normal text) across every highlight/text pair — copy them as-is, or use them as a reference when building your own. See the [Accessibility recipe](./docs/site/docs/recipes/accessibility.md) for verification tools (WebAIM, axe-core, overlay widgets).
 - **SSR**: pipeline contains no `window`/`document` reads and produces deterministic markup.
 
 ## Browser & runtime support

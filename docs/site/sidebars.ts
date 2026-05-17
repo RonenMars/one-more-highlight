@@ -38,6 +38,7 @@ const sidebars: SidebarsConfig = {
         'recipes/browser-support',
         'recipes/diacritic-insensitive',
         'recipes/overlap-strategies',
+        'recipes/accessibility',
       ],
     },
   ],

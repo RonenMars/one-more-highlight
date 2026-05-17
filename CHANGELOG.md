@@ -1,3 +1,14 @@
+# [1.0.0](https://github.com/RonenMars/one-more-highlight/compare/v0.6.0...v1.0.0) (2026-05-17)
+
+
+* feat(src)!: remove match.one / match.range / match.many builders ([cbacea1](https://github.com/RonenMars/one-more-highlight/commit/cbacea124dbd253f41e2b369a909b410a9e47f4a))
+
+
+### BREAKING CHANGES
+
+* The `match` export is removed. Consumers must replace
+match builder spreads with the literal HighlightState fields.
+
 # [0.6.0](https://github.com/RonenMars/one-more-highlight/compare/v0.5.1...v0.6.0) (2026-05-15)
 
 

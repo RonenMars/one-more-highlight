@@ -72,14 +72,11 @@ Earning the major version. Stability commitment + a feature that meaningfully di
 
 Bigger investments. Each is its own design conversation.
 
-### v2.0 — CSS Custom Highlight API engine
+### v2.0 — CSS Custom Highlight API engine ✅ shipped
 
-Opt-in `engine="css-highlights"` prop. Range-based, ~10× faster on long text, no DOM mutation. The same `<Highlight>` API surface, with documented limitations (no render-prop in this engine — CSS-only styling). DOM engine remains the default.
+Opt-in `one-more-highlight/css` sub-export. Range-based, no DOM mutation, ~10× perf on long text. Author writes `::highlight(name) { … }` and controls priority via `highlight-order`. See ADR-0002 for the decision record and `docs/site/docs/engines/css-highlights.md` for the consumer docs.
 
-**Tradeoffs to revisit when we get there:**
-- Per-instance highlight name scoping vs. global namespace.
-- Multi-state composition through `highlight-order` priority.
-- Browser support — Firefox 140 is mid-2025; we may want polyfill or graceful degradation.
+**Deferred:** unifying `<Highlight>` and `<CssHighlight>` under a single component with a discriminated-union `engine` prop. The sub-export keeps the option open — collapse later once usage tells us which shape is right.
 
 ### v2.x — Match modes
 

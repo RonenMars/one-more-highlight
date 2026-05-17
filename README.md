@@ -225,11 +225,17 @@ const normalize = (s: string) =>
 
 `sanitize` is applied to both the text and each search word before matching. The highlighted output always uses the original, un-normalized text.
 
+## Engines
+
+`one-more-highlight` ships two rendering engines that share the same matching pipeline:
+
+- **DOM engine** (default) — `<Highlight>` from `'one-more-highlight'`. Wraps each match in a `<mark>` node. Supports `renderMatch`, custom tags, and per-state inline style. Universal browser support.
+- **CSS Custom Highlight API engine** (opt-in) — `<CssHighlight>` from `'one-more-highlight/css'`. Paints ranges via `CSS.highlights` with no per-match DOM nodes. Larger perf win on long text. See the [engines/css-highlights](https://one-more-highlight.vercel.app/docs/engines/css-highlights) docs page.
+
 ## Roadmap
 
 See [`docs/ROADMAP.md`](./docs/ROADMAP.md) for the full v2+ plan. Short version:
 
-- **CSS Custom Highlight API** rendering engine — ~10× perf on long text
 - **Per-search-term indexing** (`{ term: 'cat', index: 1 }`)
 - **Grapheme-aware matching** via `Intl.Segmenter`
 - **Fuzzy matching** (Levenshtein)

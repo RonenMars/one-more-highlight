@@ -5,6 +5,7 @@ import { ThemeWrapper } from './ThemeWrapper.js';
 import { Index } from './Index.js';
 import { BasicDemo } from './demos/BasicDemo.js';
 import { CaseInsensitiveDemo } from './demos/CaseInsensitiveDemo.js';
+import { CssEngineDemo } from './demos/CssEngineDemo.js';
 import { HeadlessDemo } from './demos/HeadlessDemo.js';
 import { MultiStateDemo } from './demos/MultiStateDemo.js';
 import { OverlapFirstDemo } from './demos/OverlapFirstDemo.js';
@@ -42,6 +43,7 @@ const demos = [
   { path: 'regex',            title: 'RegExp search word — /\\btime\\b/i',                 Component: RegexDemo },
   { path: 'case-insensitive', title: 'Case-sensitive vs case-insensitive',                  Component: CaseInsensitiveDemo },
   { path: 'selectors',        title: 'Selectors — index / range / indices',                 Component: SelectorsDemo },
+  { path: 'css-engine',       title: 'CSS Custom Highlight API engine',                    Component: CssEngineDemo },
 ];
 
 export function App() {

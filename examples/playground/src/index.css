@@ -163,3 +163,10 @@ body {
 }
 
 .index-meta a { color: var(--text); }
+
+/* CSS Custom Highlight API engine — author CSS for ::highlight() pseudos. */
+/* Names must match the `name` field of HighlightState objects, plus the */
+/* implicit "match" name for stateless matches. */
+::highlight(match)  { background: var(--hl-yellow); color: var(--hl-text); }
+::highlight(active) { background: var(--hl-green);  color: var(--hl-text); }
+::highlight(pinned) { background: var(--hl-pink);   color: var(--hl-text); }

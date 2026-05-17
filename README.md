@@ -25,7 +25,7 @@ Highlight every occurrence of a substring in one style, **and** highlight specif
 - **Tiny** — ~2 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
 - **Modern** — React 18+/19, ESM + CJS dual build with `.d.ts` + `.d.cts`, tree-shakeable, SSR-safe.
 
-```tsx
+```
 import { Highlight } from 'one-more-highlight';
 
 <Highlight
@@ -44,7 +44,7 @@ A single match can be in multiple states at once; their `className`s concatenate
 
 ## Install
 
-```bash
+```
 pnpm add one-more-highlight
 # or: npm i one-more-highlight / yarn add one-more-highlight
 ```
@@ -55,7 +55,7 @@ Peer: `react >= 18`. Runtime deps: `clsx`, `escape-string-regexp` (both MIT, ~40
 
 ### Component (drop-in)
 
-```tsx
+```
 import { Highlight } from 'one-more-highlight';
 
 <Highlight text="hello world" searchWords={['world']} />
@@ -64,7 +64,7 @@ import { Highlight } from 'one-more-highlight';
 
 ### Headless hook (DIY rendering)
 
-```tsx
+```
 import { useHighlight } from 'one-more-highlight';
 
 function MyHighlighter({ text, query }: { text: string; query: string }) {
@@ -81,7 +81,7 @@ function MyHighlighter({ text, query }: { text: string; query: string }) {
 
 ### Multi-state styling (the headline feature)
 
-```tsx
+```
 import { Highlight } from 'one-more-highlight';
 
 <Highlight
@@ -100,7 +100,7 @@ Every match gets `hl-base`. Match `activeIdx` *also* gets `hl-active`. Matches 0
 
 ### Render-prop for full per-match control
 
-```tsx
+```
 <Highlight
   text={text}
   searchWords={['error']}
@@ -148,7 +148,7 @@ Same options as `<Highlight>` minus the rendering props. Returns an object with:
 - `segments` — alternating `MatchSegment` / `TextSegment` covering the full text.
 - `getMatchCount()` — returns the number of matching segments; useful for validating `states` config or rendering "X results" UI.
 
-```ts
+```
 type Segment = MatchSegment | TextSegment;
 
 interface MatchSegment {
@@ -173,14 +173,14 @@ interface TextSegment {
 
 `HighlightState` is a discriminated union — each entry carries **exactly one** selector field that says which matches it applies to. TypeScript narrows on the field name.
 
-```ts
+```
 // Three selector shapes, picked by which field is present:
 { name: 'active',     index: 2 }            // a single match
 { name: 'preview',    range: [4, 6] }       // an inclusive range
 { name: 'bookmarked', indices: [0, 4, 7] }  // an arbitrary list
 ```
 
-```ts
+```
 const states = [
   { name: 'active',  index: 2,      className: 'is-active' },
   { name: 'preview', range: [0, 1], style: { background: '#5EEAD4' } },
@@ -211,7 +211,7 @@ const states = [
 
 Strip diacritics from both the text and the search terms before matching, then render against the original text:
 
-```tsx
+```
 const normalize = (s: string) =>
   s.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 

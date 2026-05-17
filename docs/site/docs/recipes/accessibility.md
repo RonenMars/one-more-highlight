@@ -16,7 +16,7 @@ Three categories of tooling, from quickest to most thorough:
 
 The fastest sanity check. Paste your foreground hex and background hex and it returns the contrast ratio along with AA/AAA pass/fail for normal text and large text.
 
-- **Tool:** <https://webaim.org/resources/contrastchecker/>
+- **Tool:** [webaim.org/resources/contrastchecker](https://webaim.org/resources/contrastchecker/)
 - **When to use it:** picking colors during design, spot-checking a single pair.
 - **Output:** numeric ratio plus four pass/fail labels (AA normal, AA large, AAA normal, AAA large).
 
@@ -54,7 +54,7 @@ test('highlight passes axe', async () => {
 });
 ```
 
-- **Tool:** <https://www.npmjs.com/package/axe-core>
+- **Tool:** [`axe-core` on npm](https://www.npmjs.com/package/axe-core)
 - **When to use it:** every PR, on every component that renders user-visible UI.
 - **Coverage:** roughly 57% of WCAG issues catchable automatically — contrast, ARIA misuse, missing labels, focus order.
 
@@ -79,7 +79,7 @@ For background, see Adrian Roselli's [Overlay Fact Sheet](https://overlayfactshe
 
 :::
 
-- **Tool:** <https://www.npmjs.com/package/accessibility>
+- **Tool:** [`accessibility` on npm](https://www.npmjs.com/package/accessibility)
 - **When to use it:** as a small UX nicety, _after_ your markup already passes `axe-core`.
 - **What it does:** injects a floating button that opens a sidebar of user-adjustable preferences (font size, contrast, grayscale, links highlight, etc.).
 

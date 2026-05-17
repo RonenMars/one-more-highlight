@@ -19,7 +19,7 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 ### Shipped
 
 - `<Highlight>` component with `searchWords`, base/state styling, `renderMatch` render-prop, accessibility role fallback.
-- `useHighlight` hook returning `Segment[]` for headless rendering.
+- `useHighlight` hook returning `{ segments, getMatchCount }` for headless rendering.
 - Three `HighlightState` selector forms — `{ index }`, `{ range }`, `{ indices }`.
 - Three overlap strategies: `merge` (default), `nest`, `first-wins`.
 - Native-first `RegExp.escape()` with `escape-string-regexp` fallback.

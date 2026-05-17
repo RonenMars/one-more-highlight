@@ -78,7 +78,7 @@ const text =
   'never get that time back, making every time we meet a valuable time.';
 
 export default function App() {
-  const segments = useHighlight({
+  const { segments } = useHighlight({
     text,
     searchWords: ['time'],
     states: [{ name: 'active', index: 2 }],

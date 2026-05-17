@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { renderToString } from 'react-dom/server';
 import { Highlight } from '../src/Highlight.js';
-import { match } from '../src/match.js';
 
 describe('SSR', () => {
   it('produces deterministic markup across runs', () => {
@@ -10,7 +9,7 @@ describe('SSR', () => {
         text="cat hat cat dog cat"
         searchWords={['cat', 'dog']}
         highlightClassName="hl"
-        states={[{ name: 'active', ...match.one(1), className: 'active' }]}
+        states={[{ name: 'active', index: 1, className: 'active' }]}
       />
     );
     const a = renderToString(tree);

@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useHighlight } from '../src/useHighlight.js';
-import { match } from '../src/match.js';
 
 describe('useHighlight', () => {
   it('returns segments for plain text + searchWords', () => {
@@ -39,7 +38,7 @@ describe('useHighlight', () => {
       useHighlight({
         text: 'cat cat cat',
         searchWords: ['cat'],
-        states: [{ name: 'active', ...match.one(1) }],
+        states: [{ name: 'active', index: 1 }],
       }),
     );
     const matches = result.current.segments.filter((s) => s.isMatch);

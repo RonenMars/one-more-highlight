@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Highlight } from '../src/Highlight.js';
-import { match } from '../src/match.js';
 
 describe('<Highlight>', () => {
   it('renders text without matches as plain content', () => {
@@ -30,7 +29,7 @@ describe('<Highlight>', () => {
         text="cat cat cat"
         searchWords={['cat']}
         highlightClassName="base"
-        states={[{ name: 'active', ...match.one(1), className: 'active' }]}
+        states={[{ name: 'active', index: 1, className: 'active' }]}
       />,
     );
     const marks = container.querySelectorAll('mark');
@@ -46,9 +45,9 @@ describe('<Highlight>', () => {
         text="cat cat cat"
         searchWords={['cat']}
         states={[
-          { name: 'a', ...match.one(0), className: 'a' },
-          { name: 'b', ...match.range(0, 1), className: 'b' },
-          { name: 'c', ...match.many([0]), className: 'c' },
+          { name: 'a', index: 0, className: 'a' },
+          { name: 'b', range: [0, 1], className: 'b' },
+          { name: 'c', indices: [0], className: 'c' },
         ]}
       />,
     );
@@ -87,7 +86,7 @@ describe('<Highlight>', () => {
         text="cat cat"
         searchWords={['cat']}
         highlightTag={Custom}
-        states={[{ name: 'active', ...match.one(0) }]}
+        states={[{ name: 'active', index: 0 }]}
       />,
     );
     const ems = container.querySelectorAll('em');

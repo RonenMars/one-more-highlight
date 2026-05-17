@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { applyStates } from '../src/applyStates.js';
 import type { CombinedChunk } from '../src/combineChunks.js';
-import { match } from '../src/match.js';
 import type { HighlightState } from '../src/types.js';
 
 const chunks: CombinedChunk[] = [
@@ -18,14 +17,14 @@ describe('applyStates', () => {
   });
 
   it('tags by single index', () => {
-    const states: HighlightState[] = [{ name: 'active', ...match.one(2) }];
+    const states: HighlightState[] = [{ name: 'active', index: 2 }];
     const r = applyStates(chunks, states);
     expect(r[2]?.states).toEqual(['active']);
     expect(r[0]?.states).toEqual([]);
   });
 
   it('tags by range (inclusive)', () => {
-    const states: HighlightState[] = [{ name: 'preview', ...match.range(1, 2) }];
+    const states: HighlightState[] = [{ name: 'preview', range: [1, 2] }];
     const r = applyStates(chunks, states);
     expect(r[0]?.states).toEqual([]);
     expect(r[1]?.states).toEqual(['preview']);
@@ -34,7 +33,7 @@ describe('applyStates', () => {
   });
 
   it('tags by indices array', () => {
-    const states: HighlightState[] = [{ name: 'bookmarked', ...match.many([0, 3]) }];
+    const states: HighlightState[] = [{ name: 'bookmarked', indices: [0, 3] }];
     const r = applyStates(chunks, states);
     expect(r[0]?.states).toEqual(['bookmarked']);
     expect(r[3]?.states).toEqual(['bookmarked']);
@@ -43,9 +42,9 @@ describe('applyStates', () => {
 
   it('composes multiple states on the same match', () => {
     const states: HighlightState[] = [
-      { name: 'active', ...match.one(1) },
-      { name: 'preview', ...match.range(0, 2) },
-      { name: 'bookmarked', ...match.many([1]) },
+      { name: 'active', index: 1 },
+      { name: 'preview', range: [0, 2] },
+      { name: 'bookmarked', indices: [1] },
     ];
     const r = applyStates(chunks, states);
     expect(r[1]?.states).toEqual(['active', 'preview', 'bookmarked']);
@@ -53,8 +52,8 @@ describe('applyStates', () => {
 
   it('preserves declaration order in tagged states', () => {
     const states: HighlightState[] = [
-      { name: 'b', ...match.one(0) },
-      { name: 'a', ...match.one(0) },
+      { name: 'b', index: 0 },
+      { name: 'a', index: 0 },
     ];
     const r = applyStates(chunks, states);
     expect(r[0]?.states).toEqual(['b', 'a']);

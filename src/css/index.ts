@@ -1,2 +1,2 @@
-// Placeholder — real exports added in Task 8.
-export const __cssEntryPlaceholder = true;
+export { CssHighlight } from './CssHighlight.js';
+export type { CssHighlightProps, CssHighlightFallback } from './types.js';

@@ -1,9 +1,3 @@
-declare global {
-  interface Window {
-    Highlight?: new (...ranges: Range[]) => unknown;
-  }
-}
-
 function detect(): boolean {
   if (typeof globalThis === 'undefined') return false;
   const css = (globalThis as { CSS?: { highlights?: unknown } }).CSS;

@@ -89,6 +89,27 @@ examples/playground/  Vite + React 19 demo
 - **No comments unless they explain *why*.** Names should explain *what*. Comments are for non-obvious constraints, surprising invariants, or workarounds.
 - **SSR-safe by default.** No `window`/`document` reads in the matching pipeline, no `Math.random`/`Date.now` in keys.
 
+## How we record decisions
+
+Architecture decisions that constrain the library's shape are recorded as
+ADRs (Architecture Decision Records) under [`docs/adr/`](./docs/adr/). Use the
+template in [`docs/adr/template.md`](./docs/adr/template.md) when adding a new
+one. See [`docs/adr/0001-remove-match-builders.md`](./docs/adr/0001-remove-match-builders.md)
+for a worked example.
+
+**Bar for writing an ADR.** Add one when at least two of these hold:
+
+- public API surface changes (export, prop, type)
+- a reasonable contributor would propose the rejected alternative
+- the reasoning won't fit in a commit message (≥ 3 trade-offs)
+- the decision constrains future work
+
+If fewer than two hold, the rationale belongs in a commit message or
+[`CLAUDE.md`](./CLAUDE.md) instead.
+
+ADRs are not published on the docs site — they're contributor-facing.
+Numbered `NNNN-kebab-case-title.md`, status updated when superseded.
+
 ## Testing requirements
 
 - **Unit tests** for any new pure function. Cover the happy path, an edge case, and at least one failure mode.

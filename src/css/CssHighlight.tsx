@@ -1,5 +1,6 @@
 import { createElement, useRef } from 'react';
 import type { ElementRef } from 'react';
+import { Highlight as DomHighlight } from '../Highlight.js';
 import { useHighlight } from '../useHighlight.js';
 import { supported } from './supported.js';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect.js';
@@ -49,26 +50,16 @@ export function CssHighlight(props: CssHighlightProps) {
   const containerRef = useRef<ElementRef<'span'>>(null);
 
   useIsomorphicLayoutEffect(() => {
-    if (!supported()) {
-      if (fallback === 'throw') {
-        throw new Error(
-          '[one-more-highlight/css] CSS.highlights is not available in this environment. ' +
-            'Set fallback="dom" (default) or fallback="none" to handle this gracefully.',
-        );
-      }
-      // 'dom' fallback is implemented in Task 7. 'none' is a no-op here.
-      return;
-    }
+    if (!supported()) return; // 'none' branch: render plain text, do nothing.
 
     const textNode = containerRef.current?.firstChild;
     if (!(textNode instanceof Text)) return;
 
     const CssRef = (globalThis as unknown as { CSS: CssWithHighlights }).CSS;
-    const HighlightCtor = (globalThis as unknown as {
-      Highlight: new (...ranges: Range[]) => HighlightLike;
-    }).Highlight;
+    const HighlightCtor = (
+      globalThis as unknown as { Highlight: new (...ranges: Range[]) => HighlightLike }
+    ).Highlight;
 
-    // Group match segments by state name.
     const byState = new Map<string, Range[]>();
     for (const seg of segments) {
       if (!seg.isMatch) continue;
@@ -104,6 +95,33 @@ export function CssHighlight(props: CssHighlightProps) {
       }
     };
   }, [segments, fallback]);
+
+  // Synchronous degradation paths. Placed after hook calls so React's
+  // Rules of Hooks aren't violated; the effect above no-ops when
+  // unsupported, so these branches are safe.
+  if (!supported() && fallback === 'dom') {
+    const domProps = {
+      text,
+      searchWords,
+      ...(caseSensitive !== undefined && { caseSensitive }),
+      ...(autoEscape !== undefined && { autoEscape }),
+      ...(sanitize !== undefined && { sanitize }),
+      ...(findChunks !== undefined && { findChunks }),
+      ...(states !== undefined && { states }),
+      ...(overlapStrategy !== undefined && { overlapStrategy }),
+      ...(className !== undefined && { className }),
+      ...(style !== undefined && { style }),
+      as,
+    };
+    return <DomHighlight {...domProps} />;
+  }
+
+  if (!supported() && fallback === 'throw') {
+    throw new Error(
+      '[one-more-highlight/css] CSS.highlights is not available in this environment. ' +
+        'Set fallback="dom" (default) or fallback="none" to handle this gracefully.',
+    );
+  }
 
   return createElement(as, { ref: containerRef, className, style }, text);
 }

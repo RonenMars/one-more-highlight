@@ -23,6 +23,11 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Engines',
+      items: ['engines/css-highlights'],
+    },
+    {
+      type: 'category',
       label: 'API Reference',
       items: [
         'api/highlight-props',

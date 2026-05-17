@@ -169,4 +169,16 @@ describe('<CssHighlight> registry mechanics', () => {
     rerender(<CssHighlight text="cat cat cat cat" searchWords={['cat']} />);
     expect(env.registry.get('match')?.size).toBe(4);
   });
+
+  it('reaches the same end state under React.StrictMode double-invoke', async () => {
+    const { StrictMode } = await import('react');
+    render(
+      <StrictMode>
+        <CssHighlight text="cat cat cat" searchWords={['cat']} />
+      </StrictMode>,
+    );
+    // The strict-mode cycle: mount → cleanup → mount. The final
+    // 'match' highlight should contain exactly 3 ranges, not 6 and not 0.
+    expect(env.registry.get('match')?.size).toBe(3);
+  });
 });

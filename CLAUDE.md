@@ -27,8 +27,7 @@ These come from the project's design conversation. They override generic "best p
 ### 3. Strict TypeScript, no `any`
 - `tsconfig.json` runs with `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `verbatimModuleSyntax`.
 - `unknown` + narrowing is fine. `any` is not.
-- Discriminated unions (e.g. `HighlightState`) are the canonical way to express "exactly one of these shapes."
-- Helper builders (`match.one/range/many`) exist to make discriminated unions ergonomic — when adding new selector forms, add a builder too.
+- Discriminated unions (e.g. `HighlightState`) are the canonical way to express "exactly one of these shapes." Consumers write object literals against the union directly — no builder/wrapper layer. See `docs/adr/0001-remove-match-builders.md` for the reasoning.
 
 ### 4. SSR-safe by default
 - No `window`, `document`, or `globalThis` reads in the matching pipeline.
@@ -56,7 +55,6 @@ src/
 ├── combineChunks.ts  Three overlap strategies: merge | nest | first-wins. Pure function.
 ├── applyStates.ts    Tags each match with the names of states that select it. Dev warnings.
 ├── buildSegments.ts  Walks tagged chunks → alternating Segment[] covering full text.
-├── match.ts          match.one / match.range / match.many — typed selector builders.
 ├── useHighlight.ts   The hook. useMemo with structural search-key + states-key. SSR-safe.
 ├── Highlight.tsx     The component. Default <mark>, role=mark fallback, render-prop.
 └── index.ts          Public re-exports.
@@ -114,11 +112,13 @@ surface, update both files together.
 4. Document the new strategy in `README.md`.
 
 ### Adding a new state selector form
-1. Extend `HighlightState` discriminated union in `src/types.ts`.
-2. Update `selects()` and `highestSelected()` in `src/applyStates.ts`.
-3. Add a `match.<form>` builder in `src/match.ts` returning the correctly-narrowed shape.
-4. Tests in `tests/applyStates.test.ts`.
+1. Extend `HighlightState` discriminated union in `src/types.ts` with a new member carrying a distinct discriminator field (e.g. `predicate: (i: number) => boolean`).
+2. Update `selects()` and `highestSelected()` in `src/applyStates.ts` with a branch that detects the new field.
+3. Tests in `tests/applyStates.test.ts`.
+4. Document the new field in `docs/site/docs/api/highlight-state-selectors.md` and the multi-state-styling guide.
 5. README example.
+
+Do **not** introduce a `match.<form>` builder; the union carries the ergonomics by itself (see ADR-0001).
 
 ## Build & verify
 

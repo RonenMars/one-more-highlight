@@ -1,4 +1,4 @@
-import { Highlight, match } from 'one-more-highlight';
+import { Highlight } from 'one-more-highlight';
 
 // Scenario: a Ctrl+F find-in-page UI scanning an error log for the word "error".
 // The text has 6 matches. The user has cycled through them and bookmarked
@@ -24,9 +24,9 @@ export function MultiStateDemo() {
       searchWords={['error']}
       highlightClassName="hl-base"
       states={[
-        { name: 'preview', ...match.range(0, 1), className: 'hl-preview' },
-        { name: 'active', ...match.one(2), className: 'hl-active' },
-        { name: 'bookmarked', ...match.many([3, 5]), className: 'hl-bookmark' },
+        { name: 'preview', range: [0, 1], className: 'hl-preview' },
+        { name: 'active', index: 2, className: 'hl-active' },
+        { name: 'bookmarked', indices: [3, 5], className: 'hl-bookmark' },
       ]}
     />
   );

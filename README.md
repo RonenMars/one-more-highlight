@@ -19,23 +19,23 @@ Highlight every occurrence of a substring in one style, **and** highlight specif
 
 **`one-more-highlight`** gives you:
 
-- **TypeScript-first** — full types, discriminated unions, `match.one/range/many` builders that narrow correctly.
+- **TypeScript-first** — full types and a discriminated-union `HighlightState` that narrows correctly on the selector field (`index`, `range`, or `indices`).
 - **Multi-state styling** as the headline feature — every match gets a base style, plus layered styles selected by index, range, or arbitrary list. Styles compose.
 - **Headless `useHighlight` hook** alongside the `<Highlight>` component, with a `renderMatch` render-prop for full per-match control.
 - **Tiny** — ~2 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
 - **Modern** — React 18+/19, ESM + CJS dual build with `.d.ts` + `.d.cts`, tree-shakeable, SSR-safe.
 
 ```tsx
-import { Highlight, match } from 'one-more-highlight';
+import { Highlight } from 'one-more-highlight';
 
 <Highlight
   text="time time time time time"
   searchWords={['time']}
   highlightClassName="bg-yellow-200"
   states={[
-    { name: 'active',     ...match.one(2),       className: 'bg-orange-500 ring-2' },
-    { name: 'preview',    ...match.range(0, 1),  className: 'bg-blue-100' },
-    { name: 'bookmarked', ...match.many([3, 4]), className: 'underline' },
+    { name: 'active',     index: 2,         className: 'bg-orange-500 ring-2' },
+    { name: 'preview',    range: [0, 1],    className: 'bg-blue-100' },
+    { name: 'bookmarked', indices: [3, 4],  className: 'underline' },
   ]}
 />
 ```
@@ -82,16 +82,16 @@ function MyHighlighter({ text, query }: { text: string; query: string }) {
 ### Multi-state styling (the headline feature)
 
 ```tsx
-import { Highlight, match } from 'one-more-highlight';
+import { Highlight } from 'one-more-highlight';
 
 <Highlight
   text={longText}
   searchWords={['React']}
   highlightClassName="hl-base"
   states={[
-    { name: 'active',     ...match.one(activeIdx),  className: 'hl-active' },
-    { name: 'recent',     ...match.range(0, 4),     className: 'hl-recent' },
-    { name: 'bookmarked', ...match.many(bookmarks), className: 'hl-bookmark' },
+    { name: 'active',     index: activeIdx,   className: 'hl-active' },
+    { name: 'recent',     range: [0, 4],      className: 'hl-recent' },
+    { name: 'bookmarked', indices: bookmarks, className: 'hl-bookmark' },
   ]}
 />
 ```
@@ -104,7 +104,7 @@ Every match gets `hl-base`. Match `activeIdx` *also* gets `hl-active`. Matches 0
 <Highlight
   text={text}
   searchWords={['error']}
-  states={[{ name: 'active', ...match.one(2) }]}
+  states={[{ name: 'active', index: 2 }]}
   renderMatch={(seg, { className, style, Tag }) => (
     <Tag className={className} style={style}>
       {seg.text}
@@ -171,20 +171,19 @@ interface TextSegment {
 
 ### `HighlightState` selector forms
 
+`HighlightState` is a discriminated union — each entry carries **exactly one** selector field that says which matches it applies to. TypeScript narrows on the field name.
+
 ```ts
-import { match } from 'one-more-highlight';
-
-match.one(2)          // → { index: 2 }
-match.range(4, 6)     // → { range: [4, 6] }   (inclusive both ends)
-match.many([0, 4, 7]) // → { indices: [0, 4, 7] }
+// Three selector shapes, picked by which field is present:
+{ name: 'active',     index: 2 }            // a single match
+{ name: 'preview',    range: [4, 6] }       // an inclusive range
+{ name: 'bookmarked', indices: [0, 4, 7] }  // an arbitrary list
 ```
-
-Spread one of these into a `HighlightState`:
 
 ```ts
 const states = [
-  { name: 'active', ...match.one(2), className: 'is-active' },
-  { name: 'preview', ...match.range(0, 1), style: { background: '#5EEAD4' } },
+  { name: 'active',  index: 2,      className: 'is-active' },
+  { name: 'preview', range: [0, 1], style: { background: '#5EEAD4' } },
 ];
 ```
 

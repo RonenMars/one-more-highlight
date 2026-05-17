@@ -27,7 +27,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'api/highlight-props',
         'api/use-highlight',
-        'api/match-builders',
+        'api/highlight-state-selectors',
         'api/types',
       ],
     },

@@ -25,7 +25,7 @@ export default function App() {
   );
 }`,
 
-  'Multi-state': `import { Highlight, match } from '${ESM_URL}';
+  'Multi-state': `import { Highlight } from '${ESM_URL}';
 
 const text =
   'It is truly sometimes and time-to-time hard to realize that in this time of rapid change, ' +
@@ -39,15 +39,15 @@ export default function App() {
       searchWords={['time']}
       highlightStyle={{ background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' }}
       states={[
-        { name: 'preview', ...match.range(0, 1), style: { background: 'var(--hl-pink)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' } },
-        { name: 'active', ...match.one(2), style: { background: 'var(--hl-green)', color: 'var(--hl-text)', padding: '0 3px', borderRadius: '3px', fontWeight: 'bold' } },
-        { name: 'bookmarked', ...match.many([3, 5]), style: { background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px', textDecoration: 'underline' } },
+        { name: 'preview', range: [0, 1], style: { background: 'var(--hl-pink)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' } },
+        { name: 'active', index: 2, style: { background: 'var(--hl-green)', color: 'var(--hl-text)', padding: '0 3px', borderRadius: '3px', fontWeight: 'bold' } },
+        { name: 'bookmarked', indices: [3, 5], style: { background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px', textDecoration: 'underline' } },
       ]}
     />
   );
 }`,
 
-  'Render prop': `import { Highlight, match } from '${ESM_URL}';
+  'Render prop': `import { Highlight } from '${ESM_URL}';
 
 const text =
   'It is truly sometimes and time-to-time hard to realize that in this time of rapid change, ' +
@@ -60,7 +60,7 @@ export default function App() {
       text={text}
       searchWords={['time']}
       highlightStyle={{ background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' }}
-      states={[{ name: 'active', ...match.one(2), style: { background: 'var(--hl-green)', color: 'var(--hl-text)' } }]}
+      states={[{ name: 'active', index: 2, style: { background: 'var(--hl-green)', color: 'var(--hl-text)' } }]}
       renderMatch={(seg, { style, Tag }) => (
         <Tag style={style}>
           {seg.text}{seg.states.includes('active') && <sup style={{ color: 'var(--hl-amber)', WebkitTextStroke: '1px #000', paintOrder: 'stroke fill', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4))' }}>★</sup>}
@@ -70,7 +70,7 @@ export default function App() {
   );
 }`,
 
-  Headless: `import { match, useHighlight } from '${ESM_URL}';
+  Headless: `import { useHighlight } from '${ESM_URL}';
 
 const text =
   'It is truly sometimes and time-to-time hard to realize that in this time of rapid change, ' +
@@ -81,7 +81,7 @@ export default function App() {
   const segments = useHighlight({
     text,
     searchWords: ['time'],
-    states: [{ name: 'active', ...match.one(2) }],
+    states: [{ name: 'active', index: 2 }],
   });
   return (
     <p style={{ margin: 0 }}>

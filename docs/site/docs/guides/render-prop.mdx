@@ -15,13 +15,13 @@ import { OpenInSandboxButton } from '@site/src/components/OpenInSandboxButton';
 ## Usage
 
 ```tsx
-import { Highlight, match } from 'one-more-highlight';
+import { Highlight } from 'one-more-highlight';
 
 <Highlight
   text={text}
   searchWords={['time']}
   highlightClassName="hl-base"
-  states={[{ name: 'active', ...match.one(2), className: 'hl-active' }]}
+  states={[{ name: 'active', index: 2, className: 'hl-active' }]}
   renderMatch={(seg, { className, style, Tag }) => (
     <Tag className={className} style={style}>
       {seg.text}

@@ -30,7 +30,6 @@ src/                  Library source
   combineChunks.ts    Overlap strategies: merge | nest | first-wins
   applyStates.ts      Per-match state-name tagging
   buildSegments.ts    Alternating Segment[] construction
-  match.ts            match.one / match.range / match.many builders
   useHighlight.ts     The hook (memoized, SSR-safe)
   Highlight.tsx       The component (default <mark>, render-prop, role fallback)
   index.ts            Public exports

@@ -6,7 +6,7 @@
 
 Build the React text-highlighting library that staff engineers actually want to use in 2026 and beyond:
 
-- **TypeScript-first**, with discriminated unions and ergonomic helpers.
+- **TypeScript-first**, with discriminated-union selectors that narrow correctly.
 - **Multi-state per-match styling** as the headline feature — not bolted on.
 - **Headless-friendly** (`useHighlight` hook) for design-system / Tailwind / CSS-in-JS consumers.
 - **Tiny** (~2 KB brotlied) and **dependency-light** (2 micro-deps).
@@ -20,7 +20,7 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 
 - `<Highlight>` component with `searchWords`, base/state styling, `renderMatch` render-prop, accessibility role fallback.
 - `useHighlight` hook returning `Segment[]` for headless rendering.
-- `match.one(i)` / `match.range(a, b)` / `match.many([...])` selector builders.
+- Three `HighlightState` selector forms — `{ index }`, `{ range }`, `{ indices }`.
 - Three overlap strategies: `merge` (default), `nest`, `first-wins`.
 - Native-first `RegExp.escape()` with `escape-string-regexp` fallback.
 - ESM + CJS dual build, `.d.ts` + `.d.cts`, `exports` map, `sideEffects: false`.
@@ -115,7 +115,7 @@ When a feature request arrives:
 [Semantic Versioning](https://semver.org/) starting from `1.0.0`.
 
 - **Patch**: bug fixes, internal refactors, doc updates, dependency bumps that don't change behavior.
-- **Minor**: additive features — new props, new selector forms, new `match` helpers — that don't break existing usage.
+- **Minor**: additive features — new props, new selector forms — that don't break existing usage.
 - **Major**: any breaking change to the public API surface (props, hook signatures, returned types).
 
 Pre-1.0 (current): minor bumps may be breaking. Read the changelog.

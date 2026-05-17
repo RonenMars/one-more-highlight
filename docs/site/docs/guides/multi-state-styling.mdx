@@ -14,19 +14,19 @@ Every match gets a base style. Specific occurrences get additional layered style
 
 ## How it works
 
-Pass a `states` array. Each entry has a `name`, a selector (`match.one`, `match.range`, or `match.many`), and a `className` and/or `style`:
+Pass a `states` array. Each entry has a `name`, exactly one selector field (`index`, `range`, or `indices`), and a `className` and/or `style`:
 
 ```tsx
-import { Highlight, match } from 'one-more-highlight';
+import { Highlight } from 'one-more-highlight';
 
 <Highlight
   text={text}
   searchWords={['time']}
   highlightClassName="hl-base"
   states={[
-    { name: 'preview',    ...match.range(0, 1), className: 'hl-preview' },
-    { name: 'active',     ...match.one(2),      className: 'hl-active' },
-    { name: 'bookmarked', ...match.many([3, 5]),className: 'hl-bookmark' },
+    { name: 'preview',    range: [0, 1],    className: 'hl-preview' },
+    { name: 'active',     index: 2,         className: 'hl-active' },
+    { name: 'bookmarked', indices: [3, 5],  className: 'hl-bookmark' },
   ]}
 />
 ```
@@ -35,11 +35,13 @@ Every match gets `hl-base`. Match #2 also gets `hl-active`. Matches #0 and #1 al
 
 ## Selectors
 
-| Builder | Selects |
+`HighlightState` is a discriminated union — each entry carries **exactly one** selector field:
+
+| Selector field | Selects |
 |---|---|
-| `match.one(i)` | A single match by zero-based index |
-| `match.range(a, b)` | Matches from index `a` to `b` (inclusive) |
-| `match.many([i, j, k])` | A specific list of match indices |
+| `index: i` | A single match by zero-based index |
+| `range: [a, b]` | Matches from index `a` to `b` (inclusive) |
+| `indices: [i, j, k]` | A specific list of match indices |
 
 Indexing is global document order — match #0 is the first occurrence in the text regardless of which `searchWords` entry produced it.
 
@@ -49,8 +51,8 @@ A match can belong to multiple states simultaneously. Their `className`s are con
 
 ```tsx
 states={[
-  { name: 'a', ...match.one(0), className: 'text-bold', style: { color: 'red' } },
-  { name: 'b', ...match.one(0), style: { background: 'yellow' } },
+  { name: 'a', index: 0, className: 'text-bold', style: { color: 'red' } },
+  { name: 'b', index: 0, style: { background: 'yellow' } },
 ]}
 // Match 0 gets: className="hl-base text-bold", style={{ color: 'red', background: 'yellow' }}
 ```

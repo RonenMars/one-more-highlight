@@ -1,4 +1,4 @@
-import { Highlight, match } from 'one-more-highlight';
+import { Highlight } from 'one-more-highlight';
 
 // Scenario: a documentation reader's "find on page" feature. Every hit on
 // the search term "useEffect" gets a base highlight. The currently-focused
@@ -19,7 +19,7 @@ export function RenderPropDemo() {
       text={text}
       searchWords={['useEffect']}
       highlightClassName="hl-base"
-      states={[{ name: 'active', ...match.one(2), className: 'hl-active' }]}
+      states={[{ name: 'active', index: 2, className: 'hl-active' }]}
       renderMatch={(seg, { className, style, Tag }) => {
         const TagAny = Tag as 'mark';
         const isActive = seg.states.includes('active');

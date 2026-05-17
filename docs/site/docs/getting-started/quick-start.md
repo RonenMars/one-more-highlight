@@ -26,14 +26,14 @@ import { Highlight } from 'one-more-highlight';
 ## Add multi-state styling
 
 ```tsx
-import { Highlight, match } from 'one-more-highlight';
+import { Highlight } from 'one-more-highlight';
 
 <Highlight
   text="hello world hello"
   searchWords={['hello']}
   highlightClassName="hl-base"
   states={[
-    { name: 'active', ...match.one(0), className: 'hl-active' },
+    { name: 'active', index: 0, className: 'hl-active' },
   ]}
 />
 // Match 0 gets both "hl-base" and "hl-active".

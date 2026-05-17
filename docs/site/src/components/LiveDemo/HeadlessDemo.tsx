@@ -1,4 +1,4 @@
-import { match, useHighlight } from 'one-more-highlight';
+import { useHighlight } from 'one-more-highlight';
 import React from 'react';
 
 // Scenario: a documentation reader where each "useEffect" match is rendered
@@ -35,7 +35,7 @@ export function HeadlessDemo() {
   const { segments, getMatchCount } = useHighlight({
     text,
     searchWords: ['useEffect'],
-    states: [{ name: 'active', ...match.one(1) }],
+    states: [{ name: 'active', index: 1 }],
   });
   return (
     <div style={containerStyle}>

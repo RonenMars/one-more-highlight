@@ -1,4 +1,4 @@
-import { Highlight, match } from 'one-more-highlight';
+import { Highlight } from 'one-more-highlight';
 import React from 'react';
 
 // Scenario: a documentation reader's "find on page" feature. Every hit on
@@ -29,7 +29,7 @@ export function RenderPropDemo() {
         text={text}
         searchWords={['useEffect']}
         highlightStyle={{ background: 'var(--hl-yellow)', color: 'var(--hl-text)', padding: '0 2px', borderRadius: '2px' }}
-        states={[{ name: 'active', ...match.one(2), style: { background: 'var(--hl-green)', color: 'var(--hl-text)' } }]}
+        states={[{ name: 'active', index: 2, style: { background: 'var(--hl-green)', color: 'var(--hl-text)' } }]}
         renderMatch={(seg, { className, style, Tag }) => {
           const TagAny = Tag as 'mark';
           return (

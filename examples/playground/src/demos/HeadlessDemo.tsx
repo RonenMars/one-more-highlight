@@ -1,4 +1,4 @@
-import { match, useHighlight } from 'one-more-highlight';
+import { useHighlight } from 'one-more-highlight';
 
 // Scenario: same find-in-page UI as MultiStateDemo, but instead of letting
 // <Highlight> emit the DOM, we use the headless useHighlight hook and emit
@@ -21,7 +21,7 @@ export function HeadlessDemo() {
   const { segments, getMatchCount } = useHighlight({
     text,
     searchWords: ['useEffect'],
-    states: [{ name: 'active', ...match.one(1) }],
+    states: [{ name: 'active', index: 1 }],
   });
   return (
     <div>

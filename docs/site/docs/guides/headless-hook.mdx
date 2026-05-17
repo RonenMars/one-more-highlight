@@ -73,8 +73,8 @@ const { segments, getMatchCount } = useHighlight({
   text,
   searchWords: ['time'],
   states: [
-    { name: 'active', ...match.one(2) },
-    { name: 'bookmarked', ...match.many([0, 3]) },
+    { name: 'active', index: 2 },
+    { name: 'bookmarked', indices: [0, 3] },
   ],
 });
 

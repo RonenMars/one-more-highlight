@@ -41,7 +41,7 @@ const demos = [
   { path: 'overlap-first',    title: 'Overlap strategy: first-wins',                        Component: OverlapFirstDemo },
   { path: 'regex',            title: 'RegExp search word — /\\btime\\b/i',                 Component: RegexDemo },
   { path: 'case-insensitive', title: 'Case-sensitive vs case-insensitive',                  Component: CaseInsensitiveDemo },
-  { path: 'selectors',        title: 'Selectors — match.one / range / many',                Component: SelectorsDemo },
+  { path: 'selectors',        title: 'Selectors — index / range / indices',                 Component: SelectorsDemo },
 ];
 
 export function App() {

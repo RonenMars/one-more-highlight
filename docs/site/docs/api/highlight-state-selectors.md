@@ -2,45 +2,38 @@
 sidebar_position: 3
 ---
 
-# `match` builders
+# `HighlightState` selectors
 
-```tsx
-import { match } from 'one-more-highlight';
-```
-
-Builder functions for creating `HighlightState` selector objects. Spread their return value into a state entry:
+A `HighlightState` is a plain object: a `name`, an optional `className` and/or `style`, and **exactly one** selector field that says which matches it applies to. The selector field is the discriminator — TypeScript narrows on `'index' in state` etc.
 
 ```tsx
 const states = [
-  { name: 'active', ...match.one(2), className: 'hl-active' },
+  { name: 'active', index: 2, className: 'hl-active' },
 ];
 ```
 
-## `match.one(index)`
+## `index: number`
 
 Selects a single match by zero-based document-order index.
 
 ```ts
-match.one(2)
-// → { index: 2 }
+{ name: 'active', index: 2 }
 ```
 
-## `match.range(from, to)`
+## `range: [number, number]`
 
 Selects all matches from index `from` to `to`, inclusive on both ends.
 
 ```ts
-match.range(0, 3)
-// → { range: [0, 3] }
+{ name: 'context', range: [0, 3] }
 ```
 
-## `match.many(indices)`
+## `indices: ReadonlyArray<number>`
 
 Selects a specific list of match indices.
 
 ```ts
-match.many([0, 2, 5])
-// → { indices: [0, 2, 5] }
+{ name: 'bookmarked', indices: [0, 2, 5] }
 ```
 
 ## Index semantics

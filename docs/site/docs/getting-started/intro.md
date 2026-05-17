@@ -9,23 +9,23 @@ sidebar_position: 1
 Every match gets a base style. Specific occurrences — by single index, index range, or arbitrary list — get additional layered styles on top. Classes concatenate, styles shallow-merge.
 
 ```tsx
-import { Highlight, match } from 'one-more-highlight';
+import { Highlight } from 'one-more-highlight';
 
 <Highlight
   text="time time time time time"
   searchWords={['time']}
   highlightClassName="bg-yellow-200"
   states={[
-    { name: 'active',     ...match.one(2),       className: 'bg-orange-500 ring-2' },
-    { name: 'preview',    ...match.range(0, 1),  className: 'bg-blue-100' },
-    { name: 'bookmarked', ...match.many([3, 4]), className: 'underline' },
+    { name: 'active',     index: 2,         className: 'bg-orange-500 ring-2' },
+    { name: 'preview',    range: [0, 1],    className: 'bg-blue-100' },
+    { name: 'bookmarked', indices: [3, 4],  className: 'underline' },
   ]}
 />
 ```
 
 ## Key features
 
-- **TypeScript-first** — full types, discriminated unions, `match.one/range/many` builders
+- **TypeScript-first** — full types, discriminated-union `HighlightState` (selectors: `index`, `range`, `indices`)
 - **Multi-state styling** — base + layered styles selected by index, range, or list
 - **Headless `useHighlight` hook** for DIY rendering
 - **`renderMatch` render-prop** for full per-match output control

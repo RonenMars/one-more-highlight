@@ -5,6 +5,20 @@ import { supported } from './supported.js';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect.js';
 import type { CssHighlightProps } from './types.js';
 
+// Spec-shaped subset of CSS.highlights / Highlight used by this engine.
+interface HighlightLike {
+  add(r: Range): void;
+  delete(r: Range): boolean;
+  size: number;
+}
+interface CssWithHighlights {
+  highlights: {
+    get(name: string): HighlightLike | undefined;
+    set(name: string, h: HighlightLike): void;
+    delete(name: string): void;
+  };
+}
+
 export function CssHighlight(props: CssHighlightProps) {
   const {
     text,
@@ -21,8 +35,7 @@ export function CssHighlight(props: CssHighlightProps) {
     style,
   } = props;
 
-  // Pipeline runs identically to <Highlight>; we use only `segments` here.
-  useHighlight({
+  const { segments } = useHighlight({
     text,
     searchWords,
     ...(caseSensitive !== undefined && { caseSensitive }),
@@ -46,9 +59,51 @@ export function CssHighlight(props: CssHighlightProps) {
       // 'dom' fallback is implemented in Task 7. 'none' is a no-op here.
       return;
     }
-    // Registry mechanics implemented in Task 5.
-    return;
-  }, [fallback]);
+
+    const textNode = containerRef.current?.firstChild;
+    if (!(textNode instanceof Text)) return;
+
+    const CssRef = (globalThis as unknown as { CSS: CssWithHighlights }).CSS;
+    const HighlightCtor = (globalThis as unknown as {
+      Highlight: new (...ranges: Range[]) => HighlightLike;
+    }).Highlight;
+
+    // Group match segments by state name.
+    const byState = new Map<string, Range[]>();
+    for (const seg of segments) {
+      if (!seg.isMatch) continue;
+      const r = document.createRange();
+      r.setStart(textNode, seg.start);
+      r.setEnd(textNode, seg.end);
+      const names = seg.states.length > 0 ? seg.states : ['match'];
+      for (const name of names) {
+        const bucket = byState.get(name) ?? [];
+        bucket.push(r);
+        byState.set(name, bucket);
+      }
+    }
+
+    const ownedRanges = new Map<string, Range[]>();
+    for (const [name, ranges] of byState) {
+      let h = CssRef.highlights.get(name);
+      if (!h) {
+        h = new HighlightCtor(...ranges);
+        CssRef.highlights.set(name, h);
+      } else {
+        for (const r of ranges) h.add(r);
+      }
+      ownedRanges.set(name, ranges);
+    }
+
+    return () => {
+      for (const [name, ranges] of ownedRanges) {
+        const h = CssRef.highlights.get(name);
+        if (!h) continue;
+        for (const r of ranges) h.delete(r);
+        if (h.size === 0) CssRef.highlights.delete(name);
+      }
+    };
+  }, [segments, fallback]);
 
   return createElement(as, { ref: containerRef, className, style }, text);
 }

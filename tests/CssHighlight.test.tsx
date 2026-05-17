@@ -1,4 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
+import { StrictMode } from 'react';
 import { render } from '@testing-library/react';
 import { CssHighlight } from '../src/css/CssHighlight.js';
 import { __resetSupportedCacheForTests } from '../src/css/supported.js';
@@ -170,8 +171,7 @@ describe('<CssHighlight> registry mechanics', () => {
     expect(env.registry.get('match')?.size).toBe(4);
   });
 
-  it('reaches the same end state under React.StrictMode double-invoke', async () => {
-    const { StrictMode } = await import('react');
+  it('reaches the same end state under React.StrictMode double-invoke', () => {
     render(
       <StrictMode>
         <CssHighlight text="cat cat cat" searchWords={['cat']} />

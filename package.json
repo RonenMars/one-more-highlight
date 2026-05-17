@@ -38,6 +38,23 @@
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
+    },
+    "./css": {
+      "import": {
+        "types": "./dist/css/index.d.ts",
+        "default": "./dist/css/index.js"
+      },
+      "require": {
+        "types": "./dist/css/index.d.cts",
+        "default": "./dist/css/index.cjs"
+      }
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "css": [
+        "./dist/css/index.d.ts"
+      ]
     }
   },
   "files": [
@@ -111,6 +128,16 @@
     {
       "name": "CJS (full)",
       "path": "dist/index.cjs",
+      "limit": "3 KB"
+    },
+    {
+      "name": "ESM (/css)",
+      "path": "dist/css/index.js",
+      "limit": "3 KB"
+    },
+    {
+      "name": "CJS (/css)",
+      "path": "dist/css/index.cjs",
       "limit": "3 KB"
     }
   ],

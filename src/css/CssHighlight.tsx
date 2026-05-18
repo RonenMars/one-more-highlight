@@ -6,20 +6,6 @@ import { supported } from './supported.js';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect.js';
 import type { CssHighlightProps } from './types.js';
 
-// Spec-shaped subset of CSS.highlights / Highlight used by this engine.
-interface HighlightLike {
-  add(r: Range): void;
-  delete(r: Range): boolean;
-  size: number;
-}
-interface CssWithHighlights {
-  highlights: {
-    get(name: string): HighlightLike | undefined;
-    set(name: string, h: HighlightLike): void;
-    delete(name: string): void;
-  };
-}
-
 export function CssHighlight(props: CssHighlightProps) {
   const {
     text,
@@ -55,10 +41,9 @@ export function CssHighlight(props: CssHighlightProps) {
     const textNode = containerRef.current?.firstChild;
     if (!(textNode instanceof Text)) return;
 
-    const CssRef = (globalThis as unknown as { CSS: CssWithHighlights }).CSS;
-    const HighlightCtor = (
-      globalThis as unknown as { Highlight: new (...ranges: Range[]) => HighlightLike }
-    ).Highlight;
+    // Capture the registry at setup so cleanup keeps working even if a
+    // test harness restores globals before React's unmount cleanup runs.
+    const registry = CSS.highlights;
 
     const byState = new Map<string, Range[]>();
     for (const seg of segments) {
@@ -76,10 +61,10 @@ export function CssHighlight(props: CssHighlightProps) {
 
     const ownedRanges = new Map<string, Range[]>();
     for (const [name, ranges] of byState) {
-      let h = CssRef.highlights.get(name);
+      let h = registry.get(name);
       if (!h) {
-        h = new HighlightCtor(...ranges);
-        CssRef.highlights.set(name, h);
+        h = new Highlight(...ranges);
+        registry.set(name, h);
       } else {
         for (const r of ranges) h.add(r);
       }
@@ -88,10 +73,10 @@ export function CssHighlight(props: CssHighlightProps) {
 
     return () => {
       for (const [name, ranges] of ownedRanges) {
-        const h = CssRef.highlights.get(name);
+        const h = registry.get(name);
         if (!h) continue;
         for (const r of ranges) h.delete(r);
-        if (h.size === 0) CssRef.highlights.delete(name);
+        if (h.size === 0) registry.delete(name);
       }
     };
   }, [segments, fallback]);

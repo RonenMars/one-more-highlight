@@ -24,8 +24,8 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - Three overlap strategies: `merge` (default), `nest`, `first-wins`.
 - Native-first `RegExp.escape()` with `escape-string-regexp` fallback.
 - ESM + CJS dual build, `.d.ts` + `.d.cts`, `exports` map, `sideEffects: false`.
-- 53 tests across 8 suites, including 1000-iteration property-based fuzz.
-- 1.92 KB ESM / 2.27 KB CJS brotlied. Zero CSS shipped.
+- 77 tests across 11 suites, including 1000-iteration property-based fuzz.
+- 1.89 KB ESM / 2.23 KB CJS brotlied for the default entry. Zero CSS shipped.
 - **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
 - **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
 - **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.
@@ -86,6 +86,34 @@ Opt-in `one-more-highlight/css` sub-export. Range-based, no DOM mutation, ~10× 
 ### v2.x — Drop legacy deps
 
 When Node 22 LTS reaches end-of-life (~April 2027) and `RegExp.escape()` is universally available, drop `escape-string-regexp`. The `src/escapeRegex.ts` adapter localizes the change — no public API impact. Same goes for re-evaluating `clsx` if React or browser standards add a built-in `class` joiner.
+
+### v2.x — RTL language support (Hebrew, Arabic, etc.)
+
+Substring matching is direction-agnostic — character offsets work the same in LTR and RTL text — but the visual rendering of highlights inside bidirectional content has edge cases worth documenting and demoing:
+
+- **Mixed-direction matches:** a match that spans LTR and RTL runs (e.g., searching for a number inside Hebrew prose) renders as multiple visual segments per the Unicode BiDi algorithm, even though it is one logical match.
+- **Neutral characters at match boundaries:** spaces, punctuation, and digits adjacent to RTL text inherit direction context. A highlight on the boundary may visually attach to the wrong run.
+- **Match index ordering in UI:** "next match" / "previous match" navigation needs to follow logical order, not visual order, to feel right in RTL UIs.
+- **`<mark>` direction inheritance:** the DOM engine's `<mark>` correctly inherits `dir` from its container. Verify the CSS engine's `::highlight()` painting respects the same direction.
+
+**Deliverables:**
+- Recipe page `docs/site/docs/recipes/rtl-languages.md` covering the BiDi gotchas with worked examples.
+- Two playground demos: one Hebrew, one Arabic, both with realistic mixed-direction text and multi-state highlights.
+- Visual snapshots for both demos across the 5-project matrix.
+- README mention under "Engines" or "Features" — RTL support is currently invisible to consumers searching for it.
+
+No library code changes expected — this is documentation + demos that validate (and pin) the existing behavior. If a real BiDi rendering bug surfaces, that becomes a separate fix.
+
+### v2.x — Typed regex helper (investigate)
+
+Expose a public helper that takes user-authored regex strings and returns a typed RegExp with compile-time validation: pattern syntax errors caught at the type level, named capture groups inferred into the exec() return shape, and typos in group references rejected before runtime. Likely a thin wrapper around [`@ark/regex`](https://www.npmjs.com/package/@ark/regex) (a drop-in replacement for `new RegExp()` with full type inference) re-exported under our own surface so the dependency stays swappable.
+
+**Open questions to resolve before shipping:**
+- Does the type-inference win pay for the runtime dep? `@ark/regex` is currently 0.0.5 — we would want stability or to vendor the type-only bits.
+- Where does the helper belong? Default entry, or a `one-more-highlight/regex` sub-export so consumers using only string `searchWords` pay nothing?
+- Does it compose cleanly with `findChunks` consumers who already author their own matchers?
+
+Defer until at least one consumer asks for typed capture-group access in `searchWords`. Today's RegExp literal support already works; this is an ergonomics layer, not a missing feature.
 
 ## Explicitly out of scope
 

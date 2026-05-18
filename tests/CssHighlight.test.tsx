@@ -181,4 +181,32 @@ describe('<CssHighlight> registry mechanics', () => {
     // 'match' highlight should contain exactly 3 ranges, not 6 and not 0.
     expect(env.registry.get('match')?.size).toBe(3);
   });
+
+  // Prop pass-through to useHighlight. A typo on any key would silently
+  // drop the option; these assertions would fail if that happened.
+
+  it('passes caseSensitive through to the matcher', () => {
+    render(
+      <CssHighlight text="Cat cat" searchWords={['cat']} caseSensitive />,
+    );
+    // Only the lowercase 'cat' matches; 'Cat' is skipped.
+    expect(env.registry.get('match')?.size).toBe(1);
+  });
+
+  it('passes overlapStrategy through to the matcher', () => {
+    // 'cat' and 'at' overlap on the trailing 'at'. With 'merge' (default)
+    // they collapse into one combined range per occurrence. With 'nest'
+    // they remain separate, doubling the count.
+    render(
+      <CssHighlight text="cat cat" searchWords={['cat', 'at']} overlapStrategy="nest" />,
+    );
+    expect(env.registry.get('match')?.size).toBe(4);
+  });
+
+  it('matches RegExp searchWords', () => {
+    render(
+      <CssHighlight text="cat hat bat" searchWords={[/[ch]at/]} />,
+    );
+    expect(env.registry.get('match')?.size).toBe(2);
+  });
 });

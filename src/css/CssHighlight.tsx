@@ -4,6 +4,7 @@ import { Highlight as DomHighlight } from '../Highlight.js';
 import { useHighlight } from '../useHighlight.js';
 import { supported } from './supported.js';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect.js';
+import { IMPLICIT_HIGHLIGHT_NAME } from './types.js';
 import type { CssHighlightProps } from './types.js';
 
 export function CssHighlight(props: CssHighlightProps) {
@@ -51,7 +52,7 @@ export function CssHighlight(props: CssHighlightProps) {
       const r = document.createRange();
       r.setStart(textNode, seg.start);
       r.setEnd(textNode, seg.end);
-      const names = seg.states.length > 0 ? seg.states : ['match'];
+      const names = seg.states.length > 0 ? seg.states : [IMPLICIT_HIGHLIGHT_NAME];
       for (const name of names) {
         const bucket = byState.get(name) ?? [];
         bucket.push(r);

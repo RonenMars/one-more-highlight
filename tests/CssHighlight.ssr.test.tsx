@@ -39,4 +39,10 @@ describe('<CssHighlight> SSR', () => {
     // In SSR, CSS.highlights is undefined → 'dom' fallback path renders <mark>.
     expect(html).toMatch(/<mark[^>]*>cat<\/mark>/);
   });
+
+  it('fallback="throw" rejects on the server', () => {
+    expect(() =>
+      renderToString(<CssHighlight text="cat" searchWords={['cat']} fallback="throw" />),
+    ).toThrow(/CSS\.highlights is not available/i);
+  });
 });

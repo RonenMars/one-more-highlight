@@ -121,3 +121,49 @@ the deferral is deliberate, not an oversight. Re-litigate only after we
 have evidence (consumer feedback, usage telemetry) that one shape is
 clearly better than the other. The sub-export gives us reversibility;
 spending that optionality up front earns nothing.
+
+## Pre-release validation (2026-05-18)
+
+Before tagging the release, the deferral decision was re-tested against
+real adoption signal for the CSS Custom Highlight API in the React
+ecosystem. The data confirmed the deferral.
+
+**Adoption signal: niche, no React groundswell.**
+
+- **npm download ratios:** `react-highlight-words` ≈ 1.42M weekly,
+  `mark.js` ≈ 3.07M weekly. The known CSS-Highlights React libraries
+  combined sit at ≈ 8.4K weekly (`highlight-search-term` ≈ 8.3K,
+  `react-css-highlight` ≈ 131). That's ~10,000× more downloads for the
+  DOM-wrapping incumbents.
+- **Hacker News flat-zero:** the three Custom-Highlight-API submissions
+  from 2025 (Firefox 140 ship, `<syntax-highlight>` element, MDN docs)
+  each scored 1–2 points / 0 comments.
+- **Evangelism cluster sits outside React:** coverage is on web.dev,
+  MDN, CSS-Tricks, Frontend Masters. No r/reactjs thread of substance,
+  no Next.js docs mention, no dev.to viral post.
+- **Real friction items surfacing in posts:** SSR pop-in (no
+  server-side highlights), Firefox 140 ignores `text-decoration` on
+  `::highlight()`, Safari 17.2 ignores highlights under
+  `user-select: none`, range invalidation under virtualization. Each is
+  a reason a consumer aware of the API still picks the DOM engine.
+
+**Implication for the sub-export decision:** the expected usage pattern
+is "one engine per app, and that engine is the DOM engine for the vast
+majority of consumers for at least the next 12-18 months." Tree-shaking
+the CSS engine code out of default-entry bundles is the right
+optimization for that pattern. Unifying under `<Highlight engine="…">`
+would force every consumer to pay for the CSS engine code path even
+when they never opt in — which is the wrong trade given the data.
+
+**Trigger to revisit:** if any of the following holds, re-open this ADR
+and reconsider unification.
+
+- A CSS-Highlights-based React library crosses ~50K weekly npm
+  downloads.
+- r/reactjs or r/javascript surfaces a substantive thread requesting
+  the CSS engine, or comparing CSS vs. DOM highlight libraries.
+- Firefox / Safari close their known interop gaps
+  (`text-decoration`, `user-select: none`), and SSR pop-in gets a
+  documented workaround.
+- A major React-ecosystem library (Next.js docs, a popular DataGrid,
+  etc.) adopts the API and points readers at our `/css` entry.

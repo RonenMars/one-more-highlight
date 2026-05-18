@@ -1,3 +1,23 @@
+# [1.1.0](https://github.com/RonenMars/one-more-highlight/compare/v1.0.0...v1.1.0) (2026-05-18)
+
+
+### Bug Fixes
+
+* **docs:** destructure segments from useHighlight in headless playground demo ([206bec0](https://github.com/RonenMars/one-more-highlight/commit/206bec0758a5325053602e7b7a8fa8f44d1a0a84))
+* **docs:** replace bare autolinks with markdown links for MDX compat ([ce4198e](https://github.com/RonenMars/one-more-highlight/commit/ce4198e4fbdfd76aa13194ede4ffeb88eda37127))
+
+
+### Features
+
+* **playground:** add css-engine demo with engine toggle ([db7e12b](https://github.com/RonenMars/one-more-highlight/commit/db7e12be3eb7c7f53dec788cdd77123320a41e51))
+* **src:** add css highlight prop types ([00cf19e](https://github.com/RonenMars/one-more-highlight/commit/00cf19e3d09e2533cab264956672798a80bc37ce))
+* **src:** add css highlights feature detector and isomorphic layout effect shim ([483a353](https://github.com/RonenMars/one-more-highlight/commit/483a3532e24c95d80d87e3ebdabe128b03bc4d97))
+* **src:** degrade unsupported css highlight engine to dom or throw ([d97e12c](https://github.com/RonenMars/one-more-highlight/commit/d97e12cd14d8c27a965c69c11748d0985a196249))
+* **src:** expose css highlight from /css sub-export ([76eeb06](https://github.com/RonenMars/one-more-highlight/commit/76eeb06ec61a88dbea922669877b805e5f135a85))
+* **src:** forward refs from CssHighlight to wrapper or dom fallback ([fd290cb](https://github.com/RonenMars/one-more-highlight/commit/fd290cb05d701fbad2986e6185c29200734b45f6))
+* **src:** register match ranges with css.highlights per state name ([70e989b](https://github.com/RonenMars/one-more-highlight/commit/70e989b28eacd59d4728cd456d3fdcc16d675b75))
+* **src:** render css highlight wrapper with single text node ([612503d](https://github.com/RonenMars/one-more-highlight/commit/612503dedbb4da62ea5ff18eb590f8c41e7dd416))
+
 # [1.0.0](https://github.com/RonenMars/one-more-highlight/compare/v0.6.0...v1.0.0) (2026-05-17)
 
 

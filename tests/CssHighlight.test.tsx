@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
-import { StrictMode } from 'react';
+import { createRef, StrictMode } from 'react';
 import { render } from '@testing-library/react';
 import { CssHighlight } from '../src/css/CssHighlight.js';
 import { __resetSupportedCacheForTests } from '../src/css/supported.js';
@@ -43,6 +43,24 @@ describe('<CssHighlight>', () => {
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper).toHaveClass('outer');
     expect(wrapper.style.color).toBe('red');
+  });
+
+  it('forwards ref to the wrapper element', () => {
+    const ref = createRef<HTMLSpanElement>();
+    const { container } = render(
+      <CssHighlight ref={ref} text="abc" searchWords={['a']} fallback="none" />,
+    );
+    expect(ref.current).toBe(container.firstElementChild);
+  });
+
+  it('forwards ref through the DOM fallback path', () => {
+    // jsdom has no CSS.highlights, so default fallback='dom' engages.
+    // The ref should still resolve to the rendered wrapper.
+    const ref = createRef<HTMLSpanElement>();
+    const { container } = render(
+      <CssHighlight ref={ref} text="cat cat" searchWords={['cat']} />,
+    );
+    expect(ref.current).toBe(container.firstElementChild);
   });
 });
 

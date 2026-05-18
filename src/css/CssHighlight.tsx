@@ -1,5 +1,5 @@
-import { createElement, useRef } from 'react';
-import type { ElementRef } from 'react';
+import { createElement, forwardRef, useCallback, useRef } from 'react';
+import type { ElementRef, Ref } from 'react';
 import { Highlight as DomHighlight } from '../Highlight.js';
 import { useHighlight } from '../useHighlight.js';
 import { supported } from './supported.js';
@@ -7,7 +7,16 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect.js';
 import { IMPLICIT_HIGHLIGHT_NAME } from './types.js';
 import type { CssHighlightProps } from './types.js';
 
-export function CssHighlight(props: CssHighlightProps) {
+// Apply a forwarded ref (object or callback) to an element.
+function applyRef<T>(ref: Ref<T> | undefined, value: T | null): void {
+  if (typeof ref === 'function') ref(value);
+  else if (ref) (ref as { current: T | null }).current = value;
+}
+
+export const CssHighlight = forwardRef<
+  ElementRef<'span'>,
+  CssHighlightProps
+>(function CssHighlight(props, forwardedRef) {
   const {
     text,
     searchWords,
@@ -35,6 +44,15 @@ export function CssHighlight(props: CssHighlightProps) {
   });
 
   const containerRef = useRef<ElementRef<'span'>>(null);
+  // Callback ref that fans the element out to both our internal ref (for
+  // the layout effect's text-node lookup) and the caller's forwarded ref.
+  const setContainerRef = useCallback(
+    (el: ElementRef<'span'> | null) => {
+      containerRef.current = el;
+      applyRef(forwardedRef, el);
+    },
+    [forwardedRef],
+  );
 
   useIsomorphicLayoutEffect(() => {
     if (!supported()) return; // 'none' branch: render plain text, do nothing.
@@ -99,7 +117,7 @@ export function CssHighlight(props: CssHighlightProps) {
       ...(style !== undefined && { style }),
       as,
     };
-    return <DomHighlight {...domProps} />;
+    return <DomHighlight ref={forwardedRef} {...domProps} />;
   }
 
   if (!supported() && fallback === 'throw') {
@@ -109,5 +127,5 @@ export function CssHighlight(props: CssHighlightProps) {
     );
   }
 
-  return createElement(as, { ref: containerRef, className, style }, text);
-}
+  return createElement(as, { ref: setContainerRef, className, style }, text);
+});

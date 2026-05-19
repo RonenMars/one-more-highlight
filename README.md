@@ -3,6 +3,7 @@
 > Multi-state substring highlighting for React.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/ronenmars/one-more-highlight?label=release)](https://github.com/ronenmars/one-more-highlight/releases/latest)
 [![TypeScript](https://img.shields.io/badge/TypeScript-First--class-blue.svg)](#)
 [![bundle](https://img.shields.io/badge/bundle-1.92KB%20brotlied-green.svg)](#)
 [![tests](https://img.shields.io/badge/tests-53%20passing-green.svg)](#)

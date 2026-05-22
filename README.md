@@ -1,12 +1,15 @@
-# one-more-highlight
+# omh · one-more-highlight
 
 > Multi-state substring highlighting for React.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/one-more-highlight.svg)](https://www.npmjs.com/package/one-more-highlight)
+[![npm downloads](https://img.shields.io/npm/dm/one-more-highlight.svg)](https://www.npmjs.com/package/one-more-highlight)
+[![CI](https://img.shields.io/github/actions/workflow/status/ronenmars/one-more-highlight/ci.yml?branch=main&label=CI)](https://github.com/ronenmars/one-more-highlight/actions)
 [![Latest release](https://img.shields.io/github/v/release/ronenmars/one-more-highlight?label=release)](https://github.com/ronenmars/one-more-highlight/releases/latest)
-[![TypeScript](https://img.shields.io/badge/TypeScript-First--class-blue.svg)](#)
-[![bundle](https://img.shields.io/badge/bundle-1.92KB%20brotlied-green.svg)](#)
-[![tests](https://img.shields.io/badge/tests-53%20passing-green.svg)](#)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/one-more-highlight?label=minzipped)](https://bundlephobia.com/package/one-more-highlight)
+[![types](https://img.shields.io/npm/types/one-more-highlight.svg)](https://www.npmjs.com/package/one-more-highlight)
+[![React](https://img.shields.io/npm/dependency-version/one-more-highlight/peer/react?label=react)](https://www.npmjs.com/package/one-more-highlight?activeTab=dependencies)
 
 Highlight every occurrence of a substring in one style, **and** highlight specific occurrences — by **single index**, **index range**, or **arbitrary list of indices** — in another style. TypeScript-first, headless-friendly, ~2KB brotlied, zero CSS shipped.
 

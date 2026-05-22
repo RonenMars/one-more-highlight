@@ -94,4 +94,40 @@ describe('<Highlight>', () => {
     expect(ems[0]).toHaveAttribute('data-s', 'active');
     expect(ems[1]).toHaveAttribute('data-s', '');
   });
+
+  it('applies term-based state class to matches of the right search word', () => {
+    const { container } = render(
+      <Highlight
+        text="cat dog cat"
+        searchWords={['cat', 'dog']}
+        highlightClassName="hl-base"
+        states={[
+          { name: 'feline', term: 'cat', className: 'hl-cat' },
+          { name: 'canine', term: 'dog', className: 'hl-dog' },
+        ]}
+      />,
+    );
+    const marks = container.querySelectorAll('mark');
+    // Three matches: 'cat', 'dog', 'cat'.
+    expect(marks).toHaveLength(3);
+    expect(marks[0]?.className).toContain('hl-cat');
+    expect(marks[1]?.className).toContain('hl-dog');
+    expect(marks[2]?.className).toContain('hl-cat');
+  });
+
+  it('applies nth state class only to the targeted occurrence', () => {
+    const { container } = render(
+      <Highlight
+        text="cat dog cat dog cat"
+        searchWords={['cat', 'dog']}
+        highlightClassName="hl-base"
+        states={[{ name: 'first-cat', term: 'cat', nth: 0, className: 'hl-first' }]}
+      />,
+    );
+    const marks = container.querySelectorAll('mark');
+    expect(marks).toHaveLength(5);
+    expect(marks[0]?.className).toContain('hl-first');
+    expect(marks[2]?.className).not.toContain('hl-first');
+    expect(marks[4]?.className).not.toContain('hl-first');
+  });
 });

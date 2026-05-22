@@ -158,4 +158,51 @@ describe('applyStates', () => {
     expect(warn).not.toHaveBeenCalled();
     warn.mockRestore();
   });
+
+  it('nth selects the Nth occurrence of a term in document order (0-indexed)', () => {
+    const mixed: CombinedChunk[] = [
+      { start: 0, end: 3, termIndex: 0, matchIndex: 0 },
+      { start: 5, end: 8, termIndex: 1, matchIndex: 1 },
+      { start: 10, end: 13, termIndex: 0, matchIndex: 2 },
+      { start: 15, end: 18, termIndex: 0, matchIndex: 3 },
+    ];
+    // term 0 has three matches: matchIndices [0, 2, 3] in doc order.
+    const r0 = applyStates(mixed, [{ name: 'n0', term: 0, nth: 0 }], ['cat', 'dog']);
+    expect(r0[0]?.states).toEqual(['n0']);
+    expect(r0[2]?.states).toEqual([]);
+    expect(r0[3]?.states).toEqual([]);
+
+    const r1 = applyStates(mixed, [{ name: 'n1', term: 0, nth: 1 }], ['cat', 'dog']);
+    expect(r1[0]?.states).toEqual([]);
+    expect(r1[2]?.states).toEqual(['n1']);
+    expect(r1[3]?.states).toEqual([]);
+
+    const r2 = applyStates(mixed, [{ name: 'n2', term: 0, nth: 2 }], ['cat', 'dog']);
+    expect(r2[3]?.states).toEqual(['n2']);
+  });
+
+  it('nth out of range — warns by default, silent: true suppresses', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    // term 0 has 4 matches; nth: 9 is out of range.
+    applyStates(chunks, [{ name: 'over', term: 0, nth: 9 }], ['cat']);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0]?.[0]).toMatch(/nth: 9 .* only has 4 matches/i);
+    warn.mockClear();
+
+    applyStates(
+      chunks,
+      [{ name: 'over', term: 0, nth: 9, silent: true }],
+      ['cat'],
+    );
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it('nth: -1 is treated as out of range', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const r = applyStates(chunks, [{ name: 'neg', term: 0, nth: -1 }], ['cat']);
+    expect(r.every((c) => c.states.length === 0)).toBe(true);
+    expect(warn).toHaveBeenCalledTimes(1);
+    warn.mockRestore();
+  });
 });

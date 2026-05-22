@@ -30,6 +30,7 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
 - **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.
 - **Playwright visual regression tests** — 10 demos × light/dark across 5 projects (desktop Chromium/Firefox/WebKit at 2× DPR + mobile-iphone + mobile-android); CI job on every PR and push to `main`.
+- Per-search-term match selectors — `{ term }` and `{ term, nth }` on `HighlightState`, with `termMatch: 'all' | 'first'` and `silent` modifiers.
 
 ### Verified
 
@@ -63,7 +64,7 @@ Earning the major version. Stability commitment + a feature that meaningfully di
 
 ### v1.0 candidates
 
-- [ ] **Per-search-term match indexing** — `{ name, term: 'cat' | 0, index: 2 }` selector form. Stable references when `searchWords` changes dynamically (think autocomplete UIs).
+- [x] **Per-search-term match indexing** — shipped. Selector forms `{ name, term }` and `{ name, term, nth }` on `HighlightState`. See `docs/site/docs/api/highlight-state-selectors.md`.
 - [ ] **Stable match IDs** — `{ name, matchId: 'msg-42-occurrence-3' }` for references that survive data changes.
 - [ ] **`getMatchByIndex(i)` and `getMatchAt(charPos)`** helpers for keyboard navigation patterns ("press ↓ for next match").
 - [ ] **Public API freeze** — every exported type and prop is committed to with semver guarantees.

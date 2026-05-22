@@ -22,7 +22,7 @@ Highlight every occurrence of a substring in one style, **and** highlight specif
 
 **`one-more-highlight`** gives you:
 
-- **TypeScript-first** — full types and a discriminated-union `HighlightState` that narrows correctly on the selector field (`index`, `range`, or `indices`).
+- **TypeScript-first** — full types and a discriminated-union `HighlightState` that narrows correctly on the selector field (`index`, `range`, `indices`, `term`, or `term + nth`).
 - **Multi-state styling** as the headline feature — every match gets a base style, plus layered styles selected by index, range, or arbitrary list. Styles compose.
 - **Headless `useHighlight` hook** alongside the `<Highlight>` component, with a `renderMatch` render-prop for full per-match control.
 - **Tiny** — ~2 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
@@ -177,10 +177,12 @@ interface TextSegment {
 `HighlightState` is a discriminated union — each entry carries **exactly one** selector field that says which matches it applies to. TypeScript narrows on the field name.
 
 ```typescript
-// Three selector shapes, picked by which field is present:
+// Five selector shapes, picked by which field is present:
 { name: 'active',     index: 2 }            // a single match
 { name: 'preview',    range: [4, 6] }       // an inclusive range
 { name: 'bookmarked', indices: [0, 4, 7] }  // an arbitrary list
+{ name: 'feline',     term: 'cat' }         // every match of a search word
+{ name: 'first-cat',  term: 'cat', nth: 0 } // a specific occurrence of a search word
 ```
 
 ```typescript
@@ -239,7 +241,6 @@ const normalize = (s: string) =>
 
 See [`docs/ROADMAP.md`](./docs/ROADMAP.md) for the full v2+ plan. Short version:
 
-- **Per-search-term indexing** (`{ term: 'cat', index: 1 }`)
 - **Grapheme-aware matching** via `Intl.Segmenter`
 - **Fuzzy matching** (Levenshtein)
 - **Stable match IDs** for references that survive data changes

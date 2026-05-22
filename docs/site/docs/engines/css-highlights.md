@@ -78,6 +78,24 @@ priority — it is the author's responsibility.
 | `'none'` | Renders plain text wrapper with no highlights. |
 | `'throw'` | Throws on first render with a clear message. Opt-in for strict consumers. |
 
+## Refs
+
+`<CssHighlight>` is wrapped with `forwardRef` — pass a `ref` and it
+attaches to the root wrapper element (the `as` element, default `<span>`).
+In the DOM-fallback branch the ref still resolves to the wrapper, so
+consumer code can hold a single ref shape regardless of which engine
+runs.
+
+```tsx
+import { useRef } from 'react';
+import { CssHighlight } from 'one-more-highlight/css';
+
+function Article() {
+  const ref = useRef<HTMLSpanElement>(null);
+  return <CssHighlight ref={ref} text={text} searchWords={['fox']} />;
+}
+```
+
 ## Namespace scoping
 
 `CSS.highlights` is a global registry — two `<CssHighlight>` instances on

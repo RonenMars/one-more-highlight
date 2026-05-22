@@ -8,16 +8,33 @@ All types are exported from `one-more-highlight`.
 
 ## `HighlightState`
 
-A discriminated union for state selector entries:
+A discriminated union for state selector entries. Each member shares a `name` plus optional `className` / `style`, and carries **exactly one** selector field that determines which matches it applies to:
 
 ```ts
+type HighlightStateBase = {
+  name: string;
+  className?: string;
+  style?: CSSProperties;
+};
+
 type HighlightState =
-  | { name: string; index: number; className?: string; style?: CSSProperties }
-  | { name: string; range: [number, number]; className?: string; style?: CSSProperties }
-  | { name: string; indices: number[]; className?: string; style?: CSSProperties };
+  | (HighlightStateBase & { index: number })
+  | (HighlightStateBase & { range: readonly [number, number] })
+  | (HighlightStateBase & { indices: ReadonlyArray<number> })
+  | (HighlightStateBase & {
+      term: string | number;
+      termMatch?: 'all' | 'first';
+      silent?: boolean;
+    })
+  | (HighlightStateBase & {
+      term: string | number;
+      nth: number;
+      termMatch?: 'all' | 'first';
+      silent?: boolean;
+    });
 ```
 
-Use the `match` builders to construct these without touching the union directly.
+Each member is also exported individually (`HighlightStateOne`, `HighlightStateRange`, `HighlightStateMany`, `HighlightStateTerm`, `HighlightStateTermNth`) for consumers building typed helpers or narrowing predicates. See [`HighlightState` selectors](/docs/api/highlight-state-selectors) for the semantics of each form.
 
 ## `OverlapStrategy`
 

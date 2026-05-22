@@ -54,3 +54,13 @@ import { Highlight } from 'one-more-highlight';
 Additional HTML attributes are forwarded to the root element.
 
 `<Highlight>` is wrapped with `forwardRef` — you can pass a `ref` and it will be attached to the root element (the `as` element, default `<span>`).
+
+## Regex defenses
+
+When you pass a `RegExp` instance in `searchWords`, `<Highlight>` does three things to avoid common footguns:
+
+- **Clones the regex** so the consumer-supplied object's `lastIndex` is never mutated (regex objects carry stateful `lastIndex` when used with `g` or `y` flags).
+- **Forces the `g` flag on** in the clone so `matchAll` walks the full string.
+- **Drops the sticky `y` flag** from the clone, because anchored sticky matching is incompatible with this component's "find all occurrences" semantics. A one-time `console.warn` fires in development (`NODE_ENV !== 'production'`) when a sticky regex is passed.
+
+The original regex you passed in is never modified.

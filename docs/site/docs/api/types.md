@@ -8,7 +8,7 @@ All types are exported from `one-more-highlight`.
 
 ## `HighlightState`
 
-A discriminated union for state selector entries. Each member shares a `name` plus optional `className` / `style`, and is identified by which selector field it carries:
+A discriminated union for state selector entries. Each member shares a `name` plus optional `className` / `style`, and carries **exactly one** selector field that determines which matches it applies to:
 
 ```ts
 type HighlightStateBase = {

@@ -205,4 +205,22 @@ describe('applyStates', () => {
     expect(warn).toHaveBeenCalledTimes(1);
     warn.mockRestore();
   });
+
+  it('composes term-based and global-index selectors on the same chunk', () => {
+    const mixed: CombinedChunk[] = [
+      { start: 0, end: 3, termIndex: 0, matchIndex: 0 },
+      { start: 5, end: 8, termIndex: 1, matchIndex: 1 },
+      { start: 10, end: 13, termIndex: 0, matchIndex: 2 },
+    ];
+    const states: HighlightState[] = [
+      { name: 'first-global', index: 0 },
+      { name: 'cat-all', term: 0 },
+      { name: 'cat-first', term: 0, nth: 0 },
+      { name: 'middle-range', range: [1, 1] },
+    ];
+    const r = applyStates(mixed, states, ['cat', 'dog']);
+    expect(r[0]?.states).toEqual(['first-global', 'cat-all', 'cat-first']);
+    expect(r[1]?.states).toEqual(['middle-range']);
+    expect(r[2]?.states).toEqual(['cat-all']);
+  });
 });

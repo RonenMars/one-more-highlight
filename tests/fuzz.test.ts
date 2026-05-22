@@ -57,4 +57,38 @@ describe('fuzz: pipeline preserves text', () => {
       { numRuns: 500 },
     );
   });
+
+  it('term: i only tags matches whose underlying termIndex equals i', () => {
+    fc.assert(
+      fc.property(
+        fc.array(fc.stringMatching(/^[a-z]{1,4}$/), { minLength: 1, maxLength: 5 }),
+        fc.string({ minLength: 0, maxLength: 200 }),
+        fc.nat({ max: 4 }),
+        (searchWords, text, termPick) => {
+          const t = termPick % searchWords.length;
+          const raw = defaultFindChunks({
+            searchWords,
+            textToHighlight: text,
+            caseSensitive: false,
+            autoEscape: true,
+          });
+          const combined = combineChunks(raw, 'merge');
+          const tagged = applyStates(
+            combined,
+            [{ name: 'pick', term: t, silent: true }],
+            searchWords,
+          );
+          for (const c of tagged) {
+            if (c.states.includes('pick')) {
+              // The tag should only land on chunks whose termIndex === t.
+              // With overlap strategy 'merge', termIndex on a surviving chunk is
+              // the termIndex of whichever raw match started the merged block.
+              expect(c.termIndex).toBe(t);
+            }
+          }
+        },
+      ),
+      { numRuns: 1000 },
+    );
+  });
 });

@@ -35,7 +35,25 @@ export type HighlightStateOne = HighlightStateBase & { index: number };
 export type HighlightStateRange = HighlightStateBase & { range: readonly [number, number] };
 export type HighlightStateMany = HighlightStateBase & { indices: ReadonlyArray<number> };
 
-export type HighlightState = HighlightStateOne | HighlightStateRange | HighlightStateMany;
+export type HighlightStateTerm = HighlightStateBase & {
+  term: string | number;
+  termMatch?: 'all' | 'first';
+  silent?: boolean;
+};
+
+export type HighlightStateTermNth = HighlightStateBase & {
+  term: string | number;
+  nth: number;
+  termMatch?: 'all' | 'first';
+  silent?: boolean;
+};
+
+export type HighlightState =
+  | HighlightStateOne
+  | HighlightStateRange
+  | HighlightStateMany
+  | HighlightStateTerm
+  | HighlightStateTermNth;
 
 export type OverlapStrategy = 'merge' | 'nest' | 'first-wins';
 

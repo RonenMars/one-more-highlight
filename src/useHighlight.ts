@@ -14,11 +14,11 @@ function searchKeyOf(searchWords: ReadonlyArray<string | RegExp>): string {
 function statesKeyOf(states: ReadonlyArray<HighlightState> | undefined): string {
   if (!states) return '';
   return JSON.stringify(states.map((s) => {
-    const sel = 'index' in s
-      ? { i: s.index }
-      : 'range' in s
-        ? { r: s.range }
-        : { m: s.indices };
+    let sel: unknown;
+    if ('index' in s) sel = { i: s.index };
+    else if ('range' in s) sel = { r: s.range };
+    else if ('indices' in s) sel = { m: s.indices };
+    else sel = { t: 'placeholder' };
     return [s.name, sel, s.className ?? '', s.style ?? null];
   }));
 }

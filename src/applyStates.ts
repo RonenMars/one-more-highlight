@@ -7,13 +7,17 @@ function selects(state: HighlightState, matchIndex: number): boolean {
     const [lo, hi] = state.range;
     return matchIndex >= lo && matchIndex <= hi;
   }
-  return state.indices.includes(matchIndex);
+  if ('indices' in state) return state.indices.includes(matchIndex);
+  return false;
 }
 
 function highestSelected(state: HighlightState): number {
   if ('index' in state) return state.index;
   if ('range' in state) return state.range[1];
-  return state.indices.length === 0 ? -1 : Math.max(...state.indices);
+  if ('indices' in state) {
+    return state.indices.length === 0 ? -1 : Math.max(...state.indices);
+  }
+  return -1;
 }
 
 const warned = new WeakSet<ReadonlyArray<HighlightState>>();

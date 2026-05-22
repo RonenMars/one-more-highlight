@@ -45,6 +45,31 @@ Every match gets `hl-base`. Match #2 also gets `hl-active`. Matches #0 and #1 al
 
 Indexing is global document order — match #0 is the first occurrence in the text regardless of which `searchWords` entry produced it.
 
+### Stable references when search terms change
+
+If your app's `searchWords` is dynamic (e.g., an autocomplete that adds
+new queries as the user types), state selectors tied to global match
+index will silently retarget every time a new query is added. Use
+per-term selectors instead:
+
+```tsx
+function SearchResults({ queries, text }: { queries: string[]; text: string }) {
+  return (
+    <Highlight
+      text={text}
+      searchWords={queries}
+      states={queries.map((q, i) => ({
+        name: q,
+        term: i,
+        className: `query-${i}`,
+      }))}
+    />
+  );
+}
+```
+
+Each query keeps its color as the user adds or removes queries.
+
 ## Multi-state composition
 
 A match can belong to multiple states simultaneously. Their `className`s are concatenated (via `clsx`) and their `style` objects are shallow-merged in declaration order:

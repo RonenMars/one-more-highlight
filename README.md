@@ -1,3 +1,12 @@
+<p align="center">
+  <a href="https://one-more-highlight.vercel.app">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="./assets/banner-short.svg" />
+      <img src="./assets/banner-short-light.svg" alt="one-more-highlight — Highlight the same word in three different ways. At the same time." width="100%" />
+    </picture>
+  </a>
+</p>
+
 # omh · one-more-highlight
 
 > Multi-state substring highlighting for React.

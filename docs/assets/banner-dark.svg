@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320" role="img" aria-label="one-more-highlight — Multi-state substring highlighting for React">
+  <title>one-more-highlight</title>
+  <desc>Wordmark for the one-more-highlight library (dark theme variant).</desc>
+
+  <rect x="48"  y="100" width="240" height="96" fill="#FFF166"/>
+  <rect x="304" y="100" width="280" height="96" fill="#A8FF80"/>
+  <rect x="600" y="100" width="540" height="96" fill="#FFADD6"/>
+
+  <text x="64" y="180"
+        font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+        font-size="96"
+        font-weight="800"
+        fill="#1b1b1d"
+        xml:space="preserve">one more highlight</text>
+
+  <text x="64" y="260"
+        font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+        font-size="32"
+        font-weight="500"
+        fill="#e6e6e6">Multi-state substring highlighting for React</text>
+</svg>

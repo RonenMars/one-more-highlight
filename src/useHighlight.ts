@@ -18,7 +18,7 @@ function statesKeyOf(states: ReadonlyArray<HighlightState> | undefined): string 
     if ('index' in s) sel = { i: s.index };
     else if ('range' in s) sel = { r: s.range };
     else if ('indices' in s) sel = { m: s.indices };
-    else sel = { t: 'placeholder' };
+    else sel = { t: 'placeholder' }; // TODO(task-7): serialize term/nth/termMatch/silent before term selectors do real work
     return [s.name, sel, s.className ?? '', s.style ?? null];
   }));
 }

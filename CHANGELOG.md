@@ -1,3 +1,13 @@
+# [1.2.0](https://github.com/RonenMars/one-more-highlight/compare/v1.1.0...v1.2.0) (2026-05-22)
+
+
+### Features
+
+* **src:** add term and nth selector shapes to HighlightState union ([9f45430](https://github.com/RonenMars/one-more-highlight/commit/9f45430afd16609d4150f65404295321bda4e11e))
+* **src:** serialize term selector fields in useHighlight memo key ([b113915](https://github.com/RonenMars/one-more-highlight/commit/b113915d2b6fe71c0223411f7007ad4c39d50d7f))
+* **src:** support nth selector for per-term occurrence ([44b7a45](https://github.com/RonenMars/one-more-highlight/commit/44b7a45fc1f0c0236d8ef6308601d31a83d9105d))
+* **src:** support numeric term selector with out-of-range warning ([3839086](https://github.com/RonenMars/one-more-highlight/commit/38390868fcb34fcfba86917157eca5936bde916d))
+
 # [1.1.0](https://github.com/RonenMars/one-more-highlight/compare/v1.0.0...v1.1.0) (2026-05-18)
 
 

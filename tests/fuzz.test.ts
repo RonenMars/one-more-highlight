@@ -13,7 +13,7 @@ function pipeline(text: string, terms: string[]): string {
     autoEscape: true,
   });
   const combined = combineChunks(raw, 'merge');
-  const tagged = applyStates(combined, undefined);
+  const tagged = applyStates(combined, undefined, terms);
   return buildSegments(text, tagged).map((s) => s.text).join('');
 }
 

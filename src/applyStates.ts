@@ -45,7 +45,9 @@ export interface TaggedChunk extends CombinedChunk {
 export function applyStates(
   chunks: ReadonlyArray<CombinedChunk>,
   states: ReadonlyArray<HighlightState> | undefined,
+  searchWords: ReadonlyArray<string | RegExp>,
 ): TaggedChunk[] {
+  void searchWords; // TODO(task-3): resolve term/nth selectors against searchWords
   if (!states || states.length === 0) {
     return chunks.map((c) => ({ ...c, states: [] }));
   }

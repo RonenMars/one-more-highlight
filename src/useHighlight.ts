@@ -69,7 +69,7 @@ export function useHighlight(opts: UseHighlightOptions): UseHighlightResult {
       sanitize,
     });
     const combined = combineChunks(raw, overlapStrategy);
-    const tagged = applyStates(combined, states);
+    const tagged = applyStates(combined, states, searchWords);
     return buildSegments(text, tagged);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, searchKey, caseSensitive, autoEscape, sanitize, findChunks, stKey, overlapStrategy]);

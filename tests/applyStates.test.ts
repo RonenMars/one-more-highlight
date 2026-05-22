@@ -107,4 +107,55 @@ describe('applyStates', () => {
     expect(warn.mock.calls[0]?.[0]).toMatch(/term index 9 .* out of range/i);
     warn.mockRestore();
   });
+
+  it('tags by string term — matches every entry equal to term (default termMatch: all)', () => {
+    const mixed: CombinedChunk[] = [
+      { start: 0, end: 3, termIndex: 0, matchIndex: 0 },  // 'cat' (first entry)
+      { start: 5, end: 8, termIndex: 1, matchIndex: 1 },  // 'dog'
+      { start: 10, end: 13, termIndex: 2, matchIndex: 2 }, // 'cat' (third entry)
+      { start: 15, end: 18, termIndex: 1, matchIndex: 3 }, // 'dog'
+    ];
+    const states: HighlightState[] = [{ name: 'cat-state', term: 'cat' }];
+    const r = applyStates(mixed, states, ['cat', 'dog', 'cat']);
+    expect(r[0]?.states).toEqual(['cat-state']);
+    expect(r[1]?.states).toEqual([]);
+    expect(r[2]?.states).toEqual(['cat-state']);
+    expect(r[3]?.states).toEqual([]);
+  });
+
+  it('termMatch: "first" binds string term to only the first matching entry', () => {
+    const mixed: CombinedChunk[] = [
+      { start: 0, end: 3, termIndex: 0, matchIndex: 0 },  // 'cat' (first)
+      { start: 10, end: 13, termIndex: 2, matchIndex: 1 }, // 'cat' (third)
+    ];
+    const states: HighlightState[] = [
+      { name: 'first-cat', term: 'cat', termMatch: 'first' },
+    ];
+    const r = applyStates(mixed, states, ['cat', 'dog', 'cat']);
+    expect(r[0]?.states).toEqual(['first-cat']);
+    expect(r[1]?.states).toEqual([]);
+  });
+
+  it('string term does NOT match RegExp entries even when source equals term', () => {
+    const mixed: CombinedChunk[] = [
+      { start: 0, end: 3, termIndex: 0, matchIndex: 0 }, // 'cat' (string)
+      { start: 5, end: 8, termIndex: 1, matchIndex: 1 }, // /cat/ (regex; source === 'cat')
+    ];
+    const states: HighlightState[] = [{ name: 'literal-cat', term: 'cat' }];
+    const r = applyStates(mixed, states, ['cat', /cat/]);
+    expect(r[0]?.states).toEqual(['literal-cat']);
+    expect(r[1]?.states).toEqual([]);
+  });
+
+  it('unknown string term warns by default and is silent with silent: true', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    applyStates(chunks, [{ name: 'missing', term: 'zzz' }], ['cat']);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0]?.[0]).toMatch(/term "zzz" .* not present/i);
+    warn.mockClear();
+
+    applyStates(chunks, [{ name: 'missing', term: 'zzz', silent: true }], ['cat']);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
 });

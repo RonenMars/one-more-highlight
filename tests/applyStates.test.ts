@@ -3,6 +3,21 @@ import { applyStates } from '../src/applyStates.js';
 import type { CombinedChunk } from '../src/combineChunks.js';
 import type { HighlightState } from '../src/types.js';
 
+// Type-level smoke test: the new shapes must be assignable to HighlightState.
+// If this file no longer compiles, the union is missing the new members.
+const _termShape: HighlightState = { name: 't', term: 'cat' };
+const _termNthShape: HighlightState = { name: 'tn', term: 0, nth: 2 };
+const _termAllShape: HighlightState = {
+  name: 'ta',
+  term: 'cat',
+  termMatch: 'all',
+};
+const _termSilent: HighlightState = { name: 'ts', term: 'cat', silent: true };
+void _termShape;
+void _termNthShape;
+void _termAllShape;
+void _termSilent;
+
 const chunks: CombinedChunk[] = [
   { start: 0, end: 3, termIndex: 0, matchIndex: 0 },
   { start: 5, end: 8, termIndex: 0, matchIndex: 1 },

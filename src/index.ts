@@ -9,6 +9,8 @@ export type {
   HighlightStateMany,
   HighlightStateOne,
   HighlightStateRange,
+  HighlightStateTerm,
+  HighlightStateTermNth,
   HighlightTagProps,
   MatchDefaults,
   MatchSegment,

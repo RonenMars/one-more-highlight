@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { applyStates } from '../src/applyStates.js';
 import type { CombinedChunk } from '../src/combineChunks.js';
 import type { HighlightState } from '../src/types.js';
@@ -72,5 +72,39 @@ describe('applyStates', () => {
     ];
     const r = applyStates(chunks, states, []);
     expect(r[0]?.states).toEqual(['b', 'a']);
+  });
+
+  it('tags by numeric term — selects matches whose termIndex equals state.term', () => {
+    // chunks 0/2 are termIndex 0; chunks 1/3 are termIndex 1.
+    const mixed: CombinedChunk[] = [
+      { start: 0, end: 3, termIndex: 0, matchIndex: 0 },
+      { start: 5, end: 8, termIndex: 1, matchIndex: 1 },
+      { start: 10, end: 13, termIndex: 0, matchIndex: 2 },
+      { start: 15, end: 18, termIndex: 1, matchIndex: 3 },
+    ];
+    const states: HighlightState[] = [{ name: 'first-term', term: 0 }];
+    const r = applyStates(mixed, states, ['cat', 'dog']);
+    expect(r[0]?.states).toEqual(['first-term']);
+    expect(r[1]?.states).toEqual([]);
+    expect(r[2]?.states).toEqual(['first-term']);
+    expect(r[3]?.states).toEqual([]);
+  });
+
+  it('numeric term out of range — silent no-op with warning suppressed via silent', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const states: HighlightState[] = [{ name: 'oops', term: 9, silent: true }];
+    const r = applyStates(chunks, states, ['cat']);
+    expect(r.every((c) => c.states.length === 0)).toBe(true);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it('numeric term out of range — warns by default', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const states: HighlightState[] = [{ name: 'oops', term: 9 }];
+    applyStates(chunks, states, ['cat']);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0]?.[0]).toMatch(/term index 9 .* out of range/i);
+    warn.mockRestore();
   });
 });

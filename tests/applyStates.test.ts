@@ -27,20 +27,20 @@ const chunks: CombinedChunk[] = [
 
 describe('applyStates', () => {
   it('returns empty states arrays when no states', () => {
-    const r = applyStates(chunks, undefined);
+    const r = applyStates(chunks, undefined, []);
     expect(r.every((c) => c.states.length === 0)).toBe(true);
   });
 
   it('tags by single index', () => {
     const states: HighlightState[] = [{ name: 'active', index: 2 }];
-    const r = applyStates(chunks, states);
+    const r = applyStates(chunks, states, []);
     expect(r[2]?.states).toEqual(['active']);
     expect(r[0]?.states).toEqual([]);
   });
 
   it('tags by range (inclusive)', () => {
     const states: HighlightState[] = [{ name: 'preview', range: [1, 2] }];
-    const r = applyStates(chunks, states);
+    const r = applyStates(chunks, states, []);
     expect(r[0]?.states).toEqual([]);
     expect(r[1]?.states).toEqual(['preview']);
     expect(r[2]?.states).toEqual(['preview']);
@@ -49,7 +49,7 @@ describe('applyStates', () => {
 
   it('tags by indices array', () => {
     const states: HighlightState[] = [{ name: 'bookmarked', indices: [0, 3] }];
-    const r = applyStates(chunks, states);
+    const r = applyStates(chunks, states, []);
     expect(r[0]?.states).toEqual(['bookmarked']);
     expect(r[3]?.states).toEqual(['bookmarked']);
     expect(r[1]?.states).toEqual([]);
@@ -61,7 +61,7 @@ describe('applyStates', () => {
       { name: 'preview', range: [0, 2] },
       { name: 'bookmarked', indices: [1] },
     ];
-    const r = applyStates(chunks, states);
+    const r = applyStates(chunks, states, []);
     expect(r[1]?.states).toEqual(['active', 'preview', 'bookmarked']);
   });
 
@@ -70,7 +70,7 @@ describe('applyStates', () => {
       { name: 'b', index: 0 },
       { name: 'a', index: 0 },
     ];
-    const r = applyStates(chunks, states);
+    const r = applyStates(chunks, states, []);
     expect(r[0]?.states).toEqual(['b', 'a']);
   });
 });

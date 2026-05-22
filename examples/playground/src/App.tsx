@@ -11,6 +11,7 @@ import { MultiStateDemo } from './demos/MultiStateDemo.js';
 import { OverlapFirstDemo } from './demos/OverlapFirstDemo.js';
 import { OverlapMergeDemo } from './demos/OverlapMergeDemo.js';
 import { OverlapNestDemo } from './demos/OverlapNestDemo.js';
+import { PerTermDemo } from './demos/PerTermDemo.js';
 import { RegexDemo } from './demos/RegexDemo.js';
 import { RenderPropDemo } from './demos/RenderPropDemo.js';
 import { SelectorsDemo } from './demos/SelectorsDemo.js';
@@ -42,6 +43,7 @@ const demos = [
   { path: 'overlap-first',    title: 'Overlap strategy: first-wins',                        Component: OverlapFirstDemo },
   { path: 'regex',            title: 'RegExp search word — /\\btime\\b/i',                 Component: RegexDemo },
   { path: 'case-insensitive', title: 'Case-sensitive vs case-insensitive',                  Component: CaseInsensitiveDemo },
+  { path: 'per-term',         title: 'Per-search-term — { term, nth } selectors',          Component: PerTermDemo },
   { path: 'selectors',        title: 'Selectors — index / range / indices',                 Component: SelectorsDemo },
   { path: 'css-engine',       title: 'CSS Custom Highlight API engine',                    Component: CssEngineDemo },
 ];

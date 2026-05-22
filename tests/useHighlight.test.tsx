@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useHighlight } from '../src/useHighlight.js';
+import type { HighlightState } from '../src/types.js';
 
 describe('useHighlight', () => {
   it('returns segments for plain text + searchWords', () => {
@@ -52,5 +53,32 @@ describe('useHighlight', () => {
       useHighlight({ text: 'cat hat cat', searchWords: ['cat'] }),
     );
     expect(result.current.getMatchCount()).toBe(2);
+  });
+
+  it('re-computes segments when term / nth / termMatch / silent fields change', () => {
+    const initialProps: { states: HighlightState[] } = {
+      states: [{ name: 'a', term: 0 }],
+    };
+    const { result, rerender } = renderHook(
+      ({ states }: { states: HighlightState[] }) =>
+        useHighlight({
+          text: 'cat dog cat',
+          searchWords: ['cat', 'dog'],
+          states,
+        }),
+      { initialProps },
+    );
+
+    const first = result.current.segments;
+    rerender({ states: [{ name: 'a', term: 1 }] });
+    expect(result.current.segments).not.toBe(first);
+
+    const second = result.current.segments;
+    rerender({ states: [{ name: 'a', term: 1, nth: 0 }] });
+    expect(result.current.segments).not.toBe(second);
+
+    const third = result.current.segments;
+    rerender({ states: [{ name: 'a', term: 'cat', termMatch: 'first' }] });
+    expect(result.current.segments).not.toBe(third);
   });
 });

@@ -85,6 +85,22 @@ function maybeWarnUnknownTerm(
   warned.add(states);
 }
 
+function maybeWarnNthOutOfRange(
+  state: HighlightStateTermNth,
+  count: number,
+  states: ReadonlyArray<HighlightState>,
+): void {
+  if (process.env.NODE_ENV === 'production') return;
+  if (state.silent) return;
+  if (warned.has(states)) return;
+  const termLabel =
+    typeof state.term === 'number' ? `index ${state.term}` : `"${state.term}"`;
+  console.warn(
+    `[one-more-highlight] state "${state.name}" has nth: ${state.nth} but term ${termLabel} only has ${count} matches.`,
+  );
+  warned.add(states);
+}
+
 export interface TaggedChunk extends CombinedChunk {
   states: ReadonlyArray<string>;
 }
@@ -116,7 +132,17 @@ export function applyStates(
       .filter((c) => termSet.has(c.termIndex))
       .slice()
       .sort((a, b) => a.start - b.start || a.end - b.end);
-    termSelections.set(s, new Set(candidates.map((c) => c.matchIndex)));
+    if ('nth' in s) {
+      if (s.nth < 0 || s.nth >= candidates.length) {
+        maybeWarnNthOutOfRange(s, candidates.length, states);
+        termSelections.set(s, new Set());
+      } else {
+        const picked = candidates[s.nth];
+        termSelections.set(s, new Set(picked ? [picked.matchIndex] : []));
+      }
+    } else {
+      termSelections.set(s, new Set(candidates.map((c) => c.matchIndex)));
+    }
   }
 
   return chunks.map((c) => {

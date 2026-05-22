@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400" role="img" aria-label="one-more-highlight — Highlight the same word in three different ways. At the same time.">
+  <defs>
+    <filter id="rough" x="-2%" y="-8%" width="104%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="rough-sm" x="-3%" y="-12%" width="106%" height="124%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="2" seed="5"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.4" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+
+    <!-- Hairline -->
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"  stop-color="#202632" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#202632" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#202632" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#202632" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background: ink-950 with subtle radial wash, brand-kit faithful -->
+  <rect width="1280" height="400" fill="#0a0c10"/>
+  <radialGradient id="wash-yellow" cx="50%" cy="0%" r="80%">
+    <stop offset="0%" stop-color="#FFF166" stop-opacity="0.05"/>
+    <stop offset="100%" stop-color="#FFF166" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="wash-pink" cx="85%" cy="30%" r="50%">
+    <stop offset="0%" stop-color="#FFADD6" stop-opacity="0.04"/>
+    <stop offset="100%" stop-color="#FFADD6" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="wash-green" cx="15%" cy="30%" r="50%">
+    <stop offset="0%" stop-color="#A8FF80" stop-opacity="0.04"/>
+    <stop offset="100%" stop-color="#A8FF80" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="1280" height="400" fill="url(#wash-yellow)"/>
+  <rect width="1280" height="400" fill="url(#wash-pink)"/>
+  <rect width="1280" height="400" fill="url(#wash-green)"/>
+
+  <!-- ===== Top-left: omh icon lockup ===== -->
+  <g transform="translate(48 36)">
+    <rect width="56" height="56" rx="11" fill="#06070a"/>
+    <g font-family="'JetBrains Mono','Kode Mono',ui-monospace,monospace" font-weight="700" font-size="14" letter-spacing="-0.5">
+      <g transform="translate(18 17)">
+        <rect x="-9" y="-8" width="18" height="14" rx="3" fill="#FFADD6" filter="url(#rough-sm)" transform="rotate(-2)"/>
+        <text x="0" y="-1" fill="#06070a" text-anchor="middle" dominant-baseline="central">o</text>
+      </g>
+      <g transform="translate(38 17)">
+        <rect x="-9" y="-8" width="18" height="14" rx="3" fill="#A8FF80" filter="url(#rough-sm)" transform="rotate(1)"/>
+        <text x="0" y="-1" fill="#06070a" text-anchor="middle" dominant-baseline="central">m</text>
+      </g>
+      <g transform="translate(28 35)">
+        <rect x="-9" y="-8" width="18" height="14" rx="3" fill="#FFF166" filter="url(#rough-sm)" transform="rotate(-1.5)"/>
+        <text x="0" y="-1" fill="#06070a" text-anchor="middle" dominant-baseline="central">h</text>
+      </g>
+    </g>
+    <text x="76" y="36" font-family="'JetBrains Mono','Kode Mono',ui-monospace,monospace" font-weight="700" font-size="22" fill="#e4e8ee" letter-spacing="-0.5">omh</text>
+  </g>
+
+  <!-- ===== Top-right: eyebrow ===== -->
+  <text x="1232" y="72" text-anchor="end" font-family="'JetBrains Mono',ui-monospace,monospace" font-weight="400" font-size="13" fill="#8a93a3" letter-spacing="2">REACT · TYPESCRIPT · MIT · v1.1.0</text>
+
+  <!-- ===== Headline =====
+       Font size: 42px (was 56). Mono character width ≈ 25.2px at 42px.
+       Line 1 "Highlight the same word in" (27 chars) ≈ 680px.
+       Line 2 widths: three=5×25.2=126, " "=25.2, different=9×25.2=227, " "=25.2, ways=4×25.2=101, "."=25.2
+              total=126+25+227+25+101+25 = 529. Start x=640-264=376
+       Line 3 "At the same time." (17 chars) ≈ 428px.
+  -->
+
+  <!-- Line 1 -->
+  <g font-family="'JetBrains Mono','Kode Mono',ui-monospace,monospace" font-weight="700" letter-spacing="-1.2">
+    <text x="640" y="170" text-anchor="middle" font-size="42" fill="#e4e8ee">Highlight the same word in</text>
+  </g>
+
+  <!-- Line 2: [three] [different] [ways]. -->
+  <g font-family="'JetBrains Mono','Kode Mono',ui-monospace,monospace" font-weight="700" font-size="42" letter-spacing="-1.2">
+
+    <!-- "three" — yellow, rotated -1deg, center at 376+63=439 -->
+    <g transform="translate(439 225) rotate(-1)">
+      <rect x="-63" y="-34" width="126" height="46" rx="5" fill="#FFF166" filter="url(#rough)"/>
+      <text x="0" y="0" text-anchor="middle" fill="#06070a">three</text>
+    </g>
+
+    <!-- "different" — pink, rotated -1deg, center at 376+126+25+114=641 -->
+    <g transform="translate(640 225) rotate(-1)">
+      <rect x="-114" y="-34" width="228" height="46" rx="5" fill="#FFADD6" filter="url(#rough)"/>
+      <text x="0" y="0" text-anchor="middle" fill="#06070a">different</text>
+    </g>
+
+    <!-- "ways" — green, rotated +1deg, center at 376+126+25+227+25+51=830 -->
+    <g transform="translate(830 225) rotate(1)">
+      <rect x="-51" y="-34" width="102" height="46" rx="5" fill="#A8FF80" filter="url(#rough)"/>
+      <text x="0" y="0" text-anchor="middle" fill="#06070a">ways</text>
+    </g>
+
+    <!-- period after ways -->
+    <text x="892" y="225" fill="#e4e8ee">.</text>
+  </g>
+
+  <!-- Line 3 -->
+  <g font-family="'JetBrains Mono','Kode Mono',ui-monospace,monospace" font-weight="700" letter-spacing="-1.2">
+    <text x="640" y="280" text-anchor="middle" font-size="42" fill="#e4e8ee">At the same time.</text>
+  </g>
+
+  <!-- ===== Bottom strip ===== -->
+  <line x1="0" y1="330" x2="1280" y2="330" stroke="url(#rule)" stroke-width="1"/>
+
+  <text x="48" y="362" font-family="'JetBrains Mono','Kode Mono',ui-monospace,monospace" font-weight="600" font-size="14" fill="#e4e8ee" letter-spacing="-0.3">one-more-highlight</text>
+  <text x="48" y="382" font-family="'Geist','Inter',sans-serif" font-weight="400" font-size="12" fill="#8a93a3">Multi-state substring highlighting for React.</text>
+
+  <g font-family="'JetBrains Mono',ui-monospace,monospace" font-weight="400" font-size="11" letter-spacing="0.5">
+    <text x="1232" y="362" text-anchor="end" fill="#e4e8ee">~2 KB brotlied · React ≥ 18 · ESM + CJS</text>
+    <text x="1232" y="382" text-anchor="end" fill="#8a93a3">Chrome 112+ · Firefox 140+ · Safari 16.4+ · Node 18+</text>
+  </g>
+</svg>

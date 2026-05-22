@@ -36,8 +36,8 @@
         font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
         font-size="40"
         font-weight="500"
-        fill="#1b1b1d"
-        xml:space="preserve">React makes React fast and React fun</text>
+        fill="#e6e6e6"
+        xml:space="preserve"><tspan fill="#1b1b1d">React</tspan> makes <tspan fill="#1b1b1d">React</tspan> fast and <tspan fill="#1b1b1d">React</tspan> fun</text>
 
   <!-- Caption: the JSX that produced this scene -->
   <text x="48" y="340"

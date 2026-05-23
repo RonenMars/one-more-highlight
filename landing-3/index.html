@@ -234,20 +234,34 @@
   .theme-toggle .icon-sun { display: none; }
   [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
   [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
-  .btn-primary {
+  /* Icon-only buttons share the toggle shape so the right-edge cluster
+   * (toggle, npm, GitHub) lines up. The GitHub button gets brand yellow
+   * as the primary action; npm stays neutral. */
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+  .icon-btn:hover { border-color: var(--text-muted); }
+  .icon-btn:active { transform: scale(0.96); }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .icon-btn-primary {
     background: var(--hl-yellow);
     color: var(--hl-text);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 10px 14px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: transform 0.1s ease;
+    border-color: var(--hl-yellow);
   }
-  .btn-primary:hover { transform: scale(0.97); }
+  .icon-btn-primary:hover {
+    border-color: var(--hl-yellow);
+    background: color-mix(in oklab, var(--hl-yellow) 88%, var(--text));
+  }
 
   @media (min-width: 768px) {
     .topnav-links { display: flex; }
@@ -585,8 +599,6 @@
       <a href="https://one-more-highlight.vercel.app/docs/getting-started/intro">Docs</a>
       <a href="https://github.com/RonenMars/one-more-highlight/blob/main/CHANGELOG.md">Changelog</a>
       <a href="https://stackblitz.com/github/RonenMars/one-more-highlight/tree/main/examples/playground">Playground</a>
-      <a href="https://github.com/RonenMars/one-more-highlight">GitHub</a>
-      <a href="https://www.npmjs.com/package/one-more-highlight">npm</a>
     </div>
 
     <div class="topnav-actions">
@@ -599,7 +611,18 @@
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
         </svg>
       </button>
-      <a class="btn-primary" href="https://github.com/RonenMars/one-more-highlight">GitHub →</a>
+      <a class="icon-btn" href="https://www.npmjs.com/package/one-more-highlight" aria-label="View on npm" title="npm">
+        <!-- npm wordmark mark -->
+        <svg viewBox="0 0 18 7" fill="currentColor" aria-hidden="true">
+          <path d="M0 0v6h5V7h3V6h10V0H0zm2 5V1h4v4H5V2H4v3H2zm6 0V1h6v4h-3V2h-1v3H8zm8-4h1v4h-1V1z"/>
+        </svg>
+      </a>
+      <a class="icon-btn icon-btn-primary" href="https://github.com/RonenMars/one-more-highlight" aria-label="View on GitHub" title="GitHub">
+        <!-- GitHub mark -->
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.55v-2.16c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.18 1.18.92-.26 1.91-.39 2.89-.39s1.97.13 2.89.39c2.21-1.49 3.18-1.18 3.18-1.18.62 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.41-5.27 5.69.41.36.78 1.05.78 2.12v3.14c0 .3.21.65.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/>
+        </svg>
+      </a>
     </div>
   </div>
 </nav>

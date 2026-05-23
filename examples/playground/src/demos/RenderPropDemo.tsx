@@ -37,7 +37,7 @@ export function RenderPropDemo() {
                   position: 'absolute',
                   top: '-0.45em',
                   right: '-0.45em',
-                  color: 'var(--hl-amber)',
+                  color: 'var(--hl-yellow)',
                   fontSize: '0.8em',
                   pointerEvents: 'none',
                   lineHeight: 1,

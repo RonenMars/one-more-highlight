@@ -27,7 +27,7 @@ const markStyle: React.CSSProperties = {
 
 export function BasicDemo() {
   return (
-    <div style={style}>
+    <div className="live-demo" style={style}>
       <Highlight
         text={text}
         searchWords={['React']}

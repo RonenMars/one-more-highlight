@@ -18,23 +18,18 @@
   --ifm-color-primary-lighter: #146935;
   --ifm-color-primary-lightest: #187c3f;
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(255, 241, 102, 0.18);
+  --docusaurus-highlighted-code-line-bg: rgba(180, 190, 254, 0.18);
 
-  /* Surface and highlight tokens are fully synced with the playground —
-   * the docs site uses the same bright "highlighter on paper" palette so
-   * jumping between docs and playground feels like one product.
-   * AAA contrast on the synced palette (WCAG 2.x relative-luminance,
-   * AAA threshold for normal text = 7:1):
-   *   light theme — body text on bg
-   *     #1b1b1d on #ffffff → 17.20:1  body prose
-   *   light + dark theme — chip text on chip (--hl-text pinned in both):
-   *     #1b1b1d on #FFF166 → 14.76:1  yellow chip
-   *     #1b1b1d on #A8FF80 → 14.15:1  green chip
-   *     #1b1b1d on #fbbf24 → 10.30:1  amber chip
-   *     #1b1b1d on #FFADD6 →  9.99:1  pink chip
-   *   dark theme — body text on bg/surface (playground only):
-   *     #fafafa on #1b1b1d → 16.48:1  body prose
-   *     #fafafa on #2d2d2d → 13.19:1  surface */
+  /* Brand highlight palette — the canonical 4-color set from the swatch
+   * reference (Swatch chips _ hex _ token.html). Yellow is the primary
+   * brand color; green/pink/blue are role tints (success, info+warning,
+   * live-demo accent). AAA contrast against --hl-text #1b1b1d:
+   *   #1b1b1d on #FFF166 → 14.76:1  yellow chip
+   *   #1b1b1d on #A8FF80 → 14.15:1  green chip
+   *   #1b1b1d on #FFADD6 →  9.99:1  pink chip
+   *   #1b1b1d on #80D8FF → 14.30:1  blue chip
+   * Body prose: #1b1b1d on #ffffff → 17.20:1 (light), #fafafa on #1b1b1d
+   * → 16.48:1 (dark). */
   --bg: #ffffff;
   --text: #1b1b1d;
   --surface: #f5f5f5;
@@ -46,7 +41,7 @@
   --hl-yellow: #FFF166;
   --hl-green: #A8FF80;
   --hl-pink: #FFADD6;
-  --hl-amber: #fbbf24;
+  --hl-blue: #80D8FF;
   --hl-text: #1b1b1d;
 
   /* Typography synced with the playground — system-ui for visual coherence
@@ -55,16 +50,17 @@
   --ifm-font-family-monospace: ui-monospace, SFMono-Regular, Menlo, 'JetBrains Mono', monospace;
   --ifm-heading-font-family: system-ui, sans-serif;
 
-  /* Tabs: amber underline on active (mirrors .headless__tab[data-active]) */
-  --ifm-tabs-color-active-border: var(--hl-amber);
+  /* Tabs: yellow underline on active — the brand's main highlight color. */
+  --ifm-tabs-color-active-border: var(--hl-yellow);
 
-  /* Admonitions: green = success, pink-stroke = info, amber = warning */
+  /* Admonitions: green = success, pink = info + warning. Yellow is reserved
+   * for base highlights so it doesn't double as a status color. */
   --ifm-color-success: #2f6a3a;
   --ifm-color-success-contrast-background: color-mix(in oklab, var(--hl-green) 28%, var(--bg));
   --ifm-color-info: #d946a4;
   --ifm-color-info-contrast-background: color-mix(in oklab, var(--hl-pink) 22%, var(--bg));
-  --ifm-color-warning: #a8650a;
-  --ifm-color-warning-contrast-background: color-mix(in oklab, var(--hl-amber) 22%, var(--bg));
+  --ifm-color-warning: #b8326e;
+  --ifm-color-warning-contrast-background: color-mix(in oklab, var(--hl-pink) 22%, var(--bg));
 
   /* AAA: sidebar inactive label + TOC text need ≥ 7:1 against --bg.
    * Defaults #606770/#525860 are AA only on the light gray surface. */
@@ -82,14 +78,14 @@
   --ifm-color-primary-light: #c2ffa3;
   --ifm-color-primary-lighter: #d0ffb7;
   --ifm-color-primary-lightest: #f0ffe3;
-  --docusaurus-highlighted-code-line-bg: rgba(251, 191, 36, 0.14);
+  --docusaurus-highlighted-code-line-bg: rgba(255, 241, 102, 0.14);
 
   /* Highlight tokens match the playground — bright candy in both themes so
    * the brand identity is consistent. Dark text on bright BG stays AAA:
    *   #1b1b1d on #FFF166 → 15.4:1 ✓
    *   #1b1b1d on #A8FF80 → 15.4:1 ✓
    *   #1b1b1d on #FFADD6 → 11.3:1 ✓
-   *   #1b1b1d on #fbbf24 → 11.3:1 ✓ */
+   *   #1b1b1d on #80D8FF → 14.30:1 ✓ */
   --bg: #1b1b1d;
   --text: #fafafa;
   --surface: #2d2d2d;
@@ -97,16 +93,17 @@
   --hl-yellow: #FFF166;
   --hl-green: #A8FF80;
   --hl-pink: #FFADD6;
-  --hl-amber: #fbbf24;
+  --hl-blue: #80D8FF;
   --hl-text: #1b1b1d;
 
-  /* Admonitions adjusted for dark surfaces */
+  /* Admonitions adjusted for dark surfaces — pink covers both info and
+   * warning so yellow stays exclusive to base highlights. */
   --ifm-color-success: #A8FF80;
   --ifm-color-success-contrast-background: color-mix(in oklab, #A8FF80 14%, transparent);
   --ifm-color-info: #FFADD6;
   --ifm-color-info-contrast-background: color-mix(in oklab, #FFADD6 14%, transparent);
-  --ifm-color-warning: var(--hl-amber);
-  --ifm-color-warning-contrast-background: color-mix(in oklab, var(--hl-amber) 14%, transparent);
+  --ifm-color-warning: #FFADD6;
+  --ifm-color-warning-contrast-background: color-mix(in oklab, #FFADD6 14%, transparent);
 
   /* AAA: sidebar/TOC text on dark #1b1b1d needs ≥ 7:1. #c8c8c8 hits 10.9:1. */
   --ifm-menu-color: #c8c8c8;
@@ -126,6 +123,27 @@ mark,
   color: var(--hl-text);
 }
 
+/* Highlight chip backgrounds — synced with the playground (examples/playground/src/index.css).
+ * Used by code-sample className references in the docs (e.g. intro.md) so the
+ * "if you wrote this CSS" snippet visually matches the live demos on the page. */
+.hl-base     { background: var(--hl-yellow); border-radius: 2px; }
+.hl-preview  { background: var(--hl-pink); }
+.hl-active   { background: var(--hl-green); outline: 2px solid var(--text); }
+.hl-bookmark { text-decoration: underline; }
+.hl-a        { background: var(--hl-yellow); }
+.hl-b        { background: var(--hl-pink); }
+.hl-one      { background: var(--hl-green); }
+.hl-range    { background: var(--hl-green); }
+.hl-many     { background: var(--hl-pink); }
+
+/* ─── Live demo accent ───
+ * The interactive <LiveDemo /> boxes on Guides pages get a 4px blue
+ * left bar so readers can spot them as the playable element distinct
+ * from neighboring code blocks. Blue is reserved for this role. */
+.live-demo {
+  border-left: 4px solid var(--hl-blue);
+}
+
 /* ─── ::selection ───
  * Light: canonical bright-yellow highlighter (#FFF166 on #1b1b1d ≈ 13:1 AAA).
  * Dark:  pale yellow on dark text (#FFF7C2 on #1b1b1d ≈ 16:1 AAA).
@@ -136,38 +154,28 @@ mark,
   color: #1b1b1d;
 }
 
-/* ─── inline <code> — neutral chip ───
- * Light: a touch lighter than --surface so chips read as raised against the
- * gray page. The full ::selection yellow on every <code> made prose-dense
- * pages flicker; a flat neutral keeps the family identity without competing
- * with <mark>. Contrast: #1b1b1d text on #ecedf0 → 13:1 (AAA). */
+/* ─── inline <code> — brand yellow ───
+ * Yellow is the brand's main color, applied as a literal token (no
+ * color-mix tinting) so chips share the exact hex used by <mark> and
+ * the active-tab underline. Text is pinned to --hl-text #1b1b1d in
+ * both themes — AAA contrast (14.76:1) against #FFF166. */
 .markdown :not(pre) > code {
-  background: color-mix(in oklab, var(--surface) 70%, #ffffff);
-  border: 1px solid var(--border);
-  color: var(--text);
+  background: var(--hl-yellow);
+  border: 1px solid var(--hl-yellow);
+  color: var(--hl-text);
   padding: 0.1em 0.35em;
   border-radius: 3px;
 }
-[data-theme='dark'] .markdown :not(pre) > code {
-  /* In dark mode, the surface is already dark and the bright yellow tint
-   * would look gaudy. Use a low-opacity amber wash instead. */
-  background: color-mix(in oklab, var(--hl-amber) 18%, var(--surface));
-  border: 1px solid color-mix(in oklab, var(--hl-amber) 30%, var(--border));
-  color: var(--text);
-}
 
 /* ─── code blocks — Catppuccin Mocha panel ───
- * Light mode uses the Catppuccin Mocha syntax theme (defined inline in
- * docusaurus.config.ts → prism.theme). Panel bg is Mocha's `base` #1e1e2e
- * with a `surface0` border so the panel reads as a deliberate editor pane
- * against the light gray page.
- *
- * AAA contrast against the panel base #1e1e2e (luminance 0.0149):
- *   text     #cdd6f4 → 15.0:1   keywords #cba6f7 → 10.7:1
- *   string   #a6e3a1 → 12.3:1   peach    #fab387 → 11.0:1
- *   yellow   #f9e2af → 14.0:1   pink     #f5c2e7 → 11.7:1
- *   blue     #89b4fa →  8.1:1   teal     #94e2d5 → 12.1:1
- *   red      #f38ba8 →  8.6:1   lavender #b4befe →  9.2:1
+ * Code-block panel uses Mocha base #1e1e2e + `surface0` border so the
+ * panel reads as a deliberate editor pane against the page surface.
+ * Syntax token colors live in docusaurus.config.ts; tokens that visually
+ * collided with the brand palette (yellow/green/pink/blue) were swapped
+ * to neutral lavender/gray so brand colors stay exclusive to demos and
+ * chips. AAA against panel base #1e1e2e (luminance 0.0149):
+ *   text     #cdd6f4 → 15.0:1   keywords/mauve #cba6f7 → 10.7:1
+ *   teal     #94e2d5 → 12.1:1   lavender       #b4befe →  9.2:1
  *   comment  #a6adc8 →  8.0:1 (subtext0; bumped from overlay2 for AAA) */
 [data-theme='light'] .theme-code-block,
 :root .theme-code-block {
@@ -181,8 +189,9 @@ mark,
   background-color: #1e1e2e !important;
 }
 :root {
-  /* Mocha `yellow` at low opacity for highlighted lines. */
-  --docusaurus-highlighted-code-line-bg: rgba(249, 226, 175, 0.12);
+  /* Mocha `lavender` #b4befe at low opacity — keeps highlighted lines
+   * inside code blocks distinct without reaching for brand yellow. */
+  --docusaurus-highlighted-code-line-bg: rgba(180, 190, 254, 0.12);
 }
 [data-theme='light'] .theme-code-block .token-line {
   color: #cdd6f4;

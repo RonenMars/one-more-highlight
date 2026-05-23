@@ -2,26 +2,30 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type { PrismTheme } from 'prism-react-renderer';
 
-// Catppuccin Mocha palette — https://catppuccin.com/palette
-// AAA verified against base #1e1e2e: text #cdd6f4 (15.0:1), mauve #cba6f7
-// (10.7:1), green #a6e3a1 (12.3:1), peach #fab387 (11.0:1), yellow #f9e2af
-// (14.0:1), red #f38ba8 (8.6:1), blue #89b4fa (8.1:1), teal #94e2d5 (12.1:1),
-// lavender #b4befe (9.2:1), pink #f5c2e7 (11.7:1), overlay0 #6c7086 (4.7:1).
+// Catppuccin Mocha palette — https://catppuccin.com/palette — with tokens
+// that visually collided with the brand palette (yellow #FFF166, green
+// #A8FF80, pink #FFADD6, blue #80D8FF) swapped for neutral lavender/gray
+// shades. Brand colors stay exclusive to chips, <mark>, and demo accents;
+// code blocks keep syntax color but in a non-brand register (mauve, teal,
+// lavender, gray). AAA against base #1e1e2e (luminance 0.0149):
+//   text     #cdd6f4 → 15.0:1   mauve    #cba6f7 → 10.7:1
+//   teal     #94e2d5 → 12.1:1   lavender #b4befe →  9.2:1
+//   subtext0 #a6adc8 →  8.0:1
 const catppuccinMocha: PrismTheme = {
   plain: { color: '#cdd6f4', backgroundColor: '#1e1e2e' },
   styles: [
     { types: ['comment', 'prolog', 'doctype', 'cdata'], style: { color: '#a6adc8', fontStyle: 'italic' } },
     { types: ['namespace'], style: { opacity: 0.7 } },
-    { types: ['string', 'attr-value', 'inserted'], style: { color: '#a6e3a1' } },
+    { types: ['string', 'attr-value', 'inserted'], style: { color: '#b4befe' } },
     { types: ['punctuation', 'operator'], style: { color: '#94e2d5' } },
-    { types: ['entity', 'url', 'symbol', 'number', 'boolean', 'variable', 'constant', 'property', 'regex'], style: { color: '#fab387' } },
+    { types: ['entity', 'url', 'symbol', 'number', 'boolean', 'variable', 'constant', 'property', 'regex'], style: { color: '#cdd6f4' } },
     { types: ['atrule', 'keyword', 'attr-name', 'selector'], style: { color: '#cba6f7' } },
-    { types: ['function', 'deleted', 'tag'], style: { color: '#f38ba8' } },
-    { types: ['function-variable'], style: { color: '#f9e2af' } },
+    { types: ['function', 'deleted', 'tag'], style: { color: '#cdd6f4' } },
+    { types: ['function-variable'], style: { color: '#b4befe' } },
     { types: ['tag', 'selector', 'keyword'], style: { color: '#cba6f7' } },
-    { types: ['class-name', 'maybe-class-name', 'builtin'], style: { color: '#f9e2af' } },
-    { types: ['parameter'], style: { color: '#eba0ac' } },
-    { types: ['method'], style: { color: '#89b4fa' } },
+    { types: ['class-name', 'maybe-class-name', 'builtin'], style: { color: '#b4befe' } },
+    { types: ['parameter'], style: { color: '#a6adc8' } },
+    { types: ['method'], style: { color: '#b4befe' } },
     { types: ['important', 'bold'], style: { fontWeight: 'bold' } },
     { types: ['italic'], style: { fontStyle: 'italic' } },
   ],

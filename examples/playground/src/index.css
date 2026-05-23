@@ -1,16 +1,16 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* AAA contrast on the synced playground palette (WCAG 2.x relative-
- * luminance, AAA threshold for normal text = 7:1). Chip text is pinned
- * to --hl-text: #1b1b1d in both themes, so chip ratios are identical
+/* Brand highlight palette — the canonical 4-color set from the swatch
+ * reference (Swatch chips _ hex _ token.html). Chip text is pinned to
+ * --hl-text: #1b1b1d in both themes, so chip ratios are identical
  * light/dark.
  *   light theme — body text on bg
  *     #1b1b1d on #ffffff → 17.20:1  body prose
  *   light + dark theme — chip text on chip:
  *     #1b1b1d on #FFF166 → 14.76:1  yellow chip
  *     #1b1b1d on #A8FF80 → 14.15:1  green chip
- *     #1b1b1d on #fbbf24 → 10.30:1  amber chip
  *     #1b1b1d on #FFADD6 →  9.99:1  pink chip
+ *     #1b1b1d on #80D8FF → 14.30:1  blue chip
  *   dark theme — body text on bg/surface:
  *     #fafafa on #1b1b1d → 16.48:1  body prose
  *     #fafafa on #2d2d2d → 13.19:1  surface
@@ -23,7 +23,7 @@
   --hl-yellow: #FFF166;
   --hl-green: #A8FF80;
   --hl-pink: #FFADD6;
-  --hl-amber: #fbbf24;
+  --hl-blue: #80D8FF;
   --hl-text: #1b1b1d;
 }
 
@@ -35,7 +35,7 @@
   --hl-yellow: #FFF166;
   --hl-green: #A8FF80;
   --hl-pink: #FFADD6;
-  --hl-amber: #fbbf24;
+  --hl-blue: #80D8FF;
   --hl-text: #1b1b1d;
 }
 

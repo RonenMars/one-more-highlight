@@ -24,7 +24,7 @@ const containerStyle: React.CSSProperties = {
 
 export function RenderPropDemo() {
   return (
-    <div style={containerStyle}>
+    <div className="live-demo" style={containerStyle}>
       <Highlight
         text={text}
         searchWords={['useEffect']}
@@ -35,7 +35,7 @@ export function RenderPropDemo() {
           return (
             <TagAny className={className} style={style}>
               {seg.text}
-              {seg.states.includes('active') && <sup style={{ color: 'var(--hl-amber)', WebkitTextStroke: '1px #000', paintOrder: 'stroke fill', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4))' }}>★</sup>}
+              {seg.states.includes('active') && <sup style={{ color: 'var(--hl-yellow)', WebkitTextStroke: '1px #000', paintOrder: 'stroke fill', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4))' }}>★</sup>}
             </TagAny>
           );
         }}

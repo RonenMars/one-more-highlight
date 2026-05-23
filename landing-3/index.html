@@ -322,6 +322,83 @@
     margin: 0 auto;
   }
 
+  /* ── Rendered preview (above the snippet) ─────────────────────────
+   * Shows the five "time" matches with their layered states so the
+   * reader sees the output before reading the input. Each chip enters
+   * with a tiny stagger (~120ms apart) the first time the section
+   * scrolls into view. */
+  .preview {
+    max-width: 720px;
+    margin: 0 auto 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 28px 20px;
+    text-align: left;
+  }
+  .preview-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+  .preview-line {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    line-height: 2.2;
+    color: var(--text);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .preview-line .hl {
+    /* Override the rough filter for the preview — readability over
+     * marker texture, since these chips sit on a content surface. */
+    filter: none;
+    transform: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+    opacity: 0;
+    animation: preview-in 0.32s ease-out forwards;
+  }
+  .preview-line .hl:nth-child(1) { animation-delay: 0.05s; }
+  .preview-line .hl:nth-child(2) { animation-delay: 0.17s; }
+  .preview-line .hl:nth-child(3) { animation-delay: 0.29s; }
+  .preview-line .hl:nth-child(4) { animation-delay: 0.41s; }
+  .preview-line .hl:nth-child(5) { animation-delay: 0.53s; }
+  .preview-active {
+    outline: 2px solid var(--hl-text);
+    outline-offset: 0;
+  }
+  .preview-bookmarked { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  @keyframes preview-in {
+    from { opacity: 0; transform: translateY(4px) scale(0.92); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .preview-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 6px 16px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .preview-legend span { display: inline-block; }
+  .preview-legend b {
+    color: var(--text);
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .preview-line .hl { opacity: 1; animation: none; }
+  }
+
   /* ── Feature rows ────────────────────────────────────────────────── */
   .features {
     padding-block: var(--section-gap);
@@ -544,6 +621,24 @@
         by index, range, or list — get layered styles on top. ~2 KB brotlied. Two
         micro-dependencies. SSR-safe.
       </p>
+
+      <div class="preview" aria-label="Rendered output preview">
+        <div class="preview-label">Rendered output</div>
+        <div class="preview-line">
+          <span class="hl hl-pink">time</span>
+          <span class="hl hl-pink">time</span>
+          <span class="hl hl-green preview-active">time</span>
+          <span class="hl hl-yellow preview-bookmarked">time</span>
+          <span class="hl hl-yellow preview-bookmarked">time</span>
+        </div>
+        <div class="preview-legend">
+          <span><b>#0</b>base + preview</span>
+          <span><b>#1</b>base + preview</span>
+          <span><b>#2</b>base + active</span>
+          <span><b>#3</b>base + bookmarked</span>
+          <span><b>#4</b>base + bookmarked</span>
+        </div>
+      </div>
 
       <div class="hero-code-wrap">
         <div class="code-panel">

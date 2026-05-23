@@ -30,9 +30,9 @@ import { CssHighlight } from 'one-more-highlight/css';
 You **also** need to write CSS — the library does not synthesize styles.
 
 ```css
-::highlight(match)  { background: yellow; color: black; }
-::highlight(active) { background: lime;   color: black; }
-::highlight(pinned) { background: pink;   color: black; }
+::highlight(match)  { background: #FFF166; color: #1b1b1d; }
+::highlight(active) { background: #A8FF80; color: #1b1b1d; }
+::highlight(pinned) { background: #FFADD6; color: #1b1b1d; }
 ```
 
 The `match` name is implicit — it's where matches with no `states` end up.

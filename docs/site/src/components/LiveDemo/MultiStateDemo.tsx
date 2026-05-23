@@ -28,7 +28,7 @@ const containerStyle: React.CSSProperties = {
 
 export function MultiStateDemo() {
   return (
-    <div style={containerStyle}>
+    <div className="live-demo" style={containerStyle}>
       <Highlight
         text={text}
         searchWords={['error']}

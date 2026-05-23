@@ -38,7 +38,7 @@ export function HeadlessDemo() {
     states: [{ name: 'active', index: 1 }],
   });
   return (
-    <div style={containerStyle}>
+    <div className="live-demo" style={containerStyle}>
       <p style={{ margin: '0 0 0.5rem', opacity: 0.7, fontSize: '0.85em' }}>
         {getMatchCount()} matches — middle one is the "current" hit
       </p>

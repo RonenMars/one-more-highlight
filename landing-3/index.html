@@ -310,7 +310,8 @@
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #6c7086;
+    /* Mocha subtext0 — 8.0:1 on #1e1e2e (AAA at this size). */
+    color: #a6adc8;
   }
   .code-panel pre {
     margin: 0;
@@ -423,7 +424,7 @@
     gap: 32px;
     grid-template-columns: 1fr;
   }
-  .feature h3 {
+  .feature h2 {
     font-family: var(--font-mono);
     font-size: 18px;
     font-weight: 600;
@@ -498,7 +499,8 @@
   .install-cmd button {
     background: none;
     border: 0;
-    color: #6c7086;
+    /* Mocha subtext0 — 8.0:1 on the dark code panel (AAA). */
+    color: #a6adc8;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -693,7 +695,7 @@
             <!-- code -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           </span>
-          <h3>TypeScript-first</h3>
+          <h2>TypeScript-first</h2>
           <p>
             Discriminated union narrows on the selector field — <code>index</code>,
             <code>range</code>, or <code>indices</code>.
@@ -705,7 +707,7 @@
             <!-- compress -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
           </span>
-          <h3>Tiny</h3>
+          <h2>Tiny</h2>
           <p>
             ~2 KB brotlied (ESM). Two micro-deps (<code>clsx</code>,
             <code>escape-string-regexp</code>), both MIT, ~400 B combined.
@@ -717,7 +719,7 @@
             <!-- cube / view_in_ar -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
           </span>
-          <h3>Headless</h3>
+          <h2>Headless</h2>
           <p>
             Drop in <code>&lt;Highlight&gt;</code>, or call <code>useHighlight</code>
             and render segments yourself.
@@ -729,7 +731,7 @@
             <!-- globe -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           </span>
-          <h3>SSR-safe</h3>
+          <h2>SSR-safe</h2>
           <p>
             No <code>window</code>, no <code>Date.now</code>, no <code>Math.random</code>.
             Hydration matches.

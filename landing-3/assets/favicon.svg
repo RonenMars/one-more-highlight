@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <filter id="r" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.0 0.7" numOctaves="1" seed="7" stitchTiles="stitch"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.2"/>
+    </filter>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0a0c10"/>
+  <g font-family="'Kode Mono','JetBrains Mono',monospace" font-weight="700" font-size="22" letter-spacing="-1.5">
+    <g transform="translate(32 22)" text-anchor="middle">
+      <rect x="-18" y="-9" width="16" height="16" rx="4" fill="#FFADD6" filter="url(#r)" transform="rotate(-2 -10 0)"/>
+      <rect x="2"  y="-9" width="16" height="16" rx="4" fill="#A8FF80" filter="url(#r)" transform="rotate(1.5 10 0)"/>
+      <text x="-10" y="6" fill="#06070a">o</text>
+      <text x="10" y="6" fill="#06070a">m</text>
+    </g>
+    <g transform="translate(32 46)" text-anchor="middle">
+      <rect x="-9" y="-9" width="18" height="16" rx="4" fill="#FFF166" filter="url(#r)" transform="rotate(-1.5)"/>
+      <text y="6" fill="#06070a">h</text>
+    </g>
+  </g>
+</svg>

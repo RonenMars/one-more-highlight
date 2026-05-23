@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>one-more-highlight — multi-state substring highlighting for React</title>
+<meta name="description" content="A TypeScript-first React library for substring highlighting with first-class multi-state per-match styling. ~2 KB brotlied, two micro-dependencies, SSR-safe."/>
+
+<link rel="canonical" href="https://one-more-highlight.vercel.app/"/>
+
+<meta property="og:title" content="one-more-highlight — multi-state substring highlighting for React"/>
+<meta property="og:description" content="TypeScript-first React library for substring highlighting with first-class multi-state per-match styling. ~2 KB brotlied, SSR-safe."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://one-more-highlight.vercel.app/"/>
+<meta name="twitter:card" content="summary_large_image"/>
+
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+
+<!-- Theme bootstrap — runs before paint to avoid a flash on hydration. -->
+<script>
+  (function () {
+    try {
+      var stored = localStorage.getItem('omh-theme');
+      var preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = stored || (preferDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
+
+<!-- Fonts: preconnect, then load Geist (sans) + JetBrains Mono (code) with display=swap. -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"/>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────
+   * one-more-highlight — landing page styles
+   *
+   * Tokens are synced with the docs site (docs/site/src/css/custom.css)
+   * and the playground (examples/playground/src/index.css), so the
+   * three surfaces feel like one product. AAA contrast (≥ 7:1) on every
+   * text/background pair.
+   *
+   *   light theme — body text on bg
+   *     #1b1b1d on #ffffff → 17.20:1
+   *   light + dark — chip text on chip (pinned to #1b1b1d):
+   *     #1b1b1d on #FFF166 → 14.76:1  yellow
+   *     #1b1b1d on #A8FF80 → 14.15:1  green
+   *     #1b1b1d on #FFADD6 →  9.99:1  pink
+   *     #1b1b1d on #80D8FF → 14.30:1  blue
+   *   dark theme — body text on bg
+   *     #fafafa on #1b1b1d → 16.48:1
+   * ───────────────────────────────────────────────────────────────── */
+
+  :root {
+    --bg: #ffffff;
+    --text: #1b1b1d;
+    --text-muted: #4a4d52;
+    --surface: #f5f5f5;
+    --border: #e0e0e0;
+    --hl-yellow: #FFF166;
+    --hl-green: #A8FF80;
+    --hl-pink: #FFADD6;
+    --hl-blue: #80D8FF;
+    --hl-text: #1b1b1d;
+
+    /* Code panel is intentionally dark in both themes (Mocha base #1e1e2e)
+     * so it reads as an editor pane regardless of page surface. Mirrors
+     * the docs-site treatment. */
+    --code-bg: #1e1e2e;
+    --code-border: #313244;
+    --code-text: #cdd6f4;
+    --code-comment: #a6adc8;
+    --code-keyword: #cba6f7;
+    --code-punct: #94e2d5;
+    --code-string: #b4befe;
+    --code-tag: #cdd6f4;
+    --code-attr: #b4befe;
+
+    --font-sans: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --container-max: 1120px;
+    --pad-x: 24px;
+    --section-gap: 96px;
+  }
+
+  [data-theme="dark"] {
+    --bg: #1b1b1d;
+    --text: #fafafa;
+    --text-muted: #b8bcc4;
+    --surface: #2d2d2d;
+    --border: #444;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { background: var(--bg); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  ::selection { background: var(--hl-yellow); color: var(--hl-text); }
+
+  a { color: inherit; }
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--hl-blue);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Skip-link — visually hidden until focused, then top-left. */
+  .skip-link {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    padding: 8px 12px;
+    background: var(--hl-yellow);
+    color: var(--hl-text);
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transform: translateY(-200%);
+    transition: transform 0.15s ease-out;
+    z-index: 100;
+  }
+  .skip-link:focus { transform: translateY(0); }
+
+  /* ── Highlight chips ─────────────────────────────────────────────
+   * Brand chips with rough-edge SVG filter for the marker-on-paper
+   * feel. Filter is namespaced to #omh-rough to avoid cross-document
+   * collisions. */
+  .hl {
+    color: var(--hl-text);
+    padding: 0 4px;
+    border-radius: 2px;
+    display: inline-block;
+    filter: url(#omh-rough);
+  }
+  .hl-yellow { background: var(--hl-yellow); transform: rotate(-1deg); }
+  .hl-pink   { background: var(--hl-pink);   transform: rotate(-1deg); }
+  .hl-green  { background: var(--hl-green);  transform: rotate(1deg); }
+  .hl-blue   { background: var(--hl-blue);   transform: rotate(-0.5deg); }
+
+  /* The wordmark uses zero-padded chips so the letters touch. */
+  .wordmark .hl { padding: 0; margin-right: -2px; }
+  .wordmark .hl:last-child { margin-right: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hl { filter: none; transform: none; }
+  }
+
+  /* ── Layout primitives ───────────────────────────────────────────── */
+  .container {
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding-left: var(--pad-x);
+    padding-right: var(--pad-x);
+  }
+
+  /* ── Top nav ─────────────────────────────────────────────────────── */
+  nav.topnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(140%) blur(8px);
+    -webkit-backdrop-filter: saturate(140%) blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topnav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .wordmark {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .topnav-links {
+    display: none;
+    gap: 28px;
+    align-items: center;
+  }
+  .topnav-links a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .topnav-links a:hover { color: var(--text); }
+  .topnav-actions { display: flex; align-items: center; gap: 12px; }
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .theme-toggle:hover { border-color: var(--text-muted); }
+  .theme-toggle svg { width: 18px; height: 18px; }
+  .theme-toggle .icon-sun { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+  .btn-primary {
+    background: var(--hl-yellow);
+    color: var(--hl-text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.1s ease;
+  }
+  .btn-primary:hover { transform: scale(0.97); }
+
+  @media (min-width: 768px) {
+    .topnav-links { display: flex; }
+  }
+
+  /* ── Hero ────────────────────────────────────────────────────────── */
+  main { flex-grow: 1; }
+
+  .hero {
+    padding-top: 80px;
+    padding-bottom: var(--section-gap);
+    text-align: center;
+  }
+  .hero h1 {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(34px, 6vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    max-width: 880px;
+    margin: 0 auto 32px;
+  }
+  .hero-sub {
+    max-width: 640px;
+    margin: 0 auto 48px;
+    color: var(--text-muted);
+    font-size: 18px;
+    line-height: 1.55;
+  }
+
+  /* ── Code panel (Mocha) ──────────────────────────────────────────── */
+  .code-panel {
+    position: relative;
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 10px;
+    text-align: left;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15, 18, 30, 0.08), 0 4px 18px rgba(15, 18, 30, 0.08);
+  }
+  .code-panel-label {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6c7086;
+  }
+  .code-panel pre {
+    margin: 0;
+    padding: 28px 28px 28px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--code-text);
+    overflow-x: auto;
+  }
+  /* Syntax tokens — Mocha minus brand-colliding hues
+   * (string/function/method/yellow/peach/parameter swapped to neutral). */
+  .t-c    { color: var(--code-comment); font-style: italic; }
+  .t-k    { color: var(--code-keyword); }
+  .t-s    { color: var(--code-string); }
+  .t-n    { color: var(--code-text); }
+  .t-tag  { color: var(--code-tag); }
+  .t-attr { color: var(--code-attr); }
+  .t-prompt { color: #87db61; font-weight: 600; user-select: none; }
+
+  .hero-code-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* ── Feature rows ────────────────────────────────────────────────── */
+  .features {
+    padding-block: var(--section-gap);
+    border-top: 1px solid var(--border);
+  }
+  .features-grid {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: 1fr;
+  }
+  .feature h3 {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 12px 0 8px;
+    color: var(--text);
+  }
+  .feature p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .feature-icon {
+    color: var(--text);
+    opacity: 0.85;
+  }
+  .feature-icon svg { width: 22px; height: 22px; }
+  .feature code {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  @media (min-width: 768px) {
+    .features-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .feature {
+      padding: 0 28px;
+      border-left: 1px solid var(--border);
+    }
+    .feature:first-child { border-left: 0; padding-left: 0; }
+    .feature:last-child  { padding-right: 0; }
+  }
+
+  /* ── Install ─────────────────────────────────────────────────────── */
+  .install {
+    padding-block: var(--section-gap);
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .install h2 {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 28px;
+  }
+  .install-cmd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 460px;
+    margin: 0 auto;
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 6px;
+    padding: 14px 20px;
+  }
+  .install-cmd code {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--hl-yellow);
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+  .install-cmd button {
+    background: none;
+    border: 0;
+    color: #6c7086;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease;
+  }
+  .install-cmd button:hover { color: var(--code-text); }
+  .install-cmd button svg { width: 18px; height: 18px; }
+  .install-note {
+    max-width: 460px;
+    margin: 20px auto 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .install-note code {
+    color: var(--text);
+    font-size: 12px;
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding-block: 48px;
+    background: var(--surface);
+  }
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-dedication {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    max-width: 460px;
+    line-height: 1.6;
+  }
+  .footer-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .footer-links a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .footer-links a:hover {
+    color: var(--text);
+    border-bottom-color: var(--hl-yellow);
+  }
+  @media (min-width: 768px) {
+    .footer-inner {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+      align-items: flex-start;
+    }
+    .footer-dedication { max-width: 320px; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- SVG filter for marker-rough edges on highlight chips. -->
+<svg width="0" height="0" aria-hidden="true" style="position: absolute;">
+  <defs>
+    <filter id="omh-rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<nav class="topnav" aria-label="Primary">
+  <div class="container topnav-inner">
+    <a class="wordmark" href="#top" aria-label="one-more-highlight, home">
+      <span class="hl hl-yellow">o</span><span class="hl hl-pink">m</span><span class="hl hl-green">h</span>
+    </a>
+
+    <div class="topnav-links">
+      <a href="https://one-more-highlight.vercel.app/docs">Docs</a>
+      <a href="https://one-more-highlight.vercel.app/docs/playground">Playground</a>
+      <a href="https://github.com/RonenMars/one-more-highlight">GitHub</a>
+      <a href="https://www.npmjs.com/package/one-more-highlight">npm</a>
+    </div>
+
+    <div class="topnav-actions">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle color theme" type="button">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+      </button>
+      <a class="btn-primary" href="https://github.com/RonenMars/one-more-highlight">GitHub →</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <div class="container" id="top">
+
+    <!-- ─ Hero ─ -->
+    <section class="hero">
+      <h1>
+        Highlight the same word in
+        <span class="hl hl-yellow">three</span>
+        <span class="hl hl-pink">different</span>
+        <span class="hl hl-green">ways</span>.
+        At the same time.
+      </h1>
+      <p class="hero-sub">
+        A TypeScript-first React library for substring highlighting with first-class
+        multi-state per-match styling. Every match gets a base style. Specific matches —
+        by index, range, or list — get layered styles on top. ~2 KB brotlied. Two
+        micro-dependencies. SSR-safe.
+      </p>
+
+      <div class="hero-code-wrap">
+        <div class="code-panel">
+          <span class="code-panel-label">Highlight.tsx</span>
+<pre><code><span class="t-c">// Every "time" gets hl-base. Then layer states on top.</span>
+<span class="t-k">import</span> { Highlight } <span class="t-k">from</span> <span class="t-s">'one-more-highlight'</span>;
+
+<span class="t-tag">&lt;Highlight</span>
+  <span class="t-attr">text</span>=<span class="t-s">"time time time time time"</span>
+  <span class="t-attr">searchWords</span>={[<span class="t-s">'time'</span>]}
+  <span class="t-attr">highlightClassName</span>=<span class="t-s">"hl-base"</span>
+  <span class="t-attr">states</span>={[
+    { name: <span class="t-s">'active'</span>,     index: <span class="t-n">2</span>,        className: <span class="t-s">'hl-active'</span> },
+    { name: <span class="t-s">'preview'</span>,    range: [<span class="t-n">0</span>, <span class="t-n">1</span>],   className: <span class="t-s">'hl-preview'</span> },
+    { name: <span class="t-s">'bookmarked'</span>, indices: [<span class="t-n">3</span>, <span class="t-n">4</span>], className: <span class="t-s">'hl-bookmark'</span> },
+  ]}
+<span class="t-tag">/&gt;</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─ Features ─ -->
+    <section class="features" aria-label="Key features">
+      <div class="features-grid">
+
+        <div class="feature">
+          <span class="feature-icon" aria-hidden="true">
+            <!-- code -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </span>
+          <h3>TypeScript-first</h3>
+          <p>
+            Discriminated union narrows on the selector field — <code>index</code>,
+            <code>range</code>, or <code>indices</code>.
+          </p>
+        </div>
+
+        <div class="feature">
+          <span class="feature-icon" aria-hidden="true">
+            <!-- compress -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          </span>
+          <h3>Tiny</h3>
+          <p>
+            ~2 KB brotlied (ESM). Two micro-deps (<code>clsx</code>,
+            <code>escape-string-regexp</code>), both MIT, ~400 B combined.
+          </p>
+        </div>
+
+        <div class="feature">
+          <span class="feature-icon" aria-hidden="true">
+            <!-- cube / view_in_ar -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </span>
+          <h3>Headless</h3>
+          <p>
+            Drop in <code>&lt;Highlight&gt;</code>, or call <code>useHighlight</code>
+            and render segments yourself.
+          </p>
+        </div>
+
+        <div class="feature">
+          <span class="feature-icon" aria-hidden="true">
+            <!-- globe -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </span>
+          <h3>SSR-safe</h3>
+          <p>
+            No <code>window</code>, no <code>Date.now</code>, no <code>Math.random</code>.
+            Hydration matches.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─ Install ─ -->
+    <section class="install" aria-label="Install">
+      <h2>Get started</h2>
+      <div class="install-cmd">
+        <code><span class="t-prompt">$ </span>pnpm add one-more-highlight</code>
+        <button id="copy-btn" type="button" aria-label="Copy install command" data-copy="pnpm add one-more-highlight" title="Copy to clipboard">
+          <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </div>
+      <p class="install-note">
+        Peer dependency: <code>react ≥ 18</code>. Runtime deps:
+        <code>clsx</code>, <code>escape-string-regexp</code>.
+      </p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <a class="wordmark" href="#top" aria-label="one-more-highlight, home">
+        <span class="hl hl-yellow">o</span><span class="hl hl-pink">m</span><span class="hl hl-green">h</span>
+      </a>
+      <p class="footer-dedication" style="margin-top: 12px;">
+        Dedicated to Chester Bennington.
+        <span class="hl hl-yellow">Every</span> small <span class="hl hl-pink">light</span> <span class="hl hl-green">matters</span>.
+      </p>
+      <p class="footer-meta" style="margin-top: 12px;">MIT © Ronen Mars · one-more-highlight</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://one-more-highlight.vercel.app/docs">Docs</a>
+      <a href="https://one-more-highlight.vercel.app/docs/playground">Playground</a>
+      <a href="https://github.com/RonenMars/one-more-highlight">GitHub</a>
+      <a href="https://www.npmjs.com/package/one-more-highlight">npm</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Theme toggle — flips data-theme, persists to localStorage.
+  (function () {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var current = document.documentElement.getAttribute('data-theme') || 'light';
+      var next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('omh-theme', next); } catch (e) {}
+    });
+  })();
+
+  // Copy install command. Falls back to execCommand only if Clipboard API
+  // is unavailable or rejected.
+  (function () {
+    var btn = document.getElementById('copy-btn');
+    if (!btn) return;
+    var iconCopy = btn.querySelector('.icon-copy');
+    var iconCheck = btn.querySelector('.icon-check');
+    var originalLabel = btn.getAttribute('aria-label');
+
+    function flash(ok) {
+      if (iconCopy && iconCheck) {
+        iconCopy.style.display = ok ? 'none' : '';
+        iconCheck.style.display = ok ? '' : 'none';
+      }
+      btn.setAttribute('aria-label', ok ? 'Copied install command' : originalLabel);
+      setTimeout(function () {
+        if (iconCopy && iconCheck) {
+          iconCopy.style.display = '';
+          iconCheck.style.display = 'none';
+        }
+        btn.setAttribute('aria-label', originalLabel);
+      }, 1500);
+    }
+
+    btn.addEventListener('click', function () {
+      var text = btn.getAttribute('data-copy');
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(
+          function () { flash(true); },
+          function () { fallback(text); }
+        );
+      } else {
+        fallback(text);
+      }
+    });
+
+    function fallback(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); flash(true); } catch (e) { flash(false); }
+      document.body.removeChild(ta);
+    }
+  })();
+</script>
+
+</body>
+</html>

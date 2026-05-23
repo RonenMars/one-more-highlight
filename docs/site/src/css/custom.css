@@ -126,6 +126,19 @@ mark,
   color: var(--hl-text);
 }
 
+/* Highlight chip backgrounds — synced with the playground (examples/playground/src/index.css).
+ * Used by code-sample className references in the docs (e.g. intro.md) so the
+ * "if you wrote this CSS" snippet visually matches the live demos on the page. */
+.hl-base     { background: var(--hl-yellow); border-radius: 2px; }
+.hl-preview  { background: var(--hl-pink); }
+.hl-active   { background: var(--hl-green); outline: 2px solid var(--text); }
+.hl-bookmark { text-decoration: underline; }
+.hl-a        { background: var(--hl-yellow); }
+.hl-b        { background: var(--hl-pink); }
+.hl-one      { background: var(--hl-green); }
+.hl-range    { background: var(--hl-green); }
+.hl-many     { background: var(--hl-pink); }
+
 /* ─── ::selection ───
  * Light: canonical bright-yellow highlighter (#FFF166 on #1b1b1d ≈ 13:1 AAA).
  * Dark:  pale yellow on dark text (#FFF7C2 on #1b1b1d ≈ 16:1 AAA).

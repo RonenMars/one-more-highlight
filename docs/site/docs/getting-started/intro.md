@@ -14,11 +14,11 @@ import { Highlight } from 'one-more-highlight';
 <Highlight
   text="time time time time time"
   searchWords={['time']}
-  highlightClassName="bg-yellow-200"
+  highlightClassName="hl-base"
   states={[
-    { name: 'active',     index: 2,         className: 'bg-orange-500 ring-2' },
-    { name: 'preview',    range: [0, 1],    className: 'bg-blue-100' },
-    { name: 'bookmarked', indices: [3, 4],  className: 'underline' },
+    { name: 'active',     index: 2,         className: 'hl-active' },
+    { name: 'preview',    range: [0, 1],    className: 'hl-preview' },
+    { name: 'bookmarked', indices: [3, 4],  className: 'hl-bookmark' },
   ]}
 />
 ```

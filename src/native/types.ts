@@ -2,6 +2,12 @@ import type { ReactNode } from 'react';
 import type { StyleProp, TextProps, TextStyle } from 'react-native';
 import type {
   FindChunksInput,
+  HighlightState as CoreHighlightState,
+  HighlightStateMany as CoreHighlightStateMany,
+  HighlightStateOne as CoreHighlightStateOne,
+  HighlightStateRange as CoreHighlightStateRange,
+  HighlightStateTerm as CoreHighlightStateTerm,
+  HighlightStateTermNth as CoreHighlightStateTermNth,
   MatchSegment,
   OverlapStrategy,
   RawChunk,
@@ -21,29 +27,22 @@ export type HighlightStateBase = {
   style?: StyleProp<TextStyle>;
 };
 
-export type HighlightStateOne = HighlightStateBase & { index: number };
-export type HighlightStateRange = HighlightStateBase & { range: readonly [number, number] };
-export type HighlightStateMany = HighlightStateBase & { indices: ReadonlyArray<number> };
+/**
+ * Swaps a core state's DOM styling surface (`className` / CSS `style`) for
+ * the RN one. Distributes over the union, so a selector form added to the
+ * core union in `src/types.ts` shows up here automatically.
+ */
+type WithNativeStyle<S> = S extends { name: string }
+  ? Omit<S, 'className' | 'style'> & HighlightStateBase
+  : never;
 
-export type HighlightStateTerm = HighlightStateBase & {
-  term: string | number;
-  termMatch?: 'all' | 'first';
-  silent?: boolean;
-};
+export type HighlightStateOne = WithNativeStyle<CoreHighlightStateOne>;
+export type HighlightStateRange = WithNativeStyle<CoreHighlightStateRange>;
+export type HighlightStateMany = WithNativeStyle<CoreHighlightStateMany>;
+export type HighlightStateTerm = WithNativeStyle<CoreHighlightStateTerm>;
+export type HighlightStateTermNth = WithNativeStyle<CoreHighlightStateTermNth>;
 
-export type HighlightStateTermNth = HighlightStateBase & {
-  term: string | number;
-  nth: number;
-  termMatch?: 'all' | 'first';
-  silent?: boolean;
-};
-
-export type HighlightState =
-  | HighlightStateOne
-  | HighlightStateRange
-  | HighlightStateMany
-  | HighlightStateTerm
-  | HighlightStateTermNth;
+export type HighlightState = WithNativeStyle<CoreHighlightState>;
 
 /**
  * Options for the RN `useHighlight` hook. Mirrors the web hook one-to-one

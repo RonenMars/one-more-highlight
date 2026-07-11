@@ -40,6 +40,25 @@ describe('<HighlightText>', () => {
     });
   });
 
+  it('applies unhighlightStyle to non-match runs', () => {
+    render(
+      <HighlightText
+        text="cat dog"
+        searchWords={['dog']}
+        unhighlightStyle={{ color: 'grey' }}
+      />,
+    );
+    expect(flatten(screen.getByText('cat').props.style)).toMatchObject({
+      color: 'grey',
+    });
+  });
+
+  it('forwards matching options to the pipeline (caseSensitive)', () => {
+    render(<HighlightText text="cat CAT cat" searchWords={['cat']} caseSensitive />);
+    expect(screen.getAllByText('cat')).toHaveLength(2);
+    expect(screen.queryByText('CAT')).toBeNull();
+  });
+
   it('applies state style on selected matches only', () => {
     render(
       <HighlightText

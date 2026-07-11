@@ -2,7 +2,7 @@ import { Fragment, forwardRef } from 'react';
 import { Text } from 'react-native';
 import type { StyleProp, TextStyle } from 'react-native';
 import { useHighlight } from './useHighlight.js';
-import type { MatchSegment, Segment } from '../types.js';
+import type { Segment } from '../types.js';
 import type { HighlightState, HighlightTextProps } from './types.js';
 
 /**
@@ -87,7 +87,7 @@ export const HighlightText = forwardRef<Text, HighlightTextProps>(
       if (renderMatch) {
         return (
           <Fragment key={key}>
-            {renderMatch(seg as MatchSegment, { style: mergedStyle })}
+            {renderMatch(seg, { style: mergedStyle })}
           </Fragment>
         );
       }
@@ -100,7 +100,7 @@ export const HighlightText = forwardRef<Text, HighlightTextProps>(
     });
 
     return (
-      <Text ref={ref} style={style} {...textProps}>
+      <Text {...textProps} ref={ref} style={style}>
         {children}
       </Text>
     );

@@ -245,7 +245,7 @@ const normalize = (s: string) =>
 
 - **DOM engine** (default) — `<Highlight>` from `'one-more-highlight'`. Wraps each match in a `<mark>` node. Supports `renderMatch`, custom tags, and per-state inline style. Universal browser support.
 - **CSS Custom Highlight API engine** (opt-in) — `<CssHighlight>` from `'one-more-highlight/css'`. Paints ranges via `CSS.highlights` with no per-match DOM nodes. Larger perf win on long text. See the [engines/css-highlights](https://one-more-highlight.vercel.app/docs/engines/css-highlights) docs page.
-- **React Native engine** (opt-in) — `<HighlightText>` from `'one-more-highlight/native'`. Renders matches as nested `<Text>` runs. Same selectors and multi-state styling; styles are `TextStyle` objects instead of `className`. See [React Native](#react-native) below.
+- **React Native engine** (opt-in) — `<HighlightText>` from `'one-more-highlight/native'`. Renders matches as nested `<Text>` runs. Same selectors and multi-state styling; styles are `TextStyle` objects instead of `className`. See [React Native](#react-native) below and the [engines/react-native](https://one-more-highlight.vercel.app/docs/engines/react-native) docs page.
 
 ## React Native
 

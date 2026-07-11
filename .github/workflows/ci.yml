@@ -102,4 +102,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Disable husky so commitlint does not run on semantic-release's
+          # auto-generated release commit — its changelog lines (GitHub commit
+          # and issue URLs) exceed commitlint's 100-char footer limit and were
+          # failing `git commit`, blocking the version bump and npm publish.
+          HUSKY: 0
         run: npx semantic-release

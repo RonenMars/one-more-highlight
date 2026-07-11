@@ -1,9 +1,29 @@
-import { Fragment, forwardRef } from 'react';
+import {
+  Fragment,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import { Text } from 'react-native';
-import type { StyleProp, TextStyle } from 'react-native';
+import type {
+  NativeSyntheticEvent,
+  StyleProp,
+  TextLayoutEventData,
+  TextLayoutLine,
+  TextStyle,
+} from 'react-native';
 import { useHighlight } from './useHighlight.js';
+import { computeMatchLayouts } from './matchLayout.js';
+import type { MatchLayout } from './matchLayout.js';
 import type { Segment } from '../types.js';
-import type { HighlightState, HighlightTextProps } from './types.js';
+import type {
+  HighlightLayoutHandle,
+  HighlightState,
+  HighlightTextProps,
+  MeasuredMatch,
+} from './types.js';
 
 /**
  * Collect the per-state styles that select a given match, in the order the
@@ -61,7 +81,22 @@ export const HighlightText = forwardRef<Text, HighlightTextProps>(
       renderMatch,
       style,
       textProps,
+      onMatchesLayout,
+      layoutRef,
     } = props;
+
+    // The container Text handle, needed both to satisfy the forwarded `ref`
+    // (raw Text) and to drive `measureMatch`. `useImperativeHandle` on `ref`
+    // would break consumers using the ref as a Text, so merge instead.
+    const textRef = useRef<Text | null>(null);
+    const setTextRef = useCallback(
+      (node: Text | null) => {
+        textRef.current = node;
+        if (typeof ref === 'function') ref(node);
+        else if (ref) ref.current = node;
+      },
+      [ref],
+    );
 
     const { segments } = useHighlight({
       text,
@@ -73,6 +108,91 @@ export const HighlightText = forwardRef<Text, HighlightTextProps>(
       ...(states !== undefined && { states }),
       ...(overlapStrategy !== undefined && { overlapStrategy }),
     });
+
+    // Last line boxes from onTextLayout. RN only fires onTextLayout when the
+    // rendered layout changes, so when `searchWords` change but `text` doesn't,
+    // the line boxes are identical and no event re-fires — we recompute from
+    // this cache in an effect on segment change (below).
+    const linesRef = useRef<ReadonlyArray<TextLayoutLine> | null>(null);
+    const onMatchesLayoutRef = useRef(onMatchesLayout);
+    onMatchesLayoutRef.current = onMatchesLayout;
+
+    const emit = useCallback(() => {
+      const lines = linesRef.current;
+      if (!lines) return;
+      onMatchesLayoutRef.current?.(computeMatchLayouts(segments, lines));
+    }, [segments]);
+
+    const userOnTextLayout = textProps?.onTextLayout;
+    const handleTextLayout = useCallback(
+      (e: NativeSyntheticEvent<TextLayoutEventData>) => {
+        linesRef.current = e.nativeEvent.lines;
+        userOnTextLayout?.(e);
+        emit();
+      },
+      [userOnTextLayout, emit],
+    );
+
+    // Re-emit when segments change even if onTextLayout doesn't re-fire.
+    useEffect(() => {
+      emit();
+    }, [emit]);
+
+    useImperativeHandle(
+      layoutRef,
+      (): HighlightLayoutHandle => {
+        const findLayout = (matchIndex: number): MatchLayout | null => {
+          const lines = linesRef.current;
+          if (!lines) return null;
+          return (
+            computeMatchLayouts(segments, lines).find(
+              (m) => m.matchIndex === matchIndex,
+            ) ?? null
+          );
+        };
+
+        return {
+          getMatchLayout: findLayout,
+          measureMatch: (matchIndex, relativeTo) => {
+            const layout = findLayout(matchIndex);
+            const node = textRef.current;
+            if (!layout || !node) return Promise.resolve(null);
+
+            // `relativeTo` provided → measure against it; omitted → window.
+            // A provided-but-unattached ref (`.current` null) is a caller
+            // error: resolve null rather than silently returning window
+            // coords, which would be in the wrong space.
+            const measureAgainst =
+              relativeTo === undefined
+                ? undefined
+                : typeof relativeTo === 'number'
+                  ? relativeTo
+                  : relativeTo.current;
+            if (relativeTo !== undefined && measureAgainst == null) {
+              return Promise.resolve(null);
+            }
+
+            return new Promise<MeasuredMatch | null>((resolve) => {
+              const finish = (x: number, y: number, width: number) =>
+                resolve({ x, y: y + layout.y, width, height: layout.height });
+              if (measureAgainst != null) {
+                node.measureLayout(
+                  // RN accepts a host-component instance or a numeric handle.
+                  measureAgainst as Parameters<Text['measureLayout']>[0],
+                  (x, y, width) => finish(x, y, width),
+                  () => resolve(null),
+                );
+              } else {
+                node.measure((_x, _y, width, _h, pageX, pageY) =>
+                  finish(pageX, pageY, width),
+                );
+              }
+            });
+          },
+        };
+      },
+      [segments],
+    );
 
     const children = segments.map((seg, i) => {
       const key = `${seg.start}-${seg.end}-${i}`;
@@ -100,7 +220,12 @@ export const HighlightText = forwardRef<Text, HighlightTextProps>(
     });
 
     return (
-      <Text {...textProps} ref={ref} style={style}>
+      <Text
+        {...textProps}
+        ref={setTextRef}
+        style={style}
+        onTextLayout={handleTextLayout}
+      >
         {children}
       </Text>
     );

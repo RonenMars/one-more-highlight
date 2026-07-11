@@ -5,6 +5,7 @@ export { useHighlight } from './useHighlight.js';
 export { defaultFindChunks } from '../findMatches.js';
 
 export type {
+  HighlightLayoutHandle,
   HighlightState,
   HighlightStateMany,
   HighlightStateOne,
@@ -13,9 +14,12 @@ export type {
   HighlightStateTermNth,
   HighlightTextProps,
   MatchDefaults,
+  MeasuredMatch,
   UseHighlightOptions,
   UseHighlightResult,
 } from './types.js';
+
+export type { MatchLayout } from './matchLayout.js';
 
 // Platform-neutral types re-exported from the shared pipeline.
 export type {

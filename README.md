@@ -290,6 +290,40 @@ function Highlighted({ text, term }: { text: string; term: string }) {
 }
 ```
 
+### Scroll to a match
+
+Match `<Text>` runs are virtual nodes with no host handle, and RN has no substring measurement — so the library reports **the box of the line each match falls on, relative to the root `<Text>`**, derived from the already-computed match offsets (no `indexOf` re-matching).
+
+```tsx
+import { useRef } from 'react';
+import { View } from 'react-native';
+import { HighlightText } from 'one-more-highlight/native';
+import type { HighlightLayoutHandle } from 'one-more-highlight/native';
+
+const layout = useRef<HighlightLayoutHandle>(null);
+const rowRef = useRef<View>(null);
+
+<View ref={rowRef}>
+  <HighlightText
+    text={text}
+    searchWords={[needle]}
+    states={[{ name: 'active', index: 0 }]}
+    layoutRef={layout}
+    onMatchesLayout={(matches) => {
+      // matches: { matchIndex, termIndex, start, end, lineIndex, y, height }[]
+    }}
+  />
+</View>;
+
+// Later — resolve the active match against the list row and scroll to it:
+const box = await layout.current?.measureMatch(0, rowRef);
+if (box) listRef.current?.scrollToOffset({ offset: box.y });
+```
+
+- `onMatchesLayout` fires on `onTextLayout` **and** whenever `searchWords`/segments change even if the layout doesn't re-fire; emits `[]` when a re-match finds nothing; composes with a `textProps.onTextLayout` you supply. A match that wraps across lines reports its **first** line; under `numberOfLines` truncation only rendered lines are reported.
+- `getMatchLayout(matchIndex)` → sync `{ start, end, lineIndex, y, height } | null` from cache. `measureMatch(matchIndex, relativeTo?)` → async coords in an ancestor's or the window's space. Both hang off `layoutRef`, kept separate from `ref` (still the raw container `<Text>`).
+- Web has no equivalent — DOM matches are real elements, so `scrollIntoView` already covers this.
+
 ### Differences from the DOM engine
 
 - **No `className`.** Style with `highlightStyle`, `unhighlightStyle`, and `HighlightState.style` (all `StyleProp<TextStyle>`). Per-state styles cascade in declaration order — the last matching state wins, same as the web engine.

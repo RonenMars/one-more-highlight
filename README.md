@@ -241,10 +241,62 @@ const normalize = (s: string) =>
 
 ## Engines
 
-`one-more-highlight` ships two rendering engines that share the same matching pipeline:
+`one-more-highlight` ships three rendering engines that share the same matching pipeline:
 
 - **DOM engine** (default) — `<Highlight>` from `'one-more-highlight'`. Wraps each match in a `<mark>` node. Supports `renderMatch`, custom tags, and per-state inline style. Universal browser support.
 - **CSS Custom Highlight API engine** (opt-in) — `<CssHighlight>` from `'one-more-highlight/css'`. Paints ranges via `CSS.highlights` with no per-match DOM nodes. Larger perf win on long text. See the [engines/css-highlights](https://one-more-highlight.vercel.app/docs/engines/css-highlights) docs page.
+- **React Native engine** (opt-in) — `<HighlightText>` from `'one-more-highlight/native'`. Renders matches as nested `<Text>` runs. Same selectors and multi-state styling; styles are `TextStyle` objects instead of `className`. See [React Native](#react-native) below and the [engines/react-native](https://one-more-highlight.vercel.app/docs/engines/react-native) docs page.
+
+## React Native
+
+The matching pipeline is platform-free, so the same selectors, overlap strategies, and multi-state styling work under React Native. Import from the `/native` subpath:
+
+```tsx
+import { HighlightText } from 'one-more-highlight/native';
+
+<HighlightText
+  text="the quick brown fox"
+  searchWords={['quick', 'fox']}
+  highlightStyle={{ backgroundColor: '#FFF166' }}
+  states={[{ name: 'active', term: 'fox', style: { fontWeight: 'bold' } }]}
+/>;
+```
+
+`react-native` is an **optional peer dependency** — it is pulled in only when you import `/native`, so web-only consumers are unaffected.
+
+### Headless hook (works today, any renderer)
+
+`useHighlight` has no DOM dependency and can be used directly in RN without the component — render the segments however you like:
+
+```tsx
+import { Text } from 'react-native';
+import { useHighlight } from 'one-more-highlight/native';
+
+function Highlighted({ text, term }: { text: string; term: string }) {
+  const { segments } = useHighlight({ text, searchWords: [term] });
+  return (
+    <Text>
+      {segments.map((seg, i) =>
+        seg.isMatch ? (
+          <Text key={i} style={{ backgroundColor: '#FFF166' }}>
+            {seg.text}
+          </Text>
+        ) : (
+          seg.text
+        ),
+      )}
+    </Text>
+  );
+}
+```
+
+### Differences from the DOM engine
+
+- **No `className`.** Style with `highlightStyle`, `unhighlightStyle`, and `HighlightState.style` (all `StyleProp<TextStyle>`). Per-state styles cascade in declaration order — the last matching state wins, same as the web engine.
+- **No `<mark>` / `role="mark"`.** React Native has no `mark` accessibility role. For an accessible callout, pass `accessibilityLabel` via `textProps`, or use `renderMatch` to render your own node.
+- **No CSS Custom Highlight API engine.** `/css` is web-only; there is no RN analog.
+- **Nested-`<Text>` caveats.** Background color, line height, and vertical alignment of nested text spans behave differently across iOS and Android (Android in particular shifts the baseline when a span changes `fontSize`, and does not clip `borderRadius` on text spans). `numberOfLines` truncation is controlled by the outer container `<Text>` via `textProps`.
+- **Metro resolution.** New Metro (RN 0.79+) resolves the `/native` subpath via the package `exports` map. Older Metro resolves it through a bundled path shim, so no configuration is needed either way.
 
 ## Roadmap
 

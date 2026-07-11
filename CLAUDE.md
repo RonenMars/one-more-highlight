@@ -115,8 +115,9 @@ surface, update both files together.
 1. Extend `HighlightState` discriminated union in `src/types.ts` with a new member carrying a distinct discriminator field (e.g. `predicate: (i: number) => boolean`).
 2. Update `selects()` and `highestSelected()` in `src/applyStates.ts` with a branch that detects the new field.
 3. Tests in `tests/applyStates.test.ts`.
-4. Document the new field in `docs/site/docs/api/highlight-state-selectors.md` and the multi-state-styling guide.
-5. README example.
+4. The RN union in `src/native/types.ts` picks up the new member automatically (it derives from the core union via `WithNativeStyle`). Add a named `HighlightState<Form>` alias there and re-export it from `src/native/index.ts` for export parity.
+5. Document the new field in `docs/site/docs/api/highlight-state-selectors.md` and the multi-state-styling guide.
+6. README example.
 
 Do **not** introduce a `match.<form>` builder; the union carries the ergonomics by itself (see ADR-0001).
 

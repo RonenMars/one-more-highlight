@@ -1,0 +1,9 @@
+{
+  "name": "one-more-highlight-native-shim",
+  "private": true,
+  "description": "Resolution shim so older Metro (which ignores the package `exports` map) can resolve `one-more-highlight/native` by plain path. New Metro (RN 0.79+) uses the `exports` map and never reads this file.",
+  "main": "../dist/native/index.cjs",
+  "module": "../dist/native/index.js",
+  "react-native": "../dist/native/index.js",
+  "types": "../dist/native/index.d.ts"
+}

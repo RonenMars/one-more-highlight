@@ -95,13 +95,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # OIDC trusted publishing needs npm >= 11.5.1; Node 24 ships npm 10.x.
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@latest
+
       - name: Build
         run: pnpm build
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # npm auth is OIDC trusted publishing (id-token: write above) — no NPM_TOKEN.
           # Disable husky so commitlint does not run on semantic-release's
           # auto-generated release commit — its changelog lines (GitHub commit
           # and issue URLs) exceed commitlint's 100-char footer limit and were

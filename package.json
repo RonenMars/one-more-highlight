@@ -12,7 +12,8 @@
     "typescript",
     "multi-state",
     "react-highlight",
-    "react-highlight-words"
+    "react-highlight-words",
+    "react-native"
   ],
   "homepage": "https://one-more-highlight.vercel.app",
   "bugs": {
@@ -48,17 +49,31 @@
         "types": "./dist/css/index.d.cts",
         "default": "./dist/css/index.cjs"
       }
+    },
+    "./native": {
+      "import": {
+        "types": "./dist/native/index.d.ts",
+        "default": "./dist/native/index.js"
+      },
+      "require": {
+        "types": "./dist/native/index.d.cts",
+        "default": "./dist/native/index.cjs"
+      }
     }
   },
   "typesVersions": {
     "*": {
       "css": [
         "./dist/css/index.d.ts"
+      ],
+      "native": [
+        "./dist/native/index.d.ts"
       ]
     }
   },
   "files": [
     "dist",
+    "native",
     "README.md",
     "LICENSE"
   ],
@@ -66,15 +81,16 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.native.json",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:native": "jest --config jest.native.config.cjs",
     "test:visual": "playwright test --config tests/visual/playwright.config.ts",
     "test:visual:update": "playwright test --config tests/visual/playwright.config.ts --update-snapshots",
     "test:visual:ui": "playwright test --config tests/visual/playwright.config.ts --ui",
     "lint:pkg": "publint && attw --pack .",
     "size": "size-limit",
-    "verify": "pnpm typecheck && pnpm test && pnpm build && pnpm lint:pkg && pnpm size",
+    "verify": "pnpm typecheck && pnpm test && pnpm test:native && pnpm build && pnpm lint:pkg && pnpm size",
     "prepare": "husky",
     "lint": "eslint src tests",
     "lint:fix": "eslint src tests --fix",
@@ -85,21 +101,31 @@
     "escape-string-regexp": "^5.0.0"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "react": ">=18",
+    "react-native": ">=0.70"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.4",
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
+    "@react-native/babel-preset": "^0.76.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
     "@size-limit/preset-small-lib": "^11.1.6",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
+    "@testing-library/react-native": "^12.9.0",
+    "@types/jest": "^29.5.14",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/react-test-renderer": "^19.0.0",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.18.2",
     "commitlint": "^19.6.1",
@@ -108,11 +134,14 @@
     "fast-check": "^3.23.2",
     "globals": "^17.6.0",
     "husky": "^9.1.7",
+    "jest": "^29.7.0",
     "jsdom": "^25.0.1",
     "lint-staged": "^15.4.3",
     "publint": "^0.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-native": "^0.76.0",
+    "react-test-renderer": "^19.0.0",
     "semantic-release": "^24.2.3",
     "size-limit": "^11.1.6",
     "tsup": "^8.3.5",
@@ -139,6 +168,16 @@
       "name": "CJS (/css)",
       "path": "dist/css/index.cjs",
       "limit": "3.5 KB"
+    },
+    {
+      "name": "ESM (/native)",
+      "path": "dist/native/index.js",
+      "limit": "3 KB"
+    },
+    {
+      "name": "CJS (/native)",
+      "path": "dist/native/index.cjs",
+      "limit": "3 KB"
     }
   ],
   "packageManager": "pnpm@11.0.9+sha512.34ce82e6780233cf9cad8685029a8f81d2e06196c5a9bad98879f7424940c6817c4e4524fb7d38b8553ceed48b9758b8ebaf1abd3600c232c4c8cf7366086f38",

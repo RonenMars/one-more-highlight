@@ -11,6 +11,7 @@ export default [
   },
   {
     files: ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}"],
+    ignores: ["src/native/**", "tests/native/**"],
     plugins: {
       "@typescript-eslint": tseslint,
       "react-hooks": reactHooks,
@@ -23,6 +24,31 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
+      },
+    },
+    rules: {
+      ...tseslint.configs.recommended.rules,
+      ...reactHooks.configs.recommended.rules,
+      "@typescript-eslint/no-explicit-any": "error",
+      "no-console": ["error", { "allow": ["warn"] }],
+      "no-undef": "off",
+    },
+  },
+  {
+    // React Native entry: type-aware linting against its own DOM-free project.
+    files: ["src/native/**/*.{ts,tsx}", "tests/native/**/*.{ts,tsx}"],
+    plugins: {
+      "@typescript-eslint": tseslint,
+      "react-hooks": reactHooks,
+    },
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: "./tsconfig.native.json",
+      },
+      globals: {
+        ...globals.node,
+        ...globals.jest,
       },
     },
     rules: {

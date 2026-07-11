@@ -16,6 +16,7 @@ import type {
 } from 'react-native';
 import { useHighlight } from './useHighlight.js';
 import { computeMatchLayouts } from './matchLayout.js';
+import type { MatchLayout } from './matchLayout.js';
 import type { Segment } from '../types.js';
 import type {
   HighlightLayoutHandle,
@@ -139,8 +140,8 @@ export const HighlightText = forwardRef<Text, HighlightTextProps>(
 
     useImperativeHandle(
       layoutRef,
-      (): HighlightLayoutHandle => ({
-        getMatchLayout: (matchIndex) => {
+      (): HighlightLayoutHandle => {
+        const findLayout = (matchIndex: number): MatchLayout | null => {
           const lines = linesRef.current;
           if (!lines) return null;
           return (
@@ -148,40 +149,48 @@ export const HighlightText = forwardRef<Text, HighlightTextProps>(
               (m) => m.matchIndex === matchIndex,
             ) ?? null
           );
-        },
-        measureMatch: (matchIndex, relativeTo) => {
-          const lines = linesRef.current;
-          const node = textRef.current;
-          const layout = lines
-            ? computeMatchLayouts(segments, lines).find(
-                (m) => m.matchIndex === matchIndex,
-              )
-            : undefined;
-          if (!layout || !node) return Promise.resolve(null);
+        };
 
-          return new Promise<MeasuredMatch | null>((resolve) => {
-            const finish = (x: number, y: number, width: number) =>
-              resolve({ x, y: y + layout.y, width, height: layout.height });
-            // A numeric handle or a ref to a measurable ancestor → measureLayout;
-            // otherwise resolve against the window via measure.
-            const target =
-              typeof relativeTo === 'number'
-                ? relativeTo
-                : relativeTo?.current;
-            if (target != null) {
-              node.measureLayout(
-                target as number,
-                (x, y, width) => finish(x, y, width),
-                () => resolve(null),
-              );
-            } else {
-              node.measure((_x, _y, width, _h, pageX, pageY) =>
-                finish(pageX, pageY, width),
-              );
+        return {
+          getMatchLayout: findLayout,
+          measureMatch: (matchIndex, relativeTo) => {
+            const layout = findLayout(matchIndex);
+            const node = textRef.current;
+            if (!layout || !node) return Promise.resolve(null);
+
+            // `relativeTo` provided → measure against it; omitted → window.
+            // A provided-but-unattached ref (`.current` null) is a caller
+            // error: resolve null rather than silently returning window
+            // coords, which would be in the wrong space.
+            const measureAgainst =
+              relativeTo === undefined
+                ? undefined
+                : typeof relativeTo === 'number'
+                  ? relativeTo
+                  : relativeTo.current;
+            if (relativeTo !== undefined && measureAgainst == null) {
+              return Promise.resolve(null);
             }
-          });
-        },
-      }),
+
+            return new Promise<MeasuredMatch | null>((resolve) => {
+              const finish = (x: number, y: number, width: number) =>
+                resolve({ x, y: y + layout.y, width, height: layout.height });
+              if (measureAgainst != null) {
+                node.measureLayout(
+                  // RN accepts a host-component instance or a numeric handle.
+                  measureAgainst as Parameters<Text['measureLayout']>[0],
+                  (x, y, width) => finish(x, y, width),
+                  () => resolve(null),
+                );
+              } else {
+                node.measure((_x, _y, width, _h, pageX, pageY) =>
+                  finish(pageX, pageY, width),
+                );
+              }
+            });
+          },
+        };
+      },
       [segments],
     );
 

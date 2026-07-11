@@ -111,6 +111,27 @@ describe('<HighlightText> match layout', () => {
     expect(layoutRef.current!.getMatchLayout(99)).toBeNull();
   });
 
+  it('measureMatch resolves null for an unknown match and before layout', async () => {
+    const layoutRef = createRef<HighlightLayoutHandle>();
+    render(
+      <HighlightText text="hello fox" searchWords={['fox']} layoutRef={layoutRef} textProps={{ accessibilityLabel: 'c' }} />,
+    );
+    await expect(layoutRef.current!.measureMatch(0)).resolves.toBeNull(); // before layout
+    fireLayout(screen.getByLabelText('c'), [line('hello fox', 0)]);
+    await expect(layoutRef.current!.measureMatch(99)).resolves.toBeNull(); // unknown index
+  });
+
+  it('measureMatch resolves null when relativeTo is passed but unattached', async () => {
+    const layoutRef = createRef<HighlightLayoutHandle>();
+    const unattached = createRef<import('react-native').View>(); // .current stays null
+    render(
+      <HighlightText text="hello fox" searchWords={['fox']} layoutRef={layoutRef} textProps={{ accessibilityLabel: 'c' }} />,
+    );
+    fireLayout(screen.getByLabelText('c'), [line('hello fox', 0)]);
+    // A provided-but-null relativeTo must NOT silently fall back to window coords.
+    await expect(layoutRef.current!.measureMatch(0, unattached)).resolves.toBeNull();
+  });
+
   it('keeps the ref forwarding the raw Text handle', () => {
     const ref = createRef<import('react-native').Text>();
     render(<HighlightText text="hello fox" searchWords={['fox']} ref={ref} />);

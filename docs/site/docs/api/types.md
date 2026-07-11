@@ -82,3 +82,50 @@ interface UseHighlightResult {
 ```
 
 `getMatchCount()` returns the number of `MatchSegment` entries — useful for validating `states` indices or rendering "N results found" UI.
+
+## React Native match-layout types
+
+Exported from `one-more-highlight/native` (not the web entry). They describe the [scroll-to-match](/docs/engines/react-native#scroll-to-a-match) API.
+
+### `MatchLayout`
+
+Layout of one match, reported by `onMatchesLayout` and `getMatchLayout`. `y` / `height` are the box of the **first line** the match falls on, relative to the root `<Text>`.
+
+```ts
+interface MatchLayout {
+  matchIndex: number;
+  termIndex: number;
+  start: number;
+  end: number;
+  lineIndex: number;
+  y: number;
+  height: number;
+}
+```
+
+### `MeasuredMatch`
+
+Coordinates resolved by `measureMatch` into an ancestor's or the window's space. `x` / `width` are the root `<Text>`'s box (RN can't measure a substring horizontally); `y` / `height` pinpoint the match's line within it.
+
+```ts
+interface MeasuredMatch {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+```
+
+### `HighlightLayoutHandle`
+
+The imperative handle exposed via the `layoutRef` prop, kept separate from `ref` (which stays a raw `Text`).
+
+```ts
+interface HighlightLayoutHandle {
+  getMatchLayout: (matchIndex: number) => MatchLayout | null;
+  measureMatch: (
+    matchIndex: number,
+    relativeTo?: RefObject<unknown> | number,
+  ) => Promise<MeasuredMatch | null>;
+}
+```

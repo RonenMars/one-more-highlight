@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/RonenMars/one-more-highlight/compare/v1.2.0...v1.3.0) (2026-07-11)
+
+
+### Features
+
+* **src:** add React Native engine via /native subpath ([#7](https://github.com/RonenMars/one-more-highlight/issues/7)) ([cc4c0e3](https://github.com/RonenMars/one-more-highlight/commit/cc4c0e364e7ba342a7d1263632998d124423673b))
+* **src:** report match layout in the React Native engine ([#8](https://github.com/RonenMars/one-more-highlight/issues/8)) ([b435acb](https://github.com/RonenMars/one-more-highlight/commit/b435acbdb27de902a1651ab4c92d931e67f4c15f))
+
 # [1.2.0](https://github.com/RonenMars/one-more-highlight/compare/v1.1.0...v1.2.0) (2026-05-22)
 
 

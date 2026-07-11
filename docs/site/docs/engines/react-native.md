@@ -99,6 +99,76 @@ function Highlighted({ text, term }: { text: string; term: string }) {
 }
 ```
 
+## Scroll to a match
+
+Match `<Text>` runs are virtual nodes — no `onLayout`, no host handle —
+and RN exposes no substring measurement, so the finest primitive
+available is **the box of the line a match falls on, relative to the
+root `<Text>`**. `onMatchesLayout` hands you exactly that, derived from
+the already-computed match offsets (no re-running `indexOf`):
+
+```tsx
+onMatchesLayout={(matches) => {
+  // matches: { matchIndex, termIndex, start, end, lineIndex, y, height }[]
+  // `y` / `height` = the line's box relative to the root Text's top.
+}}
+```
+
+- Fires on `onTextLayout` **and** whenever `searchWords`/segments change
+  even if the layout doesn't (RN wouldn't re-fire `onTextLayout` when
+  `text` is unchanged), so offsets never go stale.
+- Emits `[]` when a re-match finds nothing, so you can clear state.
+- A match that wraps across lines reports its **first** line.
+- Under `numberOfLines` truncation, only matches on rendered lines are
+  meaningful — RN reports layout for rendered lines only.
+- Composes with a `textProps.onTextLayout` you supply (both run).
+
+For a full scroll-to-match against a list row, resolve the match into
+the row's coordinate space with the imperative `layoutRef`:
+
+```tsx
+import { useRef } from 'react';
+import { View, Text } from 'react-native';
+import { HighlightText } from 'one-more-highlight/native';
+import type { HighlightLayoutHandle } from 'one-more-highlight/native';
+
+function Row({ text, needle, listRef }) {
+  const layout = useRef<HighlightLayoutHandle>(null);
+  const rowRef = useRef<View>(null);
+
+  async function scrollToMatch() {
+    // Measure the "active" match's line against the list row, then scroll.
+    const box = await layout.current?.measureMatch(0, rowRef);
+    if (box) listRef.current?.scrollToOffset({ offset: box.y });
+  }
+
+  return (
+    <View ref={rowRef}>
+      <HighlightText
+        text={text}
+        searchWords={[needle]}
+        states={[{ name: 'active', index: 0 }]}
+        layoutRef={layout}
+      />
+    </View>
+  );
+}
+```
+
+- `getMatchLayout(matchIndex)` → sync, from cached layout:
+  `{ start, end, lineIndex, y, height } | null` (null before the first
+  layout or for an unknown index).
+- `measureMatch(matchIndex, relativeTo?)` → async: composes the root
+  Text's `measureLayout` (against `relativeTo`) or `measure` (window)
+  with the cached line-y, resolving the match's coords in ancestor or
+  window space. Leave converting that to list/window scroll offsets to
+  you — absolute coords go stale every scroll frame.
+- `layoutRef` is separate from `ref` (which still forwards the raw
+  container `<Text>`), so existing `ref` consumers are unaffected.
+
+Web has no equivalent: DOM matches are real elements there, so
+`scrollIntoView` already covers scroll-to-match.
+
 ## Differences from the DOM engine
 
 - **No `className`.** Styles are `StyleProp<TextStyle>` objects.

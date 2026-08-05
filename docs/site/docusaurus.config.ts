@@ -36,7 +36,7 @@ const config: Config = {
   tagline: 'Multi-state substring highlighting for React.',
   favicon: 'img/favicon-omh-32.png',
   headTags: [
-    { tagName: 'link', attributes: { rel: 'apple-touch-icon', href: '/img/favicon-omh-180.png' } },
+    { tagName: 'link', attributes: { rel: 'apple-touch-icon', href: '/docs/img/favicon-omh-180.png' } },
     { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
     { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' } },
     {
@@ -48,7 +48,7 @@ const config: Config = {
     },
   ],
   url: 'https://one-more-highlight.vercel.app',
-  baseUrl: '/',
+  baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   i18n: { defaultLocale: 'en', locales: ['en'] },
@@ -57,6 +57,7 @@ const config: Config = {
       'classic',
       {
         docs: {
+          routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/RonenMars/one-more-highlight/edit/main/',
         },
@@ -69,6 +70,13 @@ const config: Config = {
     navbar: {
       title: 'one-more-highlight',
       items: [
+        {
+          href: '/',
+          autoAddBaseUrl: false,
+          'data-noBrokenLinkCheck': true,
+          position: 'left',
+          label: 'Home',
+        },
         { type: 'docSidebar', sidebarId: 'docs', position: 'left', label: 'Docs' },
         {
           href: 'https://github.com/RonenMars/one-more-highlight/blob/main/CHANGELOG.md',

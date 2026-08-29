@@ -1,3 +1,15 @@
+## [1.3.1](https://github.com/RonenMars/one-more-highlight/compare/v1.3.0...v1.3.1) (2026-08-29)
+
+
+### Bug Fixes
+
+* **ci:** verify npm publish via OIDC trusted publishing ([#13](https://github.com/RonenMars/one-more-highlight/issues/13)) ([090b353](https://github.com/RonenMars/one-more-highlight/commit/090b3535730a500acbe37e239440bb441e305aa5))
+
+
+### Features
+
+* **site:** publish landing page with docs routing ([#11](https://github.com/RonenMars/one-more-highlight/issues/11)) ([00a4a7d](https://github.com/RonenMars/one-more-highlight/commit/00a4a7db302f643a1793c523b72513e29d6ff21d))
+
 # [1.3.0](https://github.com/RonenMars/one-more-highlight/compare/v1.2.0...v1.3.0) (2026-07-11)
 
 

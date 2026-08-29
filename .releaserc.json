@@ -8,6 +8,7 @@
         "releaseRules": [
           { "scope": "playground", "release": false },
           { "scope": "docs", "release": false },
+          { "scope": "site", "release": false },
           { "scope": "visual", "release": false },
           { "scope": "workspaces", "release": false }
         ]

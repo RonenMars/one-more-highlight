@@ -105,7 +105,10 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # npm auth is OIDC trusted publishing (id-token: write above) — no NPM_TOKEN.
+          # OIDC is attempted first (id-token: write). NPM_TOKEN is the fallback:
+          # trusted publishing is not configured for this package on npmjs.com, so
+          # the OIDC exchange returns 404 "package not found" and ENONPMTOKEN.
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           # Disable husky so commitlint does not run on semantic-release's
           # auto-generated release commit — its changelog lines (GitHub commit
           # and issue URLs) exceed commitlint's 100-char footer limit and were

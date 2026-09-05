@@ -24,8 +24,10 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - Three overlap strategies: `merge` (default), `nest`, `first-wins`.
 - Native-first `RegExp.escape()` with `escape-string-regexp` fallback.
 - ESM + CJS dual build, `.d.ts` + `.d.cts`, `exports` map, `sideEffects: false`.
-- 77 tests across 11 suites, including 1000-iteration property-based fuzz.
-- 1.89 KB ESM / 2.23 KB CJS brotlied for the default entry. Zero CSS shipped.
+- 93 tests across 11 suites, plus 29 React Native tests, including 1000-iteration property-based fuzz.
+- 2.23 KB ESM / 2.58 KB CJS brotlied for the default entry. Zero CSS shipped.
+  Sub-exports: `/css` 2.77 KB ESM, `/native` 2.41 KB ESM.
+  Measured with `pnpm size` at v1.3.2 — re-measure and update this line when it moves, rather than quoting it from memory.
 - **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
 - **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
 - **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.
@@ -35,7 +37,7 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 ### Verified
 
 - `pnpm typecheck` ✅ strict, no any
-- `pnpm test` ✅ 52/52
+- `pnpm test` ✅ 93/93, `pnpm test:native` ✅ 29/29
 - `pnpm build` ✅ tsup ESM+CJS+types
 - `pnpm lint:pkg` ✅ publint + attw all green
 - `pnpm size` ✅ under 3 KB brotlied budget

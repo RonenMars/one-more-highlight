@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { applyStates } from './applyStates.js';
 import { combineChunks } from './combineChunks.js';
+import type { CombinedChunk } from './combineChunks.js';
 import { buildSegments } from './buildSegments.js';
 import { defaultFindChunks } from './findMatches.js';
 import type { HighlightState, Segment, UseHighlightOptions, UseHighlightResult } from './types.js';
@@ -60,7 +61,9 @@ export function useHighlight(opts: UseHighlightOptions): UseHighlightResult {
   const searchKey = searchKeyOf(searchWords);
   const stKey = statesKeyOf(states);
 
-  const segments = useMemo<Segment[]>(() => {
+  // Match geometry does not depend on states, so a states-only change must not
+  // rerun the matcher — only the decoration memo below.
+  const combined = useMemo<CombinedChunk[]>(() => {
     const finder = findChunks ?? defaultFindChunks;
     const raw = finder({
       searchWords,
@@ -69,11 +72,15 @@ export function useHighlight(opts: UseHighlightOptions): UseHighlightResult {
       autoEscape,
       sanitize,
     });
-    const combined = combineChunks(raw, overlapStrategy);
+    return combineChunks(raw, overlapStrategy);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, searchKey, caseSensitive, autoEscape, sanitize, findChunks, overlapStrategy]);
+
+  const segments = useMemo<Segment[]>(() => {
     const tagged = applyStates(combined, states, searchWords);
     return buildSegments(text, tagged);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text, searchKey, caseSensitive, autoEscape, sanitize, findChunks, stKey, overlapStrategy]);
+  }, [combined, stKey, text, searchKey]);
 
   const getMatchCount = useMemo(
     () => () => segments.filter((s) => s.isMatch).length,

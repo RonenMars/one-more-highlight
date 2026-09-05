@@ -20,6 +20,7 @@ export const CssHighlight = forwardRef<
   const {
     text,
     fallback = 'dom',
+    highlightType = 'highlight',
     as = 'span',
     className,
     style,
@@ -69,6 +70,9 @@ export const CssHighlight = forwardRef<
       let h = registry.get(name);
       if (!h) {
         h = new Highlight(...ranges);
+        // Assigned rather than left default so a non-default value actually
+        // takes effect; `highlight` is already the spec default.
+        h.type = highlightType;
         registry.set(name, h);
       } else {
         for (const r of ranges) h.add(r);
@@ -84,7 +88,7 @@ export const CssHighlight = forwardRef<
         if (h.size === 0) registry.delete(name);
       }
     };
-  }, [segments, fallback]);
+  }, [segments, fallback, highlightType]);
 
   // Synchronous degradation paths. Placed after hook calls so React's
   // Rules of Hooks aren't violated; the effect above no-ops when

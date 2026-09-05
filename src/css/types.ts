@@ -26,9 +26,21 @@ export type CssHighlightFallback = 'dom' | 'none' | 'throw';
  * not synthesize styles or accept `className`/`style` on individual
  * `HighlightState` entries.
  */
+/** Mirrors the `HighlightType` enum from the CSS Custom Highlight API. */
+export type HighlightRangeType = 'highlight' | 'spelling-error' | 'grammar-error';
+
 export type CssHighlightProps = UseHighlightOptions & {
   /** Behavior in unsupported browsers. Defaults to `'dom'`. */
   fallback?: CssHighlightFallback;
+  /**
+   * Sets `Highlight.type`, which is how a painted range reaches the
+   * accessibility tree — it is the only accessibility affordance this engine
+   * has, since it creates no DOM per match. Defaults to `'highlight'`.
+   *
+   * Screen-reader support is real but uneven; see the support matrix in
+   * `docs/site/docs/engines/css-highlights.md` before relying on it.
+   */
+  highlightType?: HighlightRangeType;
   /** Wrapper element tag. Defaults to `'span'`. */
   as?: keyof JSX.IntrinsicElements;
   /** Forwarded to the wrapper element, not to individual matches. */

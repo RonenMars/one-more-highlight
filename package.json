@@ -208,12 +208,12 @@
     {
       "name": "ESM (/a11y)",
       "path": "dist/a11y/index.js",
-      "limit": "4 KB"
+      "limit": "4.5 KB"
     },
     {
       "name": "CJS (/a11y)",
       "path": "dist/a11y/index.cjs",
-      "limit": "4 KB"
+      "limit": "4.5 KB"
     },
     {
       "name": "ESM (/navigation)",

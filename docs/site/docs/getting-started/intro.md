@@ -30,7 +30,7 @@ import { Highlight } from 'one-more-highlight';
 - **Headless `useHighlight` hook** for DIY rendering
 - **`renderMatch` render-prop** for full per-match output control
 - **React Native support** — `HighlightText` from the optional `/native` entry point
-- **~2.3 KB brotlied** — ESM + CJS dual build, SSR-safe, zero CSS shipped
+- **~2.5 KB brotlied** — ESM + CJS dual build, SSR-safe, zero CSS shipped
 
 ## When to use this library
 

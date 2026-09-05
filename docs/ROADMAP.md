@@ -9,7 +9,7 @@ Build the React text-highlighting library that staff engineers actually want to 
 - **TypeScript-first**, with discriminated-union selectors that narrow correctly.
 - **Multi-state per-match styling** as the headline feature — not bolted on.
 - **Headless-friendly** (`useHighlight` hook) for design-system / Tailwind / CSS-in-JS consumers.
-- **Tiny** (~2 KB brotlied) and **dependency-light** (2 micro-deps).
+- **Tiny** (~2.5 KB brotlied) and **dependency-light** (2 micro-deps).
 - **Modern** — React 18+/19, ESM-first, SSR-safe, tree-shakeable.
 
 We are not trying to replace `react-highlight-words` for everyone — we are trying to be the obvious choice for anyone who needs typed multi-state highlighting on a modern stack.
@@ -26,9 +26,10 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - ESM + CJS dual build, `.d.ts` + `.d.cts`, `exports` map, `sideEffects: false`.
 - Unit, SSR and React Native suites plus 1000-iteration property-based fuzz. `pnpm verify` runs them all and is the source of truth for the counts — a number written here goes stale on the next PR.
 - Playwright visual regression across 5 device projects — `pnpm test:visual`, run by its own CI job and not by `pnpm verify`.
-- 2.23 KB ESM / 2.57 KB CJS brotlied for the default entry, inside a 3 KB `size-limit` budget. Zero CSS shipped.
-  Sub-exports: `/css` 2.77 KB ESM, `/native` 2.4 KB ESM.
-  Measured with `pnpm size` at v1.3.3 — re-measure and update this line when it moves, rather than quoting it from memory.
+- 2.50 KB ESM / 2.83 KB CJS brotlied for the default entry, inside a 3 KB `size-limit` budget. Zero CSS shipped.
+  Sub-exports: `/css` 2.98 KB ESM, `/native` 2.67 KB ESM.
+  Measured with `pnpm size` at v1.4.0 — re-measure and update this line when it moves, rather than quoting it from memory.
+  Note `/css` ESM and `/native` CJS currently sit within 20-30 bytes of their limits, so the budgets have almost no room left.
 - **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
 - **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
 - **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.
@@ -38,7 +39,7 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 ### Verified
 
 - `pnpm typecheck` ✅ strict, no any
-- `pnpm test` ✅ 93/93, `pnpm test:native` ✅ 29/29
+- `pnpm test` ✅ green, `pnpm test:native` ✅ green
 - `pnpm build` ✅ tsup ESM+CJS+types
 - `pnpm lint:pkg` ✅ publint + attw all green
 - `pnpm size` ✅ under 3 KB brotlied budget

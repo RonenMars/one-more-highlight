@@ -19,7 +19,7 @@ These come from the project's design conversation. They override generic "best p
 - If you notice unrelated dead code, *mention* it — don't act on it.
 
 ### 2. No new runtime dependencies without discussion
-- The package's pitch is "tiny + auditable" (~2KB brotlied, 2 micro-deps).
+- The package's pitch is "tiny + auditable" (~2.5 KB brotlied, 2 micro-deps).
 - Adding a runtime dep means: explicit user approval, MIT/permissive license check, weekly-download/maintainer-trust audit, and an entry in `CHANGELOG.md`.
 - Inlining a Stack Overflow snippet for a common operation is *worse* than taking a trusted dep — see the regex-escape footgun. Use established packages (`escape-string-regexp`, `clsx`) over hand-rolled.
 - Dev dependencies have a lower bar but every one earns its slot.

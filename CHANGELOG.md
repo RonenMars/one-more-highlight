@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/RonenMars/one-more-highlight/compare/v1.3.2...v1.3.3) (2026-09-05)
+
+
+### Bug Fixes
+
+* make searchKeyOf injective so colliding keys cannot skip re-matching ([#39](https://github.com/RonenMars/one-more-highlight/issues/39)) ([04042db](https://github.com/RonenMars/one-more-highlight/commit/04042db381ef476d477bf4dc5a117db0f4ce7e0d))
+
 ## [1.3.2](https://github.com/RonenMars/one-more-highlight/compare/v1.3.1...v1.3.2) (2026-09-05)
 
 

@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/RonenMars/one-more-highlight/compare/v1.4.0...v1.5.0) (2026-09-05)
+
+
+### Features
+
+* add match navigation, plus /a11y and /navigation subpaths ([#48](https://github.com/RonenMars/one-more-highlight/issues/48)) ([6d1e90c](https://github.com/RonenMars/one-more-highlight/commit/6d1e90c8d1f0922f7d8471f6d8c314933e396bb3)), closes [#22](https://github.com/RonenMars/one-more-highlight/issues/22) [#19](https://github.com/RonenMars/one-more-highlight/issues/19) [#23](https://github.com/RonenMars/one-more-highlight/issues/23) [#24](https://github.com/RonenMars/one-more-highlight/issues/24) [#34](https://github.com/RonenMars/one-more-highlight/issues/34)
+
 # [1.4.0](https://github.com/RonenMars/one-more-highlight/compare/v1.3.3...v1.4.0) (2026-09-05)
 
 

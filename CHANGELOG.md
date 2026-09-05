@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/RonenMars/one-more-highlight/compare/v1.5.0...v1.6.0) (2026-09-05)
+
+
+### Features
+
+* **css:** expose Highlight.type and document the engine's real accessibility position ([#61](https://github.com/RonenMars/one-more-highlight/issues/61)) ([0fbb7cd](https://github.com/RonenMars/one-more-highlight/commit/0fbb7cd941e0af8f5a5f7774f948a225c916b8a0)), closes [#41](https://github.com/RonenMars/one-more-highlight/issues/41) [#41](https://github.com/RonenMars/one-more-highlight/issues/41)
+
 # [1.5.0](https://github.com/RonenMars/one-more-highlight/compare/v1.4.0...v1.5.0) (2026-09-05)
 
 

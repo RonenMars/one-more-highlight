@@ -102,3 +102,15 @@ For background, see Adrian Roselli's [Overlay Fact Sheet](https://overlayfactshe
 - [ ] If you layer states (e.g. `active` overrides the base color), check the layered combinations too — not just each color in isolation.
 - [ ] Add an `axe-core`-based check to CI so future palette tweaks can't silently regress.
 - [ ] Confirm the chosen `highlightTag` carries `mark` semantics. The library adds `role="mark"` automatically when `highlightTag` is overridden to a non-semantic element, but a custom render prop that returns a `<div>` bypasses this — restore the role manually if so.
+
+## Which engine, for assistive technology
+
+The DOM engine renders `<mark>`, whose semantics screen readers understand
+everywhere. The CSS engine paints ranges and creates no DOM, so its only
+affordance is `Highlight.type` — announced on Windows and macOS, not yet on
+Linux, unknown on Safari. The full matrix is in
+[CSS Custom Highlights](../engines/css-highlights.md#accessibility).
+
+Choose deliberately rather than by default: pick the CSS engine for the
+performance win on long text when highlights are supplementary, and the DOM
+engine — or `one-more-highlight/a11y` — when a user must not miss the highlight.

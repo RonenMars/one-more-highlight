@@ -69,6 +69,7 @@ describe('<CssHighlight>', () => {
 interface StubHighlight {
   ranges: Set<Range>;
   size: number;
+  type?: string;
   add(r: Range): void;
   delete(r: Range): boolean;
 }
@@ -84,6 +85,7 @@ function installHighlightStub(): {
   class HighlightStub implements StubHighlight {
     ranges: Set<Range>;
     size: number;
+    type = 'highlight';
     constructor(...ranges: Range[]) {
       this.ranges = new Set(ranges);
       this.size = this.ranges.size;
@@ -123,6 +125,21 @@ describe('<CssHighlight> registry mechanics', () => {
   afterEach(() => {
     env.cleanup();
     __resetSupportedCacheForTests();
+  });
+
+  it('sets Highlight.type to "highlight" by default', () => {
+    render(<CssHighlight text="cat hat" searchWords={['cat']} />);
+    expect(env.registry.get('match')!.type).toBe('highlight');
+  });
+
+  it('forwards highlightType to Highlight.type', () => {
+    // `type` is the only accessibility affordance this engine has: it creates
+    // no DOM per match, so assistive technology sees the painted range's type
+    // or nothing at all.
+    render(
+      <CssHighlight text="teh cat" searchWords={['teh']} highlightType="spelling-error" />,
+    );
+    expect(env.registry.get('match')!.type).toBe('spelling-error');
   });
 
   it('registers one Range per match under the implicit "match" name', () => {

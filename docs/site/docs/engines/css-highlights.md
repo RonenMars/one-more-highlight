@@ -164,3 +164,51 @@ timing guarantee.
 
 The `/css` entry is its own tree-shaking root — consumers of the default
 `one-more-highlight` entry pay nothing for the CSS engine.
+
+## Accessibility
+
+A painted range creates **no DOM**, so `<mark>`'s semantics are not available
+here. The engine's only accessibility affordance is `Highlight.type`, which the
+`highlightType` prop sets:
+
+```tsx
+<CssHighlight text={body} searchWords={q} highlightType="spelling-error" />
+```
+
+| Value | Meaning |
+| --- | --- |
+| `'highlight'` *(default)* | General highlight, no specific semantics |
+| `'spelling-error'` | Assistive technology can announce a misspelling |
+| `'grammar-error'` | Assistive technology can announce a grammar problem |
+
+### Screen-reader support is real, but uneven
+
+This is better than commonly assumed and worse than complete. Per the CSS
+Working Group's status report of March 2026:
+
+| Platform | `highlight` | `spelling-error` | `grammar-error` |
+| --- | --- | --- | --- |
+| Windows — Narrator, NVDA, JAWS | ✅ | ✅ | ✅ |
+| macOS | ✅ | ✅ | ❌ in progress |
+| Linux | ❌ in progress | ✅ | ✅ |
+| Safari | unknown | unknown | unknown |
+
+So the default `'highlight'` type **is** announced on Windows and macOS, and is
+not on Linux. NVDA on Firefox announces all three.
+
+One caveat on reading that table: the working group's report says "custom"
+where the specification's enum says `'highlight'`. Everything else lines up, so
+they are almost certainly the same thing, but we have not seen the equivalence
+stated outright.
+
+### Choosing an engine
+
+If a highlight carries meaning a user must not miss — search results they are
+navigating, errors they must act on — prefer the DOM engine, or
+`one-more-highlight/a11y`, which makes the accessible layer explicit.
+
+Reach for this engine when highlights are decorative or supplementary, or when
+the performance win on long text matters more than announcement on Linux.
+
+There is no per-match DOM to attach `aria-*` to, and adding one would remove the
+only reason to use this engine. That trade is the point, not an oversight.

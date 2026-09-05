@@ -4,7 +4,8 @@ import { defaultFindChunks } from '../src/findMatches.js';
 import { combineChunks } from '../src/combineChunks.js';
 import { applyStates } from '../src/applyStates.js';
 import { buildSegments } from '../src/buildSegments.js';
-import { searchKeyOf } from '../src/useHighlight.js';
+import { chunksFromRanges } from '../src/fromRanges.js';
+import type { HighlightRange, OverlapStrategy } from '../src/types.js';
 
 function pipeline(text: string, terms: string[]): string {
   const raw = defaultFindChunks({
@@ -14,7 +15,7 @@ function pipeline(text: string, terms: string[]): string {
     autoEscape: true,
   });
   const combined = combineChunks(raw, 'merge');
-  const tagged = applyStates(combined, undefined, terms);
+  const tagged = applyStates(combined, undefined, terms, text);
   return buildSegments(text, tagged).map((s) => s.text).join('');
 }
 
@@ -78,6 +79,7 @@ describe('fuzz: pipeline preserves text', () => {
             combined,
             [{ name: 'pick', term: t, silent: true }],
             searchWords,
+            text,
           );
           for (const c of tagged) {
             if (c.states.includes('pick')) {
@@ -94,46 +96,100 @@ describe('fuzz: pipeline preserves text', () => {
   });
 });
 
-describe('fuzz: searchKeyOf is injective', () => {
-  // The key is a useMemo dependency, so two distinct term lists sharing a key
-  // would skip re-matching and leave the previous search rendered.
-  //
-  // Independently generated pairs practically never collide, so the generators
-  // below target the collision family directly: any delimiter the encoding uses
-  // to separate entries can also appear inside a term.
-  const piece = fc.stringMatching(/^[ab|:s]{0,4}$/);
+// A `ranges` source is unvalidated consumer input, so the generator deliberately
+// straddles the text bounds in both directions: offsets run to ±5 past a text of
+// at most 20 characters, which makes inverted, zero-length, partially clamped
+// and fully out-of-bounds ranges all common draws rather than rare corners.
+const rangeArb: fc.Arbitrary<HighlightRange> = fc
+  .tuple(
+    fc.integer({ min: -5, max: 25 }),
+    fc.integer({ min: -5, max: 25 }),
+    fc.constantFrom<string | undefined>('a', 'b', 'c', undefined),
+  )
+  .map(([start, end, termId]) =>
+    termId === undefined ? { start, end } : { start, end, termId },
+  );
 
-  it('a term containing the delimiter cannot impersonate several terms', () => {
+function rangesPipeline(
+  text: string,
+  ranges: ReadonlyArray<HighlightRange>,
+  strategy: OverlapStrategy,
+): string {
+  const { chunks, terms } = chunksFromRanges(ranges, text.length);
+  const combined = combineChunks(chunks, strategy);
+  const tagged = applyStates(combined, undefined, terms, text);
+  return buildSegments(text, tagged).map((s) => s.text).join('');
+}
+
+describe('fuzz: controlled ranges', () => {
+  it('joined segments always equal input text', () => {
     fc.assert(
       fc.property(
-        fc.array(piece, { minLength: 2, maxLength: 4 }),
-        fc.constantFrom('|s:', '|', 's:', '|r:'),
-        (parts, glue) => {
-          expect(searchKeyOf(parts)).not.toBe(searchKeyOf([parts.join(glue)]));
+        fc.string({ maxLength: 20 }),
+        fc.array(rangeArb, { maxLength: 8 }),
+        // 'nest' is excluded by design: it emits overlapping chunks, so
+        // buildSegments repeats the overlap and the join is expected to differ.
+        fc.constantFrom<OverlapStrategy>('merge', 'first-wins'),
+        (text, ranges, strategy) => {
+          expect(rangesPipeline(text, ranges, strategy)).toBe(text);
         },
       ),
-      { numRuns: 2000 },
+      { numRuns: 1000 },
     );
   });
 
-  it('equal keys imply equivalent term lists', () => {
-    const identity = (ws: ReadonlyArray<string | RegExp>): string =>
-      JSON.stringify(ws.map((w) => (typeof w === 'string' ? ['s', w] : ['r', w.source, w.flags])));
-
+  it('clamps to the text bounds and drops empty or inverted ranges', () => {
     fc.assert(
       fc.property(
-        fc.array(piece, { maxLength: 4 }),
-        fc.array(piece, { maxLength: 4 }),
-        (a, b) => {
-          if (searchKeyOf(a) === searchKeyOf(b)) expect(identity(a)).toBe(identity(b));
+        fc.nat({ max: 20 }),
+        fc.array(rangeArb, { maxLength: 8 }),
+        (textLength, ranges) => {
+          const survivors = ranges.filter(
+            (r) => Math.max(0, r.start) < Math.min(textLength, r.end),
+          );
+          const { chunks } = chunksFromRanges(ranges, textLength);
+
+          expect(chunks).toHaveLength(survivors.length);
+          chunks.forEach((c, i) => {
+            const r = survivors[i];
+            // Input order is preserved and the source object is carried by identity.
+            expect(c.range).toBe(r);
+            expect(c.start).toBe(Math.max(0, r!.start));
+            expect(c.end).toBe(Math.min(textLength, r!.end));
+            expect(c.start).toBeGreaterThanOrEqual(0);
+            expect(c.end).toBeLessThanOrEqual(textLength);
+            expect(c.end).toBeGreaterThan(c.start);
+          });
         },
       ),
-      { numRuns: 2000 },
+      { numRuns: 1000 },
     );
   });
 
-  it('distinguishes a regexp from the string that mimics its encoding', () => {
-    expect(searchKeyOf([/ab/g])).not.toBe(searchKeyOf(['r:ab/g']));
-    expect(searchKeyOf(['a', 'b'])).not.toBe(searchKeyOf(['a|s:b']));
+  it('numbers termIds by first appearance among the surviving ranges', () => {
+    fc.assert(
+      fc.property(
+        fc.nat({ max: 20 }),
+        fc.array(rangeArb, { maxLength: 8 }),
+        (textLength, ranges) => {
+          const { chunks, terms } = chunksFromRanges(ranges, textLength);
+
+          const firstAppearance: string[] = [];
+          for (const c of chunks) {
+            const termId = c.range?.termId;
+            if (termId !== undefined && !firstAppearance.includes(termId)) {
+              firstAppearance.push(termId);
+            }
+          }
+          expect(terms).toEqual(firstAppearance);
+
+          for (const c of chunks) {
+            const termId = c.range?.termId;
+            expect(c.termIndex).toBe(termId === undefined ? -1 : terms.indexOf(termId));
+          }
+        },
+      ),
+      { numRuns: 1000 },
+    );
   });
 });

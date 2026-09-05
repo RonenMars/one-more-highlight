@@ -19,6 +19,7 @@ const sidebars: SidebarsConfig = {
         'guides/multi-state-styling',
         'guides/headless-hook',
         'guides/render-prop',
+        'guides/controlled-ranges',
       ],
     },
     {

@@ -3,16 +3,44 @@ import type {
   HighlightState,
   HighlightStateTerm,
   HighlightStateTermNth,
+  MatchContext,
 } from './types.js';
 
-function selects(state: HighlightState, matchIndex: number): boolean {
+function selects(
+  state: HighlightState,
+  matchIndex: number,
+  context: MatchContext | undefined,
+): boolean {
   if ('index' in state) return state.index === matchIndex;
   if ('range' in state) {
     const [lo, hi] = state.range;
     return matchIndex >= lo && matchIndex <= hi;
   }
   if ('indices' in state) return state.indices.includes(matchIndex);
+  if ('match' in state) return context !== undefined && state.match(context);
   return false;
+}
+
+function contextOf(
+  chunk: CombinedChunk,
+  searchWords: ReadonlyArray<string | RegExp>,
+  text: string,
+  nthOfTerm: number,
+): MatchContext {
+  const base = {
+    index: chunk.matchIndex,
+    text: text.slice(chunk.start, chunk.end),
+    start: chunk.start,
+    end: chunk.end,
+    source: text,
+    termIndex: chunk.termIndex,
+    nthOfTerm,
+  };
+  if (chunk.range) {
+    return { ...base, range: chunk.range, term: chunk.range.termId };
+  }
+  // A custom `findChunks` can report a termIndex outside `searchWords`.
+  return { ...base, term: searchWords[chunk.termIndex] ?? '' };
 }
 
 function resolveTermIndices(
@@ -45,6 +73,8 @@ function highestSelected(state: HighlightState): number {
   if ('indices' in state) {
     return state.indices.length === 0 ? -1 : Math.max(...state.indices);
   }
+  // Term and predicate selectors resolve against the matches themselves, so
+  // they have no statically known upper bound to warn about.
   return -1;
 }
 
@@ -109,6 +139,7 @@ export function applyStates(
   chunks: ReadonlyArray<CombinedChunk>,
   states: ReadonlyArray<HighlightState> | undefined,
   searchWords: ReadonlyArray<string | RegExp>,
+  text: string,
 ): TaggedChunk[] {
   if (!states || states.length === 0) {
     return chunks.map((c) => ({ ...c, states: [] }));
@@ -145,12 +176,24 @@ export function applyStates(
     }
   }
 
+  // Predicate contexts carry `nthOfTerm`, which needs a running per-term
+  // tally in document order. Only pay for it when a predicate asks.
+  const hasPredicate = states.some((s) => 'match' in s);
+  const seenPerTerm = new Map<number, number>();
+
   return chunks.map((c) => {
+    let context: MatchContext | undefined;
+    if (hasPredicate) {
+      const nth = seenPerTerm.get(c.termIndex) ?? 0;
+      seenPerTerm.set(c.termIndex, nth + 1);
+      context = contextOf(c, searchWords, text, nth);
+    }
+
     const names: string[] = [];
     for (const s of states) {
       if ('term' in s) {
         if (termSelections.get(s)?.has(c.matchIndex)) names.push(s.name);
-      } else if (selects(s, c.matchIndex)) {
+      } else if (selects(s, c.matchIndex, context)) {
         names.push(s.name);
       }
     }

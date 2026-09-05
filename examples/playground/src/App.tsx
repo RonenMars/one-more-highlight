@@ -12,6 +12,7 @@ import { OverlapFirstDemo } from './demos/OverlapFirstDemo.js';
 import { OverlapMergeDemo } from './demos/OverlapMergeDemo.js';
 import { OverlapNestDemo } from './demos/OverlapNestDemo.js';
 import { PerTermDemo } from './demos/PerTermDemo.js';
+import { RangesDemo } from './demos/RangesDemo.js';
 import { RegexDemo } from './demos/RegexDemo.js';
 import { RenderPropDemo } from './demos/RenderPropDemo.js';
 import { SelectorsDemo } from './demos/SelectorsDemo.js';
@@ -46,6 +47,7 @@ const demos = [
   { path: 'per-term',         title: 'Per-search-term — { term, nth } selectors',          Component: PerTermDemo },
   { path: 'selectors',        title: 'Selectors — index / range / indices',                 Component: SelectorsDemo },
   { path: 'css-engine',       title: 'CSS Custom Highlight API engine',                    Component: CssEngineDemo },
+  { path: 'ranges',           title: 'Controlled ranges — offsets from a search backend',   Component: RangesDemo },
 ];
 
 export function App() {

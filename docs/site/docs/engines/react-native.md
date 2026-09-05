@@ -26,6 +26,27 @@ import { HighlightText } from 'one-more-highlight/native';
 />;
 ```
 
+## Controlled ranges
+
+`<HighlightText>` takes the same mutually exclusive source union as the web
+components: either `searchWords` or `ranges`, never both. On mobile this is
+usually the more natural of the two — the search that produced the results
+already ran on a server:
+
+```tsx
+<HighlightText
+  text={article.body}
+  ranges={hits.map((h) => ({ start: h.from, end: h.to, id: h.objectID }))}
+  highlightStyle={{ backgroundColor: '#FFF166' }}
+/>;
+```
+
+Offsets are clamped to the text and malformed entries are dropped, `termId`
+groups ranges for `{ term }` selectors, and `metadata` rides through to
+predicates and `renderMatch` — all identical to the web engine. See the
+[controlled ranges guide](/docs/guides/controlled-ranges) for the full
+semantics.
+
 ## Styling
 
 React Native has no `className` — style with `highlightStyle`,
@@ -44,6 +65,27 @@ wins, same as the web engine.
   ]}
 />
 ```
+
+A [predicate selector](/docs/api/highlight-state-selectors#predicate) is
+available too — the whole selector set is shared, only the styling surface
+differs:
+
+```tsx
+<HighlightText
+  text={text}
+  ranges={hits}
+  states={[
+    {
+      name: 'strong',
+      match: (m) => Number(m.range.metadata?.score) >= 0.85,
+      style: { backgroundColor: '#A8FF80' },
+    },
+  ]}
+/>
+```
+
+As on web, the predicate is compared by identity — hoist it or wrap it in
+`useCallback` so the pipeline isn't re-run every render.
 
 ## `renderMatch`
 
@@ -168,6 +210,28 @@ function Row({ text, needle, listRef }) {
 
 Web has no equivalent: DOM matches are real elements there, so
 `scrollIntoView` already covers scroll-to-match.
+
+## Type exports
+
+`/native` exports the same type surface as the web entry, split in two.
+
+**RN-flavored** — `HighlightState` and each of its members
+(`HighlightStateOne`, `HighlightStateRange`, `HighlightStateMany`,
+`HighlightStateTerm`, `HighlightStateTermNth`, `HighlightStatePredicate`),
+plus `HighlightTextProps`, `UseHighlightOptions`, `UseHighlightResult`,
+`MatchDefaults`, `MatchLayout`, `MeasuredMatch` and
+`HighlightLayoutHandle`. These swap `className` / CSS `style` for
+`StyleProp<TextStyle>`.
+
+**Platform-neutral, re-exported from the shared pipeline** —
+`HighlightRange`, `HighlightSource`, `MatchContext`, `MatchContextBase`,
+`SearchMatchContext`, `RangeMatchContext`, `MatcherOptions`, `Segment`,
+`MatchSegment`, `TextSegment`, `OverlapStrategy`, `RawChunk` and
+`FindChunksInput`. These are the same types the web entry exports —
+identical because the matching pipeline is shared.
+
+The RN state union derives from the core one, so a selector form added on
+web shows up here without a second definition to keep in sync.
 
 ## Differences from the DOM engine
 

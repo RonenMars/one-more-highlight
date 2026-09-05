@@ -17,7 +17,7 @@ type HighlightStateBase = {
   style?: CSSProperties;
 };
 
-type HighlightState =
+type HighlightState<Ctx = MatchContext> =
   | (HighlightStateBase & { index: number })
   | (HighlightStateBase & { range: readonly [number, number] })
   | (HighlightStateBase & { indices: ReadonlyArray<number> })
@@ -31,14 +31,85 @@ type HighlightState =
       nth: number;
       termMatch?: 'all' | 'first';
       silent?: boolean;
+    })
+  | (HighlightStateBase & { match: (context: Ctx) => boolean });
+```
+
+`HighlightState` takes an optional context type parameter used only by the
+predicate member — `HighlightState<Ctx = MatchContext>`. You rarely write it:
+the [source union](#highlightsource) supplies the right context for the source
+in use.
+
+Each member is also exported individually (`HighlightStateOne`, `HighlightStateRange`, `HighlightStateMany`, `HighlightStateTerm`, `HighlightStateTermNth`, `HighlightStatePredicate`) for consumers building typed helpers or narrowing predicates. See [`HighlightState` selectors](/docs/api/highlight-state-selectors) for the semantics of each form.
+
+:::note Selector resolution
+The union does not enforce mutual exclusivity at the type level — TypeScript will accept an object that carries more than one selector field (e.g., both `index` and `range`). In that case the library picks the first present field, in declaration order: `index` → `range` → `indices` → `match` → `term` (with `nth` further refining `term`). Stick to one selector field per entry.
+:::
+
+## `HighlightRange`
+
+One precomputed match for the `ranges` source. `start` / `end` are code-unit offsets into `text`; the rest is optional and opaque to the library.
+
+```ts
+interface HighlightRange {
+  start: number;
+  end: number;
+  id?: string;
+  termId?: string;
+  metadata?: Readonly<Record<string, unknown>>;
+}
+```
+
+## `HighlightSource`
+
+The mutually exclusive input shapes shared by `<Highlight>`, `<CssHighlight>`, `<HighlightText>` and `useHighlight`. `states` sits inside each branch so a predicate selector's context is typed for the source in use, and the matcher options are only available alongside `searchWords`.
+
+```ts
+type HighlightSource =
+  | (MatcherOptions & {
+      searchWords: ReadonlyArray<string | RegExp>;
+      states?: ReadonlyArray<HighlightState<SearchMatchContext>>;
+      ranges?: undefined;
+    })
+  | ({ [K in keyof MatcherOptions]?: undefined } & {
+      ranges: ReadonlyArray<HighlightRange>;
+      states?: ReadonlyArray<HighlightState<RangeMatchContext>>;
+      searchWords?: undefined;
     });
 ```
 
-Each member is also exported individually (`HighlightStateOne`, `HighlightStateRange`, `HighlightStateMany`, `HighlightStateTerm`, `HighlightStateTermNth`) for consumers building typed helpers or narrowing predicates. See [`HighlightState` selectors](/docs/api/highlight-state-selectors) for the semantics of each form.
-
-:::note Selector resolution
-The union does not enforce mutual exclusivity at the type level — TypeScript will accept an object that carries more than one selector field (e.g., both `index` and `range`). In that case the library picks the first present field, in declaration order: `index` → `range` → `indices` → `term` (with `nth` further refining `term`). Stick to one selector field per entry.
+:::note Why `?: undefined` and not `?: never`
+The package compiles under `exactOptionalPropertyTypes`, where a `never` branch rejects an explicit `ranges={undefined}` — which is how callers toggle between sources. `?: undefined` narrows identically and still makes "both" and "neither" type errors.
 :::
+
+## `MatchContext`
+
+What a [predicate selector](/docs/api/highlight-state-selectors#predicate) receives, as a union of the two source flavors.
+
+```ts
+interface MatchContextBase {
+  index: number;
+  text: string;
+  start: number;
+  end: number;
+  source: string;
+  nthOfTerm: number;
+}
+
+interface SearchMatchContext extends MatchContextBase {
+  term: string | RegExp;
+  termIndex: number;
+  range?: undefined;
+}
+
+interface RangeMatchContext extends MatchContextBase {
+  range: HighlightRange;
+  term: string | undefined;
+  termIndex: number;
+}
+
+type MatchContext = SearchMatchContext | RangeMatchContext;
+```
 
 ## `OverlapStrategy`
 
@@ -68,7 +139,7 @@ function MyHighlight(props: HighlightProps) {
 
 ## `UseHighlightOptions`
 
-Options type for `useHighlight`. A subset of `HighlightProps` without rendering props.
+Options type for `useHighlight`. A subset of `HighlightProps` without rendering props — `{ text, overlapStrategy? } & HighlightSource`.
 
 ## `UseHighlightResult`
 

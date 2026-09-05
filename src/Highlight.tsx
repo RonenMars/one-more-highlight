@@ -4,7 +4,7 @@ import type { CSSProperties, ElementRef, ReactNode } from 'react';
 import { useHighlight } from './useHighlight.js';
 import type {
   HighlightProps,
-  HighlightState,
+  HighlightStateBase,
   MatchSegment,
   Segment,
 } from './types.js';
@@ -13,7 +13,7 @@ const SEMANTIC_TAGS = new Set(['mark']);
 
 function resolveStateStyles(
   matchStates: ReadonlyArray<string>,
-  states: ReadonlyArray<HighlightState> | undefined,
+  states: ReadonlyArray<HighlightStateBase> | undefined,
 ): { classNames: string[]; styles: CSSProperties[] } {
   const classNames: string[] = [];
   const styles: CSSProperties[] = [];
@@ -73,14 +73,7 @@ export const Highlight = forwardRef<
   HighlightProps
 >(function Highlight(props, ref) {
   const {
-    text,
-    searchWords,
-    caseSensitive,
-    autoEscape,
-    sanitize,
-    findChunks,
     states,
-    overlapStrategy,
     highlightTag,
     highlightClassName,
     highlightStyle,
@@ -93,16 +86,9 @@ export const Highlight = forwardRef<
     style,
   } = props;
 
-  const { segments } = useHighlight({
-    text,
-    searchWords,
-    ...(caseSensitive !== undefined && { caseSensitive }),
-    ...(autoEscape !== undefined && { autoEscape }),
-    ...(sanitize !== undefined && { sanitize }),
-    ...(findChunks !== undefined && { findChunks }),
-    ...(states !== undefined && { states }),
-    ...(overlapStrategy !== undefined && { overlapStrategy }),
-  });
+  // Passed whole: the source (`searchWords` vs `ranges`) is a discriminated
+  // union, and rebuilding it field by field would lose the correlation.
+  const { segments } = useHighlight(props);
 
   const children = segments.map((seg, i) => {
     const key = `${seg.start}-${seg.end}-${i}`;

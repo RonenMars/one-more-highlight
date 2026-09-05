@@ -20,7 +20,7 @@ import type { MatchLayout } from './matchLayout.js';
 import type { Segment } from '../types.js';
 import type {
   HighlightLayoutHandle,
-  HighlightState,
+  HighlightStateBase,
   HighlightTextProps,
   MeasuredMatch,
 } from './types.js';
@@ -31,7 +31,7 @@ import type {
  */
 function resolveStateStyles(
   matchStates: ReadonlyArray<string>,
-  states: ReadonlyArray<HighlightState> | undefined,
+  states: ReadonlyArray<HighlightStateBase> | undefined,
 ): StyleProp<TextStyle>[] {
   if (!states) return [];
   const styles: StyleProp<TextStyle>[] = [];
@@ -68,14 +68,7 @@ function renderText(
 export const HighlightText = forwardRef<Text, HighlightTextProps>(
   function HighlightText(props, ref) {
     const {
-      text,
-      searchWords,
-      caseSensitive,
-      autoEscape,
-      sanitize,
-      findChunks,
       states,
-      overlapStrategy,
       highlightStyle,
       unhighlightStyle,
       renderMatch,
@@ -98,16 +91,9 @@ export const HighlightText = forwardRef<Text, HighlightTextProps>(
       [ref],
     );
 
-    const { segments } = useHighlight({
-      text,
-      searchWords,
-      ...(caseSensitive !== undefined && { caseSensitive }),
-      ...(autoEscape !== undefined && { autoEscape }),
-      ...(sanitize !== undefined && { sanitize }),
-      ...(findChunks !== undefined && { findChunks }),
-      ...(states !== undefined && { states }),
-      ...(overlapStrategy !== undefined && { overlapStrategy }),
-    });
+    // Passed whole: the source (`searchWords` vs `ranges`) is a discriminated
+    // union, and rebuilding it field by field would lose the correlation.
+    const { segments } = useHighlight(props);
 
     // Last line boxes from onTextLayout. RN only fires onTextLayout when the
     // rendered layout changes, so when `searchWords` change but `text` doesn't,

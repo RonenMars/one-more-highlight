@@ -26,7 +26,7 @@ export type CssHighlightFallback = 'dom' | 'none' | 'throw';
  * not synthesize styles or accept `className`/`style` on individual
  * `HighlightState` entries.
  */
-export interface CssHighlightProps extends UseHighlightOptions {
+export type CssHighlightProps = UseHighlightOptions & {
   /** Behavior in unsupported browsers. Defaults to `'dom'`. */
   fallback?: CssHighlightFallback;
   /** Wrapper element tag. Defaults to `'span'`. */
@@ -35,4 +35,4 @@ export interface CssHighlightProps extends UseHighlightOptions {
   className?: string;
   /** Forwarded to the wrapper element, not to individual matches. */
   style?: CSSProperties;
-}
+};

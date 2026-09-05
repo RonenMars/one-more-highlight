@@ -160,4 +160,31 @@ describe('<HighlightText>', () => {
     const container = screen.getByLabelText('container');
     expect(container.props.numberOfLines).toBe(1);
   });
+
+  it('accepts controlled ranges instead of searchWords', () => {
+    render(
+      <HighlightText
+        text="A cat sat."
+        ranges={[{ start: 2, end: 5 }]}
+        highlightStyle={{ backgroundColor: 'yellow' }}
+      />,
+    );
+    expect(flatten(screen.getByText('cat').props.style)).toMatchObject({
+      backgroundColor: 'yellow',
+    });
+  });
+
+  it('supports predicate states', () => {
+    render(
+      <HighlightText
+        text="cat cat cat"
+        searchWords={['cat']}
+        states={[{ name: 'late', match: (m) => m.nthOfTerm > 0, style: { color: 'late' } }]}
+      />,
+    );
+    const cats = screen.getAllByText('cat');
+    expect(flatten(cats[0]!.props.style)).not.toMatchObject({ color: 'late' });
+    expect(flatten(cats[1]!.props.style)).toMatchObject({ color: 'late' });
+    expect(flatten(cats[2]!.props.style)).toMatchObject({ color: 'late' });
+  });
 });

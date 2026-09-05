@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/RonenMars/one-more-highlight/compare/v1.3.3...v1.4.0) (2026-09-05)
+
+
+### Features
+
+* accept precomputed ranges as a first-class source, and add a predicate selector ([#47](https://github.com/RonenMars/one-more-highlight/issues/47)) ([1b2cda9](https://github.com/RonenMars/one-more-highlight/commit/1b2cda9dec74a1d1848cc9da1e5920f6c54e945e)), closes [#20](https://github.com/RonenMars/one-more-highlight/issues/20) [#21](https://github.com/RonenMars/one-more-highlight/issues/21) [#38](https://github.com/RonenMars/one-more-highlight/issues/38) [#38](https://github.com/RonenMars/one-more-highlight/issues/38)
+
 ## [1.3.3](https://github.com/RonenMars/one-more-highlight/compare/v1.3.2...v1.3.3) (2026-09-05)
 
 

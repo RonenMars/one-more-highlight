@@ -6,10 +6,12 @@ import { buildSegments } from './buildSegments.js';
 import { defaultFindChunks } from './findMatches.js';
 import type { HighlightState, Segment, UseHighlightOptions, UseHighlightResult } from './types.js';
 
-function searchKeyOf(searchWords: ReadonlyArray<string | RegExp>): string {
-  return searchWords
-    .map((w) => (typeof w === 'string' ? `s:${w}` : `r:${w.source}/${w.flags}`))
-    .join('|');
+// Serialized rather than joined: a term containing the delimiter would otherwise
+// collide with a different array, and a colliding key skips re-matching entirely.
+export function searchKeyOf(searchWords: ReadonlyArray<string | RegExp>): string {
+  return JSON.stringify(
+    searchWords.map((w) => (typeof w === 'string' ? `s:${w}` : `r:${w.source}/${w.flags}`)),
+  );
 }
 
 function statesKeyOf(states: ReadonlyArray<HighlightState> | undefined): string {

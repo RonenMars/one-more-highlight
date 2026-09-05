@@ -4,6 +4,7 @@ import { defaultFindChunks } from '../src/findMatches.js';
 import { combineChunks } from '../src/combineChunks.js';
 import { applyStates } from '../src/applyStates.js';
 import { buildSegments } from '../src/buildSegments.js';
+import { searchKeyOf } from '../src/useHighlight.js';
 
 function pipeline(text: string, terms: string[]): string {
   const raw = defaultFindChunks({
@@ -90,5 +91,49 @@ describe('fuzz: pipeline preserves text', () => {
       ),
       { numRuns: 1000 },
     );
+  });
+});
+
+describe('fuzz: searchKeyOf is injective', () => {
+  // The key is a useMemo dependency, so two distinct term lists sharing a key
+  // would skip re-matching and leave the previous search rendered.
+  //
+  // Independently generated pairs practically never collide, so the generators
+  // below target the collision family directly: any delimiter the encoding uses
+  // to separate entries can also appear inside a term.
+  const piece = fc.stringMatching(/^[ab|:s]{0,4}$/);
+
+  it('a term containing the delimiter cannot impersonate several terms', () => {
+    fc.assert(
+      fc.property(
+        fc.array(piece, { minLength: 2, maxLength: 4 }),
+        fc.constantFrom('|s:', '|', 's:', '|r:'),
+        (parts, glue) => {
+          expect(searchKeyOf(parts)).not.toBe(searchKeyOf([parts.join(glue)]));
+        },
+      ),
+      { numRuns: 2000 },
+    );
+  });
+
+  it('equal keys imply equivalent term lists', () => {
+    const identity = (ws: ReadonlyArray<string | RegExp>): string =>
+      JSON.stringify(ws.map((w) => (typeof w === 'string' ? ['s', w] : ['r', w.source, w.flags])));
+
+    fc.assert(
+      fc.property(
+        fc.array(piece, { maxLength: 4 }),
+        fc.array(piece, { maxLength: 4 }),
+        (a, b) => {
+          if (searchKeyOf(a) === searchKeyOf(b)) expect(identity(a)).toBe(identity(b));
+        },
+      ),
+      { numRuns: 2000 },
+    );
+  });
+
+  it('distinguishes a regexp from the string that mimics its encoding', () => {
+    expect(searchKeyOf([/ab/g])).not.toBe(searchKeyOf(['r:ab/g']));
+    expect(searchKeyOf(['a', 'b'])).not.toBe(searchKeyOf(['a|s:b']));
   });
 });

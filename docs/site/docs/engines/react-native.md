@@ -260,4 +260,4 @@ no configuration is needed either way.
 ## Bundle impact
 
 The `/native` entry is its own tree-shaking root — web consumers pay
-nothing for it, and the RN entry ships at ~2 KB brotlied.
+nothing for it, and the RN entry ships at ~2.7 KB brotlied.

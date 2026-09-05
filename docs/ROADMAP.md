@@ -25,6 +25,7 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - Native-first `RegExp.escape()` with `escape-string-regexp` fallback.
 - ESM + CJS dual build, `.d.ts` + `.d.cts`, `exports` map, `sideEffects: false`.
 - Unit, SSR and React Native suites plus 1000-iteration property-based fuzz. `pnpm verify` runs them all and is the source of truth for the counts — a number written here goes stale on the next PR.
+- Playwright visual regression across 5 device projects — `pnpm test:visual`, run by its own CI job and not by `pnpm verify`.
 - 2.23 KB ESM / 2.57 KB CJS brotlied for the default entry, inside a 3 KB `size-limit` budget. Zero CSS shipped.
   Sub-exports: `/css` 2.77 KB ESM, `/native` 2.4 KB ESM.
   Measured with `pnpm size` at v1.3.3 — re-measure and update this line when it moves, rather than quoting it from memory.

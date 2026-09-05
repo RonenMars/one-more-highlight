@@ -107,4 +107,16 @@ describe('useHighlight', () => {
     expect(matches[0]?.isMatch && matches[0].states).toEqual([]);
     expect(matches[1]?.isMatch && matches[1].states).toEqual(['active']);
   });
+  it('re-matches when new searchWords would collide with the old key', () => {
+    const { result, rerender } = renderHook(
+      ({ searchWords }: { searchWords: string[] }) =>
+        useHighlight({ text: 'a b a|s:b', searchWords }),
+      { initialProps: { searchWords: ['a|s:b'] } },
+    );
+    expect(result.current.getMatchCount()).toBe(1);
+
+    rerender({ searchWords: ['a', 'b'] });
+    expect(result.current.getMatchCount()).toBe(4);
+  });
+
 });

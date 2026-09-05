@@ -104,7 +104,18 @@ jobs:
 
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # `main` is protected by the `main protection` ruleset, and
+          # @semantic-release/git's prepare step pushes the chore(release)
+          # commit straight to it. GITHUB_TOKEN pushes as github-actions[bot],
+          # an actor no bypass covers, so the push is refused with
+          # `GH013: Repository rule violations found for refs/heads/main`
+          # ("Changes must be made through a pull request" AND "2 of 2 required
+          # status checks are expected") and the release dies in prepare —
+          # before npm publish, so nothing is half-released. RELEASE_PAT is a
+          # fine-grained PAT owned by a repo admin, the actor the ruleset's
+          # always-mode bypass does cover. Without the secret this falls back to
+          # GITHUB_TOKEN and the push fails as described above.
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}
           # OIDC is attempted first (id-token: write). NPM_TOKEN is the fallback:
           # trusted publishing is not configured for this package on npmjs.com, so
           # the OIDC exchange returns 404 "package not found" and ENONPMTOKEN.

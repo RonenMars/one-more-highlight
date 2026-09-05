@@ -81,6 +81,16 @@ examples/playground/  Vite + React 19 demo
    trigger a patch release.
 6. **Open a PR** with a clear description of *why*, not just *what*.
 
+### `main` is protected
+
+This flow is enforced by the `main protection` ruleset, not left to convention. `main` refuses a direct push, a force-push, a merge commit, and deletion; a PR merges only as a squash or rebase, and only once **`Verify`** and **`Visual Regression`** are both green.
+
+`Release` is deliberately *not* a required check. It runs only on `main`, so on a PR it reports `skipped` — and a skipped required check would block every PR forever.
+
+A second ruleset, `release tags`, refuses deleting or force-moving any `v*` tag. Tag *creation* is untouched, so semantic-release tags releases exactly as before.
+
+**If a release ever fails at `git push`, look here first.** semantic-release runs on `secrets.GITHUB_TOKEN`, so it pushes its `chore(release)` commit as `github-actions[bot]`, which the repo-admin bypass does not cover — and GitHub refuses to add the Actions app as a bypass actor on a personal repository. The failure is loud and lands in `@semantic-release/git`'s prepare step, *before* the npm publish, so nothing is ever half-released. The fix is to give the release job a token that carries the admin role: `GITHUB_TOKEN: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}` in `.github/workflows/ci.yml`, with `RELEASE_PAT` a PAT holding `contents: write`.
+
 ## Coding standards
 
 - **Surgical changes only.** Don't refactor adjacent code, reformat unrelated files, or "improve" things that aren't broken. Every changed line should trace back to the issue you're solving.

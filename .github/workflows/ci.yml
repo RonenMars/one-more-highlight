@@ -1,7 +1,14 @@
 name: CI
 
 on:
+  # `push` is scoped to main deliberately. Unscoped, every push to a PR branch
+  # ran the full suite once for the push event and again for the pull_request
+  # event — two 5-project Playwright matrices per PR. Keep main here: the
+  # release job is gated on this event, so removing it stops semantic-release
+  # from ever running, and a squash-merge is a new commit that should be green
+  # before it is published.
   push:
+    branches: [main]
   pull_request:
     branches: [main]
 

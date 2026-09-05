@@ -24,10 +24,10 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - Three overlap strategies: `merge` (default), `nest`, `first-wins`.
 - Native-first `RegExp.escape()` with `escape-string-regexp` fallback.
 - ESM + CJS dual build, `.d.ts` + `.d.cts`, `exports` map, `sideEffects: false`.
-- 93 tests across 11 suites, plus 29 React Native tests, including 1000-iteration property-based fuzz.
-- 2.23 KB ESM / 2.58 KB CJS brotlied for the default entry. Zero CSS shipped.
-  Sub-exports: `/css` 2.77 KB ESM, `/native` 2.41 KB ESM.
-  Measured with `pnpm size` at v1.3.2 — re-measure and update this line when it moves, rather than quoting it from memory.
+- Unit, SSR and React Native suites plus 1000-iteration property-based fuzz. `pnpm verify` runs them all and is the source of truth for the counts — a number written here goes stale on the next PR.
+- 2.23 KB ESM / 2.57 KB CJS brotlied for the default entry, inside a 3 KB `size-limit` budget. Zero CSS shipped.
+  Sub-exports: `/css` 2.77 KB ESM, `/native` 2.4 KB ESM.
+  Measured with `pnpm size` at v1.3.3 — re-measure and update this line when it moves, rather than quoting it from memory.
 - **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
 - **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
 - **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.

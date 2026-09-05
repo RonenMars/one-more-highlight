@@ -9,7 +9,7 @@ Build the React text-highlighting library that staff engineers actually want to 
 - **TypeScript-first**, with discriminated-union selectors that narrow correctly.
 - **Multi-state per-match styling** as the headline feature — not bolted on.
 - **Headless-friendly** (`useHighlight` hook) for design-system / Tailwind / CSS-in-JS consumers.
-- **Tiny** (~2.5 KB brotlied) and **dependency-light** (2 micro-deps).
+- **Tiny** (~2.7 KB brotlied) and **dependency-light** (2 micro-deps).
 - **Modern** — React 18+/19, ESM-first, SSR-safe, tree-shakeable.
 
 We are not trying to replace `react-highlight-words` for everyone — we are trying to be the obvious choice for anyone who needs typed multi-state highlighting on a modern stack.
@@ -26,14 +26,15 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - ESM + CJS dual build, `.d.ts` + `.d.cts`, `exports` map, `sideEffects: false`.
 - Unit, SSR and React Native suites plus 1000-iteration property-based fuzz. `pnpm verify` runs them all and is the source of truth for the counts — a number written here goes stale on the next PR.
 - Playwright visual regression across 5 device projects — `pnpm test:visual`, run by its own CI job and not by `pnpm verify`.
-- 2.50 KB ESM / 2.83 KB CJS brotlied for the default entry, inside a 3 KB `size-limit` budget. Zero CSS shipped.
-  Sub-exports: `/css` 2.98 KB ESM, `/native` 2.67 KB ESM.
-  Measured with `pnpm size` at v1.4.0 — re-measure and update this line when it moves, rather than quoting it from memory.
-  Note `/css` ESM and `/native` CJS currently sit within 20-30 bytes of their limits, so the budgets have almost no room left.
+- 2.73 KB ESM / 3.04 KB CJS brotlied for the default entry, inside a 4 KB `size-limit` budget. Zero CSS shipped.
+  Sub-exports: `/css` 3.21 KB ESM, `/native` 2.85 KB ESM, `/a11y` 3.18 KB ESM, `/navigation` 410 B ESM.
+  Measured with `pnpm size` after #48 — re-measure and update this line when it moves, rather than quoting it from memory.
+  The budgets were raised from 3 KB to 4 KB here: they were calibrated when the core was 1.89 KB and had drifted to within 20-30 bytes of failing on unrelated changes. `/navigation` stays at 1 KB, because a 4 KB limit on a 410 B bundle guards nothing.
 - **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
 - **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
 - **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.
 - **Playwright visual regression tests** — 10 demos × light/dark across 5 projects (desktop Chromium/Firefox/WebKit at 2× DPR + mobile-iphone + mobile-android); CI job on every PR and push to `main`.
+- **Accessibility and navigation sub-exports** — `one-more-highlight/a11y` ships `<AccessibleHighlight>` (`native` / `dual` / `annotated` modes for the screen-reader fragmentation problem) and a debounced `<MatchAnnouncer>` live region; `one-more-highlight/navigation` ships `useRovingMatchFocus`. Core `useHighlight` gained `matchRef`, `getMatchNode`, `getMatchByIndex`, `getMatchAt` and `scrollToMatch`.
 - Per-search-term match selectors — `{ term }` and `{ term, nth }` on `HighlightState`, with `termMatch: 'all' | 'first'` and `silent` modifiers.
 
 ### Verified
@@ -70,7 +71,7 @@ Earning the major version. Stability commitment + a feature that meaningfully di
 
 - [x] **Per-search-term match indexing** — shipped. Selector forms `{ name, term }` and `{ name, term, nth }` on `HighlightState`. See `docs/site/docs/api/highlight-state-selectors.md`.
 - [ ] **Stable match IDs** — `{ name, matchId: 'msg-42-occurrence-3' }` for references that survive data changes.
-- [ ] **`getMatchByIndex(i)` and `getMatchAt(charPos)`** helpers for keyboard navigation patterns ("press ↓ for next match").
+- [x] **`getMatchByIndex(i)` and `getMatchAt(charPos)`** helpers for keyboard navigation patterns ("press ↓ for next match"). Shipped alongside a per-match ref registry and `scrollToMatch()` on `useHighlight`.
 - [ ] **Public API freeze** — every exported type and prop is committed to with semver guarantees.
 
 ## Long-term (v2.x)

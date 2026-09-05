@@ -23,9 +23,11 @@ export default defineConfig({
     { name: 'mobile-android', use: { ...devices['Galaxy S24'] } },
   ],
   webServer: {
-    command: 'pnpm --filter one-more-highlight-playground dev',
+    // --strictPort + never reusing an existing server: if anything else holds
+    // 5173 the run fails loudly instead of silently screenshotting that app.
+    command: 'pnpm --filter one-more-highlight-playground dev --strictPort',
     url: 'http://localhost:5173',
-    reuseExistingServer: !process.env['CI'],
+    reuseExistingServer: false,
     timeout: 30_000,
   },
 });

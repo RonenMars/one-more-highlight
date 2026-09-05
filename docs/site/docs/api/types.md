@@ -149,10 +149,32 @@ Return type of `useHighlight`.
 interface UseHighlightResult {
   segments: ReadonlyArray<Segment>;
   getMatchCount: () => number;
+  matchRef: (matchIndex: number) => (node: ScrollableMatchNode | null) => void;
+  getMatchNode: (matchIndex: number) => ScrollableMatchNode | null;
+  getMatchByIndex: (matchIndex: number) => MatchSegment | undefined;
+  getMatchAt: (charPos: number) => MatchSegment | undefined;
+  scrollToMatch: (matchIndex: number, options?: MatchScrollOptions) => boolean;
 }
 ```
 
-`getMatchCount()` returns the number of `MatchSegment` entries — useful for validating `states` indices or rendering "N results found" UI.
+`getMatchCount()` returns the number of `MatchSegment` entries — useful for validating `states` indices or rendering "N results found" UI. See [match navigation](/docs/api/use-highlight#match-navigation) for the remaining members.
+
+## `ScrollableMatchNode`, `MatchScrollOptions`
+
+The structural shape `matchRef`/`getMatchNode`/`scrollToMatch` need from a mounted match node — a real DOM `Element` satisfies it structurally, so no cast is needed when attaching `matchRef` to a JSX ref.
+
+```ts
+interface ScrollableMatchNode {
+  scrollIntoView: (options?: MatchScrollOptions) => void;
+  focus?: () => void;
+}
+
+interface MatchScrollOptions {
+  behavior?: 'auto' | 'smooth' | 'instant';
+  block?: 'start' | 'center' | 'end' | 'nearest';
+  inline?: 'start' | 'center' | 'end' | 'nearest';
+}
+```
 
 ## React Native match-layout types
 

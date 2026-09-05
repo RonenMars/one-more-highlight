@@ -33,6 +33,19 @@ The library ships two small runtime dependencies — both MIT licensed, ~400 B c
 
 These are included automatically when you install `one-more-highlight`. You do not need to install them separately.
 
+## Subpaths
+
+Alongside the default `'one-more-highlight'` entry, the package ships:
+
+| Subpath | Contents |
+|---|---|
+| `one-more-highlight/css` | `<CssHighlight>` — CSS Custom Highlight API engine. See [engines/css-highlights](../engines/css-highlights). |
+| `one-more-highlight/native` | `<HighlightText>` — React Native engine. See [engines/react-native](../engines/react-native). |
+| `one-more-highlight/a11y` | `<AccessibleHighlight>`, `<MatchAnnouncer>`. See [api/accessible-highlight](../api/accessible-highlight), [api/match-announcer](../api/match-announcer). |
+| `one-more-highlight/navigation` | `useRovingMatchFocus`. See [api/use-roving-match-focus](../api/use-roving-match-focus). |
+
+Each subpath is its own tree-shaking root — you pay nothing for a subpath you don't import.
+
 ## Node.js requirement
 
 `escape-string-regexp` v5 is ESM-only and requires **Node.js 18+**. This only affects build/SSR environments — browser consumers are unaffected.

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Highlight } from '../src/Highlight.js';
+import { useHighlight } from '../src/useHighlight.js';
 
 describe('<Highlight>', () => {
   it('renders text without matches as plain content', () => {
@@ -129,5 +130,54 @@ describe('<Highlight>', () => {
     expect(marks[0]?.className).toContain('hl-first');
     expect(marks[2]?.className).not.toContain('hl-first');
     expect(marks[4]?.className).not.toContain('hl-first');
+  });
+
+  it('passes a matchRef ref callback through renderMatch defaults', () => {
+    const seenRefs: Array<(node: Element | null) => void> = [];
+    render(
+      <Highlight
+        text="cat hat cat"
+        searchWords={['cat']}
+        renderMatch={(seg, defaults) => {
+          seenRefs[seg.matchIndex] = defaults.ref;
+          return <mark ref={defaults.ref}>{seg.text}</mark>;
+        }}
+      />,
+    );
+    expect(seenRefs).toHaveLength(2);
+    expect(typeof seenRefs[0]).toBe('function');
+    expect(typeof seenRefs[1]).toBe('function');
+  });
+
+  it('attaches the default <mark> node to the ref registry', () => {
+    let node: Element | null | undefined;
+    function Wrapper() {
+      const { segments, matchRef } = useHighlight({
+        text: 'cat hat cat',
+        searchWords: ['cat'],
+      });
+      node = undefined;
+      return (
+        <>
+          {segments.map((seg, i) =>
+            seg.isMatch ? (
+              <mark
+                key={i}
+                ref={(el) => {
+                  matchRef(seg.matchIndex)(el);
+                  if (seg.matchIndex === 0) node = el;
+                }}
+              >
+                {seg.text}
+              </mark>
+            ) : (
+              seg.text
+            ),
+          )}
+        </>
+      );
+    }
+    render(<Wrapper />);
+    expect(node).toBeInstanceOf(HTMLElement);
   });
 });

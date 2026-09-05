@@ -118,5 +118,47 @@ describe('useHighlight', () => {
     rerender({ searchWords: ['a', 'b'] });
     expect(result.current.getMatchCount()).toBe(4);
   });
+  it('getMatchByIndex returns the match segment at that index', () => {
+    const { result } = renderHook(() =>
+      useHighlight({ text: 'cat hat cat', searchWords: ['cat'] }),
+    );
+    expect(result.current.getMatchByIndex(1)?.text).toBe('cat');
+    expect(result.current.getMatchByIndex(1)?.start).toBe(8);
+    expect(result.current.getMatchByIndex(5)).toBeUndefined();
+  });
 
+  it('getMatchAt returns the match segment covering a character position', () => {
+    const { result } = renderHook(() =>
+      useHighlight({ text: 'cat hat cat', searchWords: ['cat'] }),
+    );
+    expect(result.current.getMatchAt(0)?.matchIndex).toBe(0);
+    expect(result.current.getMatchAt(9)?.matchIndex).toBe(1);
+    expect(result.current.getMatchAt(4)).toBeUndefined();
+  });
+
+  it('matchRef registers a node and getMatchNode/scrollToMatch use it', () => {
+    const { result } = renderHook(() =>
+      useHighlight({ text: 'cat hat cat', searchWords: ['cat'] }),
+    );
+    expect(result.current.getMatchNode(0)).toBeNull();
+    expect(result.current.scrollToMatch(0)).toBe(false);
+
+    const node = document.createElement('mark');
+    const scrollIntoView = (node.scrollIntoView = () => {});
+    result.current.matchRef(0)(node);
+
+    expect(result.current.getMatchNode(0)).toBe(node);
+    expect(result.current.scrollToMatch(0, { block: 'center' })).toBe(true);
+
+    result.current.matchRef(0)(null);
+    expect(result.current.getMatchNode(0)).toBeNull();
+    void scrollIntoView;
+  });
+
+  it('matchRef returns the same callback identity for the same matchIndex', () => {
+    const { result } = renderHook(() =>
+      useHighlight({ text: 'cat hat cat', searchWords: ['cat'] }),
+    );
+    expect(result.current.matchRef(0)).toBe(result.current.matchRef(0));
+  });
 });

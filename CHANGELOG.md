@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/RonenMars/one-more-highlight/compare/v1.3.1...v1.3.2) (2026-09-05)
+
+
+### Bug Fixes
+
+* stop rerunning the matcher when only highlight states change ([#38](https://github.com/RonenMars/one-more-highlight/issues/38)) ([6e3d9a2](https://github.com/RonenMars/one-more-highlight/commit/6e3d9a211f386d2c1c96c9c545192047b4050270)), closes [#37](https://github.com/RonenMars/one-more-highlight/issues/37)
+
 ## [1.3.1](https://github.com/RonenMars/one-more-highlight/compare/v1.3.0...v1.3.1) (2026-08-29)
 
 

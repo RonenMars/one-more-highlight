@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useHighlight } from '../src/useHighlight.js';
+import { defaultFindChunks } from '../src/findMatches.js';
 import type { HighlightState } from '../src/types.js';
 
 describe('useHighlight', () => {
@@ -80,5 +81,30 @@ describe('useHighlight', () => {
     const third = result.current.segments;
     rerender({ states: [{ name: 'a', term: 'cat', termMatch: 'first' }] });
     expect(result.current.segments).not.toBe(third);
+  });
+
+  it('does not re-run matching when only states change', () => {
+    const findChunks = vi.fn(defaultFindChunks);
+    const initialProps: { states: HighlightState[] } = {
+      states: [{ name: 'active', index: 0 }],
+    };
+    const { result, rerender } = renderHook(
+      ({ states }: { states: HighlightState[] }) =>
+        useHighlight({
+          text: 'cat hat cat',
+          searchWords: ['cat'],
+          states,
+          findChunks,
+        }),
+      { initialProps },
+    );
+    expect(findChunks).toHaveBeenCalledTimes(1);
+
+    rerender({ states: [{ name: 'active', index: 1 }] });
+    expect(findChunks).toHaveBeenCalledTimes(1);
+
+    const matches = result.current.segments.filter((s) => s.isMatch);
+    expect(matches[0]?.isMatch && matches[0].states).toEqual([]);
+    expect(matches[1]?.isMatch && matches[1].states).toEqual(['active']);
   });
 });

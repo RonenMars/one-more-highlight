@@ -30,6 +30,7 @@ export function buildSegments(
       start: c.start,
       end: c.end,
       states: c.states,
+      range: c.range,
     });
     cursor = c.end;
   }

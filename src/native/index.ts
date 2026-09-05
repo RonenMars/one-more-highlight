@@ -9,6 +9,7 @@ export type {
   HighlightState,
   HighlightStateMany,
   HighlightStateOne,
+  HighlightStatePredicate,
   HighlightStateRange,
   HighlightStateTerm,
   HighlightStateTermNth,
@@ -24,9 +25,16 @@ export type { MatchLayout } from './matchLayout.js';
 // Platform-neutral types re-exported from the shared pipeline.
 export type {
   FindChunksInput,
+  HighlightRange,
+  HighlightSource,
+  MatchContext,
+  MatchContextBase,
   MatchSegment,
+  MatcherOptions,
   OverlapStrategy,
+  RangeMatchContext,
   RawChunk,
+  SearchMatchContext,
   Segment,
   TextSegment,
 } from '../types.js';

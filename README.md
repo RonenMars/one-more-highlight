@@ -25,10 +25,11 @@
 
 **`one-more-highlight`** gives you:
 
-- **TypeScript-first** — full types and a discriminated-union `HighlightState` that narrows correctly on the selector field (`index`, `range`, or `indices`).
+- **TypeScript-first** — full types and a discriminated-union `HighlightState` that narrows correctly on the selector field (`index`, `range`, `indices`, `term`, or a `match` predicate).
 - **Multi-state styling** as the headline feature — every match gets a base style, plus layered styles selected by index, range, or arbitrary list. Styles compose.
+- **Bring your own matches** — `ranges={[…]}` takes precomputed offsets from Algolia, a server-side matcher, an NLP tokenizer or AI citations instead of `searchWords`; the two are mutually exclusive at the type level.
 - **Headless `useHighlight` hook** alongside the `<Highlight>` component, with a `renderMatch` render-prop for full per-match control.
-- **Tiny** — ~2 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
+- **Tiny** — ~2.5 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
 - **Modern** — React 18+/19, ESM + CJS dual build with `.d.ts` + `.d.cts`, tree-shakeable, SSR-safe.
 
 <picture>

@@ -37,6 +37,41 @@ You **also** need to write CSS — the library does not synthesize styles.
 
 The `match` name is implicit — it's where matches with no `states` end up.
 
+## Controlled ranges
+
+`<CssHighlight>` takes the same mutually exclusive source union as
+`<Highlight>` — either `searchWords` or `ranges`, never both. Precomputed
+offsets and this engine pair well: the ranges you pass are painted as
+`Range` objects with no DOM nodes created at all, which is the cheapest path
+for a long document with many server-supplied hits.
+
+```tsx
+<CssHighlight
+  text={longArticle}
+  ranges={hits.map((h) => ({ start: h.from, end: h.to, termId: h.query }))}
+  states={[{ name: 'strong', match: (m) => Number(m.range.metadata?.score) >= 0.85 }]}
+/>;
+```
+
+```css
+::highlight(match)  { background: #FFF166; color: #1b1b1d; }
+::highlight(strong) { background: #A8FF80; color: #1b1b1d; }
+```
+
+Clamping, dropping of malformed ranges, `termId` grouping and predicate
+selectors behave exactly as they do on the DOM engine — the pipeline is
+shared, only the paint step differs. See the
+[controlled ranges guide](/docs/guides/controlled-ranges).
+
+Two details specific to this engine:
+
+- **State names still drive the CSS.** A state's `className` / `style` is
+  ignored here, so style each state through `::highlight(name)`. Matches with
+  no state land in the implicit `match` highlight.
+- **The wrapper must stay a single text node.** Ranges are set against the
+  wrapper's first child text node, so this engine renders `text` verbatim —
+  one more reason offsets index the string exactly as `slice` does.
+
 ## Multi-state composition
 
 The library registers one `Highlight` per state name:

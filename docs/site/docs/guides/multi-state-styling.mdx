@@ -42,6 +42,7 @@ Every match gets `hl-base`. Match #2 also gets `hl-active`. Matches #0 and #1 al
 | `index: i` | A single match by zero-based index |
 | `range: [a, b]` | Matches from index `a` to `b` (inclusive) |
 | `indices: [i, j, k]` | A specific list of match indices |
+| `match: (ctx) => boolean` | Every match the predicate accepts — see [predicate selectors](/docs/api/highlight-state-selectors#predicate) |
 
 Indexing is global document order — match #0 is the first occurrence in the text regardless of which `searchWords` entry produced it.
 

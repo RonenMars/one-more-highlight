@@ -1,8 +1,8 @@
 import { useMemo, useRef } from 'react';
 import { applyStates } from './applyStates.js';
 import { combineChunks } from './combineChunks.js';
-import type { CombinedChunk } from './combineChunks.js';
 import { buildSegments } from './buildSegments.js';
+import { chunksFromRanges } from './fromRanges.js';
 import { defaultFindChunks } from './findMatches.js';
 import type { HighlightState, Segment, UseHighlightOptions, UseHighlightResult } from './types.js';
 
@@ -14,13 +14,31 @@ export function searchKeyOf(searchWords: ReadonlyArray<string | RegExp>): string
   );
 }
 
-function statesKeyOf(states: ReadonlyArray<HighlightState> | undefined): string {
+// A predicate can't be compared structurally and the values it closes over are
+// invisible from here, so key it by object identity: a hoisted (or memoized)
+// predicate keeps the memo, a fresh inline one correctly busts it.
+let nextPredicateId = 0;
+const predicateIds = new WeakMap<object, number>();
+
+function predicateIdOf(fn: object): number {
+  let id = predicateIds.get(fn);
+  if (id === undefined) {
+    id = ++nextPredicateId;
+    predicateIds.set(fn, id);
+  }
+  return id;
+}
+
+// `HighlightState<never>`: the key is built without ever calling a predicate,
+// so it accepts a predicate written against any source's context.
+function statesKeyOf(states: ReadonlyArray<HighlightState<never>> | undefined): string {
   if (!states) return '';
   return JSON.stringify(states.map((s) => {
     let sel: unknown;
     if ('index' in s) sel = { i: s.index };
     else if ('range' in s) sel = { r: s.range };
     else if ('indices' in s) sel = { m: s.indices };
+    else if ('match' in s) sel = { p: predicateIdOf(s.match) };
     else if ('nth' in s) sel = { t: s.term, n: s.nth, tm: s.termMatch ?? 'all', sl: !!s.silent };
     else sel = { t: s.term, tm: s.termMatch ?? 'all', sl: !!s.silent };
     return [s.name, sel, s.className ?? '', s.style ?? null];
@@ -31,6 +49,7 @@ export function useHighlight(opts: UseHighlightOptions): UseHighlightResult {
   const {
     text,
     searchWords,
+    ranges,
     caseSensitive = false,
     autoEscape = true,
     sanitize,
@@ -44,7 +63,7 @@ export function useHighlight(opts: UseHighlightOptions): UseHighlightResult {
   const prevRegexes = useRef<Map<string, WeakRef<RegExp>>>(new Map());
   if (process.env.NODE_ENV !== 'production') {
     const next = new Map<string, WeakRef<RegExp>>();
-    for (const w of searchWords) {
+    for (const w of searchWords ?? []) {
       if (w instanceof RegExp) {
         const key = `${w.source}/${w.flags}`;
         const prev = prevRegexes.current.get(key)?.deref();
@@ -60,29 +79,46 @@ export function useHighlight(opts: UseHighlightOptions): UseHighlightResult {
     prevRegexes.current = next;
   }
 
-  const searchKey = searchKeyOf(searchWords);
+  const searchKey = searchWords ? searchKeyOf(searchWords) : '';
+  // `metadata` is opaque but predicates read it, so key on the whole entry.
+  const rangesKey = ranges ? JSON.stringify(ranges) : '';
   const stKey = statesKeyOf(states);
 
-  // Match geometry does not depend on states, so a states-only change must not
-  // rerun the matcher — only the decoration memo below.
-  const combined = useMemo<CombinedChunk[]>(() => {
-    const finder = findChunks ?? defaultFindChunks;
-    const raw = finder({
-      searchWords,
-      textToHighlight: text,
-      caseSensitive,
-      autoEscape,
-      sanitize,
-    });
-    return combineChunks(raw, overlapStrategy);
+  // Match geometry depends on the source, not on states, so a states-only
+  // change must not rerun matching — only the decoration memo below.
+  // `terms` travels with the chunks because `ranges` supplies its own, standing
+  // in for `searchWords` so term-based selectors resolve under either source.
+  const matched = useMemo(() => {
+    const words = searchWords ?? [];
+    const source = ranges
+      ? chunksFromRanges(ranges, text.length)
+      : {
+          chunks: (findChunks ?? defaultFindChunks)({
+            searchWords: words,
+            textToHighlight: text,
+            caseSensitive,
+            autoEscape,
+            sanitize,
+          }),
+          terms: words,
+        };
+    return { combined: combineChunks(source.chunks, overlapStrategy), terms: source.terms };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text, searchKey, caseSensitive, autoEscape, sanitize, findChunks, overlapStrategy]);
+  }, [text, searchKey, rangesKey, caseSensitive, autoEscape, sanitize, findChunks, overlapStrategy]);
 
   const segments = useMemo<Segment[]>(() => {
-    const tagged = applyStates(combined, states, searchWords);
+    // A predicate is typed against the context of the source it was written
+    // for, and `contextOf` builds exactly that context — a correlation the
+    // checker can't see through the source union's two `states` shapes.
+    const tagged = applyStates(
+      matched.combined,
+      states as ReadonlyArray<HighlightState> | undefined,
+      matched.terms,
+      text,
+    );
     return buildSegments(text, tagged);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [combined, stKey, text, searchKey]);
+  }, [matched, stKey, text, searchKey, rangesKey]);
 
   const getMatchCount = useMemo(
     () => () => segments.filter((s) => s.isMatch).length,

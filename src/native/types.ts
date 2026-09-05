@@ -2,25 +2,28 @@ import type { ReactNode, RefObject } from 'react';
 import type { StyleProp, TextProps, TextStyle } from 'react-native';
 import type { MatchLayout } from './matchLayout.js';
 import type {
-  FindChunksInput,
+  HighlightSource,
   HighlightState as CoreHighlightState,
   HighlightStateMany as CoreHighlightStateMany,
   HighlightStateOne as CoreHighlightStateOne,
+  HighlightStatePredicate as CoreHighlightStatePredicate,
   HighlightStateRange as CoreHighlightStateRange,
   HighlightStateTerm as CoreHighlightStateTerm,
   HighlightStateTermNth as CoreHighlightStateTermNth,
+  MatchContext,
   MatchSegment,
   OverlapStrategy,
-  RawChunk,
+  RangeMatchContext,
+  SearchMatchContext,
   Segment,
 } from '../types.js';
 
 /**
  * React Native flavor of {@link HighlightState}.
  *
- * The selector fields (`index` / `range` / `indices` / `term` / `nth`) are
- * identical to the web package — they drive the shared matching pipeline. The
- * styling surface differs: RN has no `className`, and `style` is a
+ * The selector fields (`index` / `range` / `indices` / `term` / `nth` /
+ * `match`) are identical to the web package — they drive the shared matching
+ * pipeline. The styling surface differs: RN has no `className`, and `style` is a
  * `StyleProp<TextStyle>` rather than a DOM `CSSProperties`.
  */
 export type HighlightStateBase = {
@@ -42,23 +45,24 @@ export type HighlightStateRange = WithNativeStyle<CoreHighlightStateRange>;
 export type HighlightStateMany = WithNativeStyle<CoreHighlightStateMany>;
 export type HighlightStateTerm = WithNativeStyle<CoreHighlightStateTerm>;
 export type HighlightStateTermNth = WithNativeStyle<CoreHighlightStateTermNth>;
+export type HighlightStatePredicate<Ctx = MatchContext> =
+  WithNativeStyle<CoreHighlightStatePredicate<Ctx>>;
 
-export type HighlightState = WithNativeStyle<CoreHighlightState>;
+export type HighlightState<Ctx = MatchContext> = WithNativeStyle<CoreHighlightState<Ctx>>;
 
 /**
- * Options for the RN `useHighlight` hook. Mirrors the web hook one-to-one
- * except `states` carries the RN {@link HighlightState}.
+ * Options for the RN `useHighlight` hook. Mirrors the web hook one-to-one —
+ * including the mutually exclusive `searchWords` / `ranges` source — except
+ * `states` carries the RN {@link HighlightState}. Reusing the core
+ * {@link HighlightSource} keeps that exclusivity defined in one place.
  */
-export interface UseHighlightOptions {
+export type UseHighlightOptions = {
   text: string;
-  searchWords: ReadonlyArray<string | RegExp>;
-  caseSensitive?: boolean;
-  autoEscape?: boolean;
-  sanitize?: (text: string) => string;
-  findChunks?: (input: FindChunksInput) => ReadonlyArray<RawChunk>;
-  states?: ReadonlyArray<HighlightState>;
   overlapStrategy?: OverlapStrategy;
-}
+} & HighlightSource<
+  ReadonlyArray<HighlightState<SearchMatchContext>>,
+  ReadonlyArray<HighlightState<RangeMatchContext>>
+>;
 
 export interface UseHighlightResult {
   segments: ReadonlyArray<Segment>;
@@ -110,7 +114,7 @@ export interface HighlightLayoutHandle {
   ) => Promise<MeasuredMatch | null>;
 }
 
-export interface HighlightTextProps extends UseHighlightOptions {
+export type HighlightTextProps = UseHighlightOptions & {
   /**
    * Called whenever match line boxes are (re)computed — on `onTextLayout` and
    * whenever `segments` change (even if the layout event doesn't re-fire).
@@ -141,4 +145,4 @@ export interface HighlightTextProps extends UseHighlightOptions {
    * `style` prop above.
    */
   textProps?: Omit<TextProps, 'style' | 'children'>;
-}
+};

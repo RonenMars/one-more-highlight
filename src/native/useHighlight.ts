@@ -12,7 +12,7 @@ import type {
  * touches `style`, so dropping it is safe and keeps the core hook's types
  * honest instead of casting across incompatible `style` shapes.
  */
-function toCoreState(state: HighlightState): CoreHighlightState {
+function toCoreState(state: HighlightState<never>): CoreHighlightState {
   const selector = { ...state } as Record<string, unknown>;
   delete selector['style'];
   return selector as CoreHighlightState;

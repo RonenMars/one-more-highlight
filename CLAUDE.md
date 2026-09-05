@@ -52,6 +52,7 @@ src/
 ├── types.ts          All exported TS types. Discriminated unions live here.
 ├── escapeRegex.ts    Native-first RegExp.escape() adapter; falls back to escape-string-regexp.
 ├── findMatches.ts    Raw match collection (string + RegExp). Uses String.prototype.matchAll.
+├── fromRanges.ts     Controlled `ranges` → chunks. Clamps/drops, maps termId → termIndex.
 ├── combineChunks.ts  Three overlap strategies: merge | nest | first-wins. Pure function.
 ├── applyStates.ts    Tags each match with the names of states that select it. Dev warnings.
 ├── buildSegments.ts  Walks tagged chunks → alternating Segment[] covering full text.
@@ -60,7 +61,7 @@ src/
 └── index.ts          Public re-exports.
 ```
 
-**Pipeline**: `findMatches` → `combineChunks(strategy)` → `applyStates(states)` → `buildSegments` → React render (or hook return).
+**Pipeline**: `findMatches` (or `fromRanges`) → `combineChunks(strategy)` → `applyStates(states)` → `buildSegments` → React render (or hook return).
 
 Each pure function is independently testable; tests in `tests/` mirror this structure 1-to-1.
 

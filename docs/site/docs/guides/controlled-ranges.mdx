@@ -1,0 +1,230 @@
+---
+sidebar_position: 5
+---
+
+# Controlled ranges
+
+Render match offsets you already have, instead of asking the library to find them.
+
+import { RangesDemo } from '@site/src/components/LiveDemo/RangesDemo';
+import { OpenInSandboxButton } from '@site/src/components/OpenInSandboxButton';
+
+<RangesDemo />
+<OpenInSandboxButton />
+
+## When you already know where the matches are
+
+`searchWords` runs the built-in matcher over your text. That is the right
+default when the thing being highlighted *is* the thing the user typed.
+
+It stops being the right default the moment something upstream has already
+decided what counts as a match:
+
+- **Search backends.** Algolia, Elasticsearch, Meilisearch and Typesense all
+  return match positions alongside each hit. Re-deriving them client-side
+  means re-implementing the engine's tokenizer, stemmer and stop-word list —
+  and getting a different answer than the one the server ranked.
+- **Semantic and vector search.** A hit for "cancel my subscription" can be
+  the passage "end your plan at any time". There is no string to search for.
+- **AI citations.** A model that cites its sources reports spans, not terms.
+- **NLP output.** Named entities, part-of-speech tags, PII spans and
+  tokenizer output are all offset lists.
+- **Diffs and annotations.** Review comments, redactions and change markers
+  are anchored to positions, not to text.
+
+For all of these, pass `ranges`:
+
+```tsx
+import { Highlight } from 'one-more-highlight';
+
+<Highlight
+  text={article.body}
+  ranges={hits.map((h) => ({ start: h.from, end: h.to, id: h.objectID }))}
+  highlightClassName="hl"
+/>
+```
+
+`ranges` **replaces** matching rather than adding to it. Nothing is searched
+for; the offsets you pass are the matches, and everything downstream —
+overlap strategy, states, `renderMatch`, the headless hook, SSR — behaves
+exactly as it does under `searchWords`.
+
+## The two sources are mutually exclusive
+
+`searchWords` and `ranges` form a discriminated union. Passing both, or
+neither, is a compile error:
+
+```tsx
+<Highlight text={t} searchWords={['cat']} ranges={hits} />  // ✗ type error
+<Highlight text={t} />                                      // ✗ type error
+```
+
+Passing an explicit `undefined` for the source you are not using *is* allowed,
+so a props object that always carries both keys type-checks:
+
+```tsx
+const props = { text, searchWords: query, ranges: undefined };
+
+<Highlight {...props} />;
+```
+
+What does not type-check is a value of type `HighlightRange[] | undefined` —
+"ranges if I have them, otherwise search". The checker has to commit to a
+branch, and a maybe-value fits neither. Choose the branch yourself:
+
+```tsx
+{hits
+  ? <Highlight text={text} ranges={hits} />
+  : <Highlight text={text} searchWords={query} />}
+```
+
+The matcher options — `caseSensitive`, `autoEscape`, `sanitize`,
+`findChunks` — belong to `searchWords` and are typed as unavailable under
+`ranges`. They would have nothing to act on.
+
+## The shape of a range
+
+```ts
+interface HighlightRange {
+  start: number;
+  end: number;
+  id?: string;
+  termId?: string;
+  metadata?: Readonly<Record<string, unknown>>;
+}
+```
+
+| Field | Description |
+|---|---|
+| `start` / `end` | Required. Code-unit offsets into `text` — the same space `MatchSegment.start` / `end` report. |
+| `id` | Opaque. Carried through untouched; useful as your own hit identifier. |
+| `termId` | Groups ranges produced by the same query term, so `{ term }` selectors work. See [below](#grouping-by-term). |
+| `metadata` | Opaque. Anything you want to read back in a predicate or in `renderMatch` — a relevance score, a source URL, an entity type. |
+
+### Offsets are code units, not characters
+
+`start` and `end` index the string the way `String.prototype.slice` does. If
+your backend reports offsets in Unicode code points, or in bytes of UTF-8,
+convert before passing them — an emoji or a non-BMP character will shift
+every offset after it.
+
+### Malformed ranges are dropped, not thrown
+
+Consumer offsets arrive unvalidated, so the library is defensive rather than
+strict:
+
+- Offsets outside the text are **clamped** to its bounds.
+- Empty (`start === end`), inverted (`end < start`) and fully out-of-bounds
+  ranges are **dropped**.
+- Order does not matter. Ranges are sorted internally, so you can pass a
+  search response in relevance order.
+
+Nothing throws. A range list that is entirely garbage renders the text
+unhighlighted rather than crashing a page.
+
+## Reading your data back out
+
+The originating range rides along on the segment as `MatchSegment.range`, so
+`renderMatch` and the headless hook can reach `id` and `metadata`:
+
+```tsx
+<Highlight
+  text={article.body}
+  ranges={hits}
+  renderMatch={(seg, { className, style, Tag }) => (
+    <Tag className={className} style={style} data-hit-id={seg.range?.id}>
+      {seg.text}
+    </Tag>
+  )}
+/>
+```
+
+`seg.range` is optional because it is absent under a `searchWords` source —
+under `ranges` it is always the object you passed, by reference.
+
+## Styling per hit
+
+All the [state selectors](/docs/api/highlight-state-selectors) work under
+`ranges`. The two that come into their own here are the predicate and
+`termId`.
+
+### Styling by metadata
+
+A [predicate selector](/docs/api/highlight-state-selectors#predicate) reads
+the range directly, which is how a relevance score becomes a style:
+
+```tsx
+<Highlight
+  text={article.body}
+  ranges={hits}
+  highlightClassName="hl"
+  states={[
+    { name: 'strong', match: (m) => Number(m.range.metadata?.score) >= 0.85, className: 'hl-strong' },
+  ]}
+/>
+```
+
+Under a `ranges` source TypeScript types the predicate's parameter with
+`range` present and `term` as a `string | undefined` — so `m.range.metadata`
+type-checks here, and would not under `searchWords`.
+
+Define the predicate outside the component (or wrap it in `useCallback`).
+It is compared by identity, so an inline arrow re-runs the pipeline on every
+render.
+
+### Grouping by term {#grouping-by-term}
+
+`termId` is how a range says which query term produced it. Distinct `termId`s
+are numbered in first-appearance order to form `termIndex`, so `{ term }` and
+`{ term, nth }` resolve under `ranges` exactly as they do against
+`searchWords`:
+
+```tsx
+<Highlight
+  text={article.body}
+  ranges={[
+    { start: 8,   end: 33,  termId: 'cancel' },
+    { start: 39,  end: 55,  termId: 'cancel' },
+    { start: 157, end: 183, termId: 'refund' },
+  ]}
+  states={[
+    { name: 'cancel', term: 'cancel', className: 'hl-cancel' },
+    { name: 'refund', term: 'refund', className: 'hl-refund' },
+  ]}
+/>
+```
+
+A range with no `termId` gets `termIndex: -1` and is never selected by a term
+state.
+
+## Overlapping hits
+
+Two hits covering the same span is normal — a multi-term query, or a
+sentence-level hit inside a paragraph-level one. The same
+[`overlapStrategy`](/docs/recipes/overlap-strategies) applies:
+
+```tsx
+<Highlight text={t} ranges={hits} overlapStrategy="first-wins" />
+```
+
+`merge` (the default) fuses overlapping hits into one match, `first-wins`
+keeps the earliest and discards anything it covers, and `nest` keeps every
+range as its own match.
+
+## Memoization
+
+`ranges` is compared **by content**, not by identity, so rebuilding the array
+each render — which is what `hits.map(...)` does — does not re-run the
+pipeline. `metadata` is part of that comparison, since predicates read it.
+
+The array is serialized to form the memo key, so keep `metadata` to the
+fields you actually use rather than storing an entire search response on
+every hit.
+
+## Server rendering
+
+`ranges` is SSR-safe on the same terms as `searchWords`: the pipeline reads
+no browser globals, and keys derive from segment offsets, so server and
+client markup agree. Malformed consumer offsets are normalized identically
+on both sides, which is what keeps duplicated or reversed hits from becoming
+a hydration mismatch.

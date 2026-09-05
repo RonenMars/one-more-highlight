@@ -19,29 +19,15 @@ export const CssHighlight = forwardRef<
 >(function CssHighlight(props, forwardedRef) {
   const {
     text,
-    searchWords,
-    caseSensitive,
-    autoEscape,
-    sanitize,
-    findChunks,
-    states,
-    overlapStrategy,
     fallback = 'dom',
     as = 'span',
     className,
     style,
   } = props;
 
-  const { segments } = useHighlight({
-    text,
-    searchWords,
-    ...(caseSensitive !== undefined && { caseSensitive }),
-    ...(autoEscape !== undefined && { autoEscape }),
-    ...(sanitize !== undefined && { sanitize }),
-    ...(findChunks !== undefined && { findChunks }),
-    ...(states !== undefined && { states }),
-    ...(overlapStrategy !== undefined && { overlapStrategy }),
-  });
+  // Passed whole: the source (`searchWords` vs `ranges`) is a discriminated
+  // union, and rebuilding it field by field would lose the correlation.
+  const { segments } = useHighlight(props);
 
   const containerRef = useRef<ElementRef<'span'>>(null);
   // Callback ref that fans the element out to both our internal ref (for
@@ -104,20 +90,9 @@ export const CssHighlight = forwardRef<
   // Rules of Hooks aren't violated; the effect above no-ops when
   // unsupported, so these branches are safe.
   if (!supported() && fallback === 'dom') {
-    const domProps = {
-      text,
-      searchWords,
-      ...(caseSensitive !== undefined && { caseSensitive }),
-      ...(autoEscape !== undefined && { autoEscape }),
-      ...(sanitize !== undefined && { sanitize }),
-      ...(findChunks !== undefined && { findChunks }),
-      ...(states !== undefined && { states }),
-      ...(overlapStrategy !== undefined && { overlapStrategy }),
-      ...(className !== undefined && { className }),
-      ...(style !== undefined && { style }),
-      as,
-    };
-    return <DomHighlight ref={forwardedRef} {...domProps} />;
+    // Forwarded whole for the same reason the hook is: the source is a
+    // discriminated union. `fallback` rides along and is ignored downstream.
+    return <DomHighlight ref={forwardedRef} {...props} />;
   }
 
   if (!supported() && fallback === 'throw') {

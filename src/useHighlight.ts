@@ -4,7 +4,15 @@ import { combineChunks } from './combineChunks.js';
 import { buildSegments } from './buildSegments.js';
 import { chunksFromRanges } from './fromRanges.js';
 import { defaultFindChunks } from './findMatches.js';
-import type { HighlightState, Segment, UseHighlightOptions, UseHighlightResult } from './types.js';
+import type {
+  HighlightState,
+  MatchScrollOptions,
+  MatchSegment,
+  ScrollableMatchNode,
+  Segment,
+  UseHighlightOptions,
+  UseHighlightResult,
+} from './types.js';
 
 // Serialized rather than joined: a term containing the delimiter would otherwise
 // collide with a different array, and a colliding key skips re-matching entirely.
@@ -125,5 +133,66 @@ export function useHighlight(opts: UseHighlightOptions): UseHighlightResult {
     [segments],
   );
 
-  return { segments, getMatchCount };
+  // Node registry: keyed by matchIndex, populated by the ref callbacks handed
+  // to renderers. Ref callback identities are cached per matchIndex so nodes
+  // aren't detached/reattached on every render (segments recompute only when
+  // matching or state inputs actually change, see the memo above).
+  const nodeRegistry = useRef(new Map<number, ScrollableMatchNode>());
+  const refCache = useRef(new Map<number, (node: ScrollableMatchNode | null) => void>());
+  const matchRef = useMemo(
+    () => (matchIndex: number) => {
+      let fn = refCache.current.get(matchIndex);
+      if (!fn) {
+        fn = (node) => {
+          if (node) nodeRegistry.current.set(matchIndex, node);
+          else nodeRegistry.current.delete(matchIndex);
+        };
+        refCache.current.set(matchIndex, fn);
+      }
+      return fn;
+    },
+    [],
+  );
+  const getMatchNode = useMemo(
+    () => (matchIndex: number) => nodeRegistry.current.get(matchIndex) ?? null,
+    [],
+  );
+  const scrollToMatch = useMemo(
+    () => (matchIndex: number, options?: MatchScrollOptions) => {
+      const node = nodeRegistry.current.get(matchIndex);
+      if (!node) return false;
+      node.scrollIntoView(options);
+      return true;
+    },
+    [],
+  );
+
+  const matchesByIndex = useMemo(() => {
+    const map = new Map<number, MatchSegment>();
+    for (const s of segments) {
+      if (s.isMatch) map.set(s.matchIndex, s);
+    }
+    return map;
+  }, [segments]);
+  const getMatchByIndex = useMemo(
+    () => (matchIndex: number) => matchesByIndex.get(matchIndex),
+    [matchesByIndex],
+  );
+  const getMatchAt = useMemo(
+    () => (charPos: number) =>
+      segments.find(
+        (s): s is MatchSegment => s.isMatch && charPos >= s.start && charPos < s.end,
+      ),
+    [segments],
+  );
+
+  return {
+    segments,
+    getMatchCount,
+    matchRef,
+    getMatchNode,
+    getMatchByIndex,
+    getMatchAt,
+    scrollToMatch,
+  };
 }

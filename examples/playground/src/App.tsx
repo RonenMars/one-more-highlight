@@ -3,10 +3,12 @@ import { Route, Routes } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle.js';
 import { ThemeWrapper } from './ThemeWrapper.js';
 import { Index } from './Index.js';
+import { AccessibleHighlightDemo } from './demos/AccessibleHighlightDemo.js';
 import { BasicDemo } from './demos/BasicDemo.js';
 import { CaseInsensitiveDemo } from './demos/CaseInsensitiveDemo.js';
 import { CssEngineDemo } from './demos/CssEngineDemo.js';
 import { HeadlessDemo } from './demos/HeadlessDemo.js';
+import { KeyboardNavigationDemo } from './demos/KeyboardNavigationDemo.js';
 import { MultiStateDemo } from './demos/MultiStateDemo.js';
 import { OverlapFirstDemo } from './demos/OverlapFirstDemo.js';
 import { OverlapMergeDemo } from './demos/OverlapMergeDemo.js';
@@ -48,6 +50,8 @@ const demos = [
   { path: 'selectors',        title: 'Selectors — index / range / indices',                 Component: SelectorsDemo },
   { path: 'css-engine',       title: 'CSS Custom Highlight API engine',                    Component: CssEngineDemo },
   { path: 'ranges',           title: 'Controlled ranges — offsets from a search backend',   Component: RangesDemo },
+  { path: 'accessible-highlight', title: 'Accessible highlight — native / dual / annotated', Component: AccessibleHighlightDemo },
+  { path: 'keyboard-navigation',  title: 'Keyboard navigation — roving focus + announcer',   Component: KeyboardNavigationDemo },
 ];
 
 export function App() {

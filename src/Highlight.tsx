@@ -6,12 +6,13 @@ import type {
   HighlightProps,
   HighlightStateBase,
   MatchSegment,
+  ScrollableMatchNode,
   Segment,
 } from './types.js';
 
 const SEMANTIC_TAGS = new Set(['mark']);
 
-function resolveStateStyles(
+export function resolveStateStyles(
   matchStates: ReadonlyArray<string>,
   states: ReadonlyArray<HighlightStateBase> | undefined,
 ): { classNames: string[]; styles: CSSProperties[] } {
@@ -47,6 +48,7 @@ function renderMatchDefault(
   className: string,
   style: CSSProperties,
   key: string,
+  ref: (node: ScrollableMatchNode | null) => void,
 ): ReactNode {
   const Tag = highlightTag ?? 'mark';
   const isCustomComponent = typeof Tag !== 'string';
@@ -54,6 +56,7 @@ function renderMatchDefault(
 
   const props: Record<string, unknown> = {
     key,
+    ref,
     className: className || undefined,
     style: Object.keys(style).length > 0 ? style : undefined,
   };
@@ -88,7 +91,7 @@ export const Highlight = forwardRef<
 
   // Passed whole: the source (`searchWords` vs `ranges`) is a discriminated
   // union, and rebuilding it field by field would lose the correlation.
-  const { segments } = useHighlight(props);
+  const { segments, matchRef } = useHighlight(props);
 
   const children = segments.map((seg, i) => {
     const key = `${seg.start}-${seg.end}-${i}`;
@@ -105,12 +108,24 @@ export const Highlight = forwardRef<
       const Tag = highlightTag ?? 'mark';
       return (
         <Fragment key={key}>
-          {renderMatch(seg, { className: fullClassName, style: fullStyle, Tag })}
+          {renderMatch(seg, {
+            className: fullClassName,
+            style: fullStyle,
+            Tag,
+            ref: matchRef(seg.matchIndex),
+          })}
         </Fragment>
       );
     }
 
-    return renderMatchDefault(seg, highlightTag, fullClassName, fullStyle, key);
+    return renderMatchDefault(
+      seg,
+      highlightTag,
+      fullClassName,
+      fullStyle,
+      key,
+      matchRef(seg.matchIndex),
+    );
   });
 
   return createElement(as, { ref, className, style }, ...children);

@@ -59,6 +59,26 @@
         "types": "./dist/native/index.d.cts",
         "default": "./dist/native/index.cjs"
       }
+    },
+    "./a11y": {
+      "import": {
+        "types": "./dist/a11y/index.d.ts",
+        "default": "./dist/a11y/index.js"
+      },
+      "require": {
+        "types": "./dist/a11y/index.d.cts",
+        "default": "./dist/a11y/index.cjs"
+      }
+    },
+    "./navigation": {
+      "import": {
+        "types": "./dist/navigation/index.d.ts",
+        "default": "./dist/navigation/index.js"
+      },
+      "require": {
+        "types": "./dist/navigation/index.d.cts",
+        "default": "./dist/navigation/index.cjs"
+      }
     }
   },
   "typesVersions": {
@@ -68,6 +88,12 @@
       ],
       "native": [
         "./dist/native/index.d.ts"
+      ],
+      "a11y": [
+        "./dist/a11y/index.d.ts"
+      ],
+      "navigation": [
+        "./dist/navigation/index.d.ts"
       ]
     }
   },
@@ -152,32 +178,52 @@
     {
       "name": "ESM (full)",
       "path": "dist/index.js",
-      "limit": "3 KB"
+      "limit": "4 KB"
     },
     {
       "name": "CJS (full)",
       "path": "dist/index.cjs",
-      "limit": "3 KB"
+      "limit": "4 KB"
     },
     {
       "name": "ESM (/css)",
       "path": "dist/css/index.js",
-      "limit": "3 KB"
+      "limit": "4 KB"
     },
     {
       "name": "CJS (/css)",
       "path": "dist/css/index.cjs",
-      "limit": "3.5 KB"
+      "limit": "4 KB"
     },
     {
       "name": "ESM (/native)",
       "path": "dist/native/index.js",
-      "limit": "3 KB"
+      "limit": "4 KB"
     },
     {
       "name": "CJS (/native)",
       "path": "dist/native/index.cjs",
-      "limit": "3 KB"
+      "limit": "4 KB"
+    },
+    {
+      "name": "ESM (/a11y)",
+      "path": "dist/a11y/index.js",
+      "limit": "4 KB"
+    },
+    {
+      "name": "CJS (/a11y)",
+      "path": "dist/a11y/index.cjs",
+      "limit": "4 KB"
+    },
+    {
+      "name": "ESM (/navigation)",
+      "path": "dist/navigation/index.js",
+      "limit": "1 KB"
+    },
+    {
+      "name": "CJS (/navigation)",
+      "path": "dist/navigation/index.cjs",
+      "limit": "1 KB"
     }
   ],
   "packageManager": "pnpm@11.0.9+sha512.34ce82e6780233cf9cad8685029a8f81d2e06196c5a9bad98879f7424940c6817c4e4524fb7d38b8553ceed48b9758b8ebaf1abd3600c232c4c8cf7366086f38",

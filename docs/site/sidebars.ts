@@ -35,6 +35,9 @@ const sidebars: SidebarsConfig = {
         'api/use-highlight',
         'api/highlight-state-selectors',
         'api/types',
+        'api/accessible-highlight',
+        'api/match-announcer',
+        'api/use-roving-match-focus',
       ],
     },
     {

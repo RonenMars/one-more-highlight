@@ -4,6 +4,18 @@ sidebar_position: 4
 
 # Accessibility
 
+This page covers color contrast. For assistive-technology semantics — how a
+screen reader perceives a fragmented `<mark>` versus the highlighted text
+around it, and how to announce match count/position during keyboard
+navigation — see [`<AccessibleHighlight>`](../api/accessible-highlight),
+[`<MatchAnnouncer>`](../api/match-announcer), and
+[`useRovingMatchFocus`](../api/use-roving-match-focus) from the
+`one-more-highlight/a11y` and `one-more-highlight/navigation` subpaths. The
+default `<Highlight>` from `'one-more-highlight'` gives every consumer a
+correct `<mark>` (or `role="mark"` on a non-semantic `highlightTag`); the
+`/a11y` subpath is for consumers who need more control over how that reads
+to AT.
+
 The default colors used across our **playground and documentation examples are WCAG 2.x AAA contrast-compliant** (≥ 7:1 for normal text). The full table is documented at the top of [`docs/site/src/css/custom.css`](https://github.com/ronenmars/one-more-highlight/blob/main/docs/site/src/css/custom.css) and mirrored in the playground stylesheet — the lowest pair is **9.99 : 1** (text on the pink chip), and most pairs exceed **14 : 1**. Both light and dark themes are covered: chip text is pinned to the same dark foreground in both modes, so highlight ratios stay identical regardless of theme.
 
 The library itself ships **zero CSS** — every color you see in the demos comes from CSS custom properties (`--hl-yellow`, `--hl-green`, etc.) that you override in your own stylesheet. If you stick with the defaults, you inherit the AAA palette. If you swap in your brand colors, the AAA guarantee no longer applies to your build, and you should verify the new combinations.

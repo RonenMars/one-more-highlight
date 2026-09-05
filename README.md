@@ -29,7 +29,7 @@
 - **Multi-state styling** as the headline feature — every match gets a base style, plus layered styles selected by index, range, or arbitrary list. Styles compose.
 - **Bring your own matches** — `ranges={[…]}` takes precomputed offsets from Algolia, a server-side matcher, an NLP tokenizer or AI citations instead of `searchWords`; the two are mutually exclusive at the type level.
 - **Headless `useHighlight` hook** alongside the `<Highlight>` component, with a `renderMatch` render-prop for full per-match control.
-- **Tiny** — ~2.5 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
+- **Tiny** — ~2.7 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
 - **Modern** — React 18+/19, ESM + CJS dual build with `.d.ts` + `.d.cts`, tree-shakeable, SSR-safe.
 
 <picture>
@@ -70,6 +70,17 @@ A single match can be in multiple states at once; their `className`s concatenate
 `one-more-highlight` ships three rendering engines that share the same matching pipeline. The default `<Highlight>` from `'one-more-highlight'` wraps each match in a DOM node; `<CssHighlight>` from `'one-more-highlight/css'` paints via the CSS Custom Highlight API with zero per-match DOM nodes (faster on long text); `<HighlightText>` from `'one-more-highlight/native'` renders nested `<Text>` runs for React Native.
 
 See [engines/css-highlights](https://one-more-highlight.vercel.app/docs/engines/css-highlights) and [engines/react-native](https://one-more-highlight.vercel.app/docs/engines/react-native).
+
+## Accessibility & navigation
+
+`one-more-highlight/a11y` ships `<AccessibleHighlight>`, a drop-in replacement for `<Highlight>` with a `mode` prop (`'native' | 'dual' | 'annotated'`) that makes the DOM-`<mark>`-vs-assistive-technology tradeoff explicit instead of accidental, plus `<MatchAnnouncer>`, a debounced `role="status"` live region for announcing result count and navigation position. `one-more-highlight/navigation` ships `useRovingMatchFocus`, a standard roving-tabindex hook for keyboard-navigating matches (arrow keys, Home/End) that composes with the core hook's `getMatchNode`.
+
+```tsx
+import { AccessibleHighlight, MatchAnnouncer } from 'one-more-highlight/a11y';
+import { useRovingMatchFocus } from 'one-more-highlight/navigation';
+```
+
+See [api/accessible-highlight](https://one-more-highlight.vercel.app/docs/api/accessible-highlight), [api/match-announcer](https://one-more-highlight.vercel.app/docs/api/match-announcer), and [api/use-roving-match-focus](https://one-more-highlight.vercel.app/docs/api/use-roving-match-focus).
 
 ## Browser & runtime
 

@@ -82,6 +82,23 @@ export interface RangeMatchContext extends MatchContextBase {
 }
 
 export type MatchContext = SearchMatchContext | RangeMatchContext;
+/**
+ * Structural shape `matchRef`/`scrollToMatch` need from a mounted match node.
+ * Defined locally (rather than referencing the DOM lib's `Element`) so this
+ * file type-checks under the React Native tsconfig too, which has no DOM lib;
+ * a real DOM `Element` satisfies this shape structurally.
+ */
+export interface ScrollableMatchNode {
+  scrollIntoView: (options?: MatchScrollOptions) => void;
+  /** Present on any real DOM element; used by the `/navigation` roving-focus hook. */
+  focus?: () => void;
+}
+
+export interface MatchScrollOptions {
+  behavior?: 'auto' | 'smooth' | 'instant';
+  block?: 'start' | 'center' | 'end' | 'nearest';
+  inline?: 'start' | 'center' | 'end' | 'nearest';
+}
 
 export type HighlightStateBase = {
   name: string;
@@ -171,6 +188,16 @@ export type UseHighlightOptions = {
 export interface UseHighlightResult {
   segments: ReadonlyArray<Segment>;
   getMatchCount: () => number;
+  /** Stable ref callback for the DOM node rendering match `matchIndex`. */
+  matchRef: (matchIndex: number) => (node: ScrollableMatchNode | null) => void;
+  /** The DOM node registered via `matchRef`, or `null` if unmounted/never rendered. */
+  getMatchNode: (matchIndex: number) => ScrollableMatchNode | null;
+  /** The match segment at `matchIndex`, or `undefined` if out of range. */
+  getMatchByIndex: (matchIndex: number) => MatchSegment | undefined;
+  /** The match segment covering character offset `charPos`, or `undefined` if none. */
+  getMatchAt: (charPos: number) => MatchSegment | undefined;
+  /** Scrolls the node for `matchIndex` into view. Returns `false` if the node isn't mounted. */
+  scrollToMatch: (matchIndex: number, options?: MatchScrollOptions) => boolean;
 }
 
 export interface HighlightTagProps {
@@ -185,6 +212,8 @@ export interface MatchDefaults {
   className: string;
   style: CSSProperties;
   Tag: ElementType;
+  /** Attach to the rendered match node to register it with `matchRef`/`scrollToMatch`. */
+  ref: (node: ScrollableMatchNode | null) => void;
 }
 
 export type HighlightProps = UseHighlightOptions & {

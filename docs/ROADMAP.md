@@ -129,7 +129,7 @@ These are good ideas, but they belong in *other* libraries — not this one. Don
 - **Syntax highlighting** for code — use Prism, Shiki, or Highlight.js.
 - **HTML/Markdown content highlighting** with structural awareness — needs a different model.
 - **Highlighting in `contentEditable`** elements — different rendering contract; consider `highlight-search-term`.
-- **Server-side highlighting in non-React contexts** — extract `findMatches`/`combineChunks` into a framework-agnostic core if we need this. Not before.
+- ~~**Server-side highlighting in non-React contexts**~~ — **shipped** as the `one-more-highlight/vanilla` sub-export. The demand arrived (mark.js: 12.6M downloads/month, unmaintained since 2018, issues disabled), so the extraction happened. See ADR-0005.
 
 ## How we make decisions
 

@@ -1,0 +1,47 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>one-more-highlight — vanilla</title>
+<style>
+  body { font: 16px/1.7 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; }
+  input { font: inherit; padding: .4rem .6rem; width: 16rem; }
+
+  /* CSS Custom Highlight API renderer: no DOM mutation, styled by name. */
+  ::highlight(match)   { background: #FFF166; color: #1b1b1d; }
+  ::highlight(active)  { background: #A8FF80; color: #1b1b1d; }
+  ::highlight(preview) { background: #FFADD6; color: #1b1b1d; }
+
+  /* <mark> fallback renderer, for browsers without the API. */
+  .omh-match   { background: #FFF166; color: #1b1b1d; }
+  .is-active   { background: #A8FF80; }
+  .is-preview  { background: #FFADD6; }
+</style>
+
+<h1>Vanilla <code>one-more-highlight</code></h1>
+<p>Renderer: <strong id="engine"></strong> · matches: <strong id="count">0</strong></p>
+<p><input id="q" value="time" autocomplete="off"></p>
+
+<article id="content">
+  <p>The <b>time</b> you enjoy wasting is not wasted <em>time</em>. Every time a
+     match crosses <b>an eleme<em>nt bound</em>ary</b> it still counts as one
+     match, because the walker flattens the subtree before matching.</p>
+  <p>This second paragraph mentions time twice: time.</p>
+  <script>/* this text must never be highlighted */ var time = 'time';</script>
+</article>
+
+<script src="../../dist/omh.global.js"></script>
+<script>
+  const h = new OMH.Highlighter(document.getElementById('content'));
+  document.getElementById('engine').textContent = h.renderer;
+
+  function run() {
+    const n = h.mark(document.getElementById('q').value, {
+      states: [
+        { name: 'active',  index: 1,     className: 'is-active' },
+        { name: 'preview', indices: [3], className: 'is-preview' },
+      ],
+    });
+    document.getElementById('count').textContent = n;
+  }
+  document.getElementById('q').addEventListener('input', run);
+  run();
+</script>

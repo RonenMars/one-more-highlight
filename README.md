@@ -1,11 +1,11 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/banner-dark.svg">
-  <img src="./docs/assets/banner-light.svg" alt="one-more-highlight — Multi-state substring highlighting for React" width="100%">
+  <img src="./docs/assets/banner-light.svg" alt="one-more-highlight — Multi-state substring highlighting" width="100%">
 </picture>
 
 # omh · one-more-highlight
 
-> Multi-state substring highlighting for React.
+> Multi-state substring highlighting for React — and for no framework at all.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![npm version](https://img.shields.io/npm/v/one-more-highlight.svg)](https://www.npmjs.com/package/one-more-highlight)
@@ -31,6 +31,7 @@
 - **Headless `useHighlight` hook** alongside the `<Highlight>` component, with a `renderMatch` render-prop for full per-match control.
 - **Tiny** — ~2.7 KB brotlied (ESM), 2 microscopic deps (`clsx` + `escape-string-regexp`).
 - **Modern** — React 18+/19, ESM + CJS dual build with `.d.ts` + `.d.cts`, tree-shakeable, SSR-safe.
+- **Works without React** — `one-more-highlight/vanilla` runs the same pipeline over any DOM subtree, matching across element boundaries, with a `<script src>` build for pages that have no bundler.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/multi-state-demo-dark.svg">
@@ -44,7 +45,7 @@ pnpm add one-more-highlight
 # or: npm i one-more-highlight / yarn add one-more-highlight
 ```
 
-Peer: `react >= 18`. Runtime deps: `clsx`, `escape-string-regexp` (both MIT, ~400 B combined).
+Peer: `react >= 18` (**optional** — not needed for the vanilla entry). Runtime deps: `clsx`, `escape-string-regexp` (both MIT, ~400 B combined).
 
 ## Quick start
 
@@ -67,9 +68,36 @@ A single match can be in multiple states at once; their `className`s concatenate
 
 ## Engines
 
-`one-more-highlight` ships three rendering engines that share the same matching pipeline. The default `<Highlight>` from `'one-more-highlight'` wraps each match in a DOM node; `<CssHighlight>` from `'one-more-highlight/css'` paints via the CSS Custom Highlight API with zero per-match DOM nodes (faster on long text); `<HighlightText>` from `'one-more-highlight/native'` renders nested `<Text>` runs for React Native.
+`one-more-highlight` ships four rendering engines that share the same matching pipeline. The default `<Highlight>` from `'one-more-highlight'` wraps each match in a DOM node; `<CssHighlight>` from `'one-more-highlight/css'` paints via the CSS Custom Highlight API with zero per-match DOM nodes (faster on long text); `<HighlightText>` from `'one-more-highlight/native'` renders nested `<Text>` runs for React Native; and `one-more-highlight/vanilla` needs no framework at all.
 
-See [engines/css-highlights](https://one-more-highlight.vercel.app/docs/engines/css-highlights) and [engines/react-native](https://one-more-highlight.vercel.app/docs/engines/react-native).
+See [engines/css-highlights](https://one-more-highlight.vercel.app/docs/engines/css-highlights), [engines/react-native](https://one-more-highlight.vercel.app/docs/engines/react-native) and [engines/vanilla](https://one-more-highlight.vercel.app/docs/engines/vanilla).
+
+### No framework? No build step?
+
+`one-more-highlight/vanilla` highlights text in any DOM subtree — including markup you don't own — matching across element boundaries and painting with the CSS Custom Highlight API, with a `<mark>` fallback where that's missing.
+
+```js
+import { Highlighter } from 'one-more-highlight/vanilla';
+
+const h = new Highlighter(document.querySelector('#article'));
+h.mark('time', {
+  states: [{ name: 'active', index: 2 }],
+});
+```
+
+```css
+::highlight(match)  { background: #FFF166; }
+::highlight(active) { background: #A8FF80; }
+```
+
+Or with no bundler at all — the package ships an IIFE build that defines a global:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/one-more-highlight/dist/omh.global.js"></script>
+<script>
+  new OMH.Highlighter(document.body).mark('time');
+</script>
+```
 
 ## Accessibility & navigation
 
@@ -84,7 +112,7 @@ See [api/accessible-highlight](https://one-more-highlight.vercel.app/docs/api/ac
 
 ## Browser & runtime
 
-React 18+/19, Node 18+, modern evergreens (Chrome 112+, Firefox 140+, Safari 16.4+). Full matrix → [recipes/browser-support](https://one-more-highlight.vercel.app/docs/recipes/browser-support).
+React 18+/19 (optional), Node 18+, modern evergreens (Chrome 112+, Firefox 140+, Safari 16.4+). The vanilla entry's `css` renderer needs the CSS Custom Highlight API (Baseline since March 2026) and falls back to `<mark>` injection without it. Full matrix → [recipes/browser-support](https://one-more-highlight.vercel.app/docs/recipes/browser-support).
 
 ## Documentation
 
@@ -94,7 +122,7 @@ React 18+/19, Node 18+, modern evergreens (Chrome 112+, Firefox 140+, Safari 16.
 | Guides — basic highlighting, headless hook, multi-state styling, render-prop | [docs site → guides](https://one-more-highlight.vercel.app/docs/guides/basic-highlighting) |
 | API reference — `<Highlight>` props, `useHighlight`, types, `HighlightState` selectors | [docs site → api](https://one-more-highlight.vercel.app/docs/api/highlight-props) |
 | Recipes — accessibility, diacritic-insensitive search, overlap strategies, browser support | [docs site → recipes](https://one-more-highlight.vercel.app/docs/recipes/accessibility) |
-| Engines — CSS Custom Highlight API, React Native | [docs site → engines](https://one-more-highlight.vercel.app/docs/engines/css-highlights) |
+| Engines — CSS Custom Highlight API, React Native, vanilla | [docs site → engines](https://one-more-highlight.vercel.app/docs/engines/css-highlights) |
 | Roadmap (v2+ plan) | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
 | Architecture decisions | [`docs/adr/`](./docs/adr/) |
 

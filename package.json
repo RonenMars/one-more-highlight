@@ -1,7 +1,7 @@
 {
   "name": "one-more-highlight",
   "version": "1.6.0",
-  "description": "Multi-state substring highlighting for React. Highlight every match in one style, plus specific occurrences (by index, range, or list) in another.",
+  "description": "Multi-state substring highlighting for React and vanilla JS. Highlight every match in one style, plus specific occurrences (by index, range, or list) in another.",
   "keywords": [
     "react",
     "highlight",
@@ -13,7 +13,14 @@
     "multi-state",
     "react-highlight",
     "react-highlight-words",
-    "react-native"
+    "react-native",
+    "vanilla",
+    "javascript",
+    "dom",
+    "css-custom-highlight",
+    "framework-agnostic",
+    "mark.js",
+    "highlight-words"
   ],
   "homepage": "https://one-more-highlight.vercel.app",
   "bugs": {
@@ -48,6 +55,16 @@
       "require": {
         "types": "./dist/css/index.d.cts",
         "default": "./dist/css/index.cjs"
+      }
+    },
+    "./vanilla": {
+      "import": {
+        "types": "./dist/vanilla/index.d.ts",
+        "default": "./dist/vanilla/index.js"
+      },
+      "require": {
+        "types": "./dist/vanilla/index.d.cts",
+        "default": "./dist/vanilla/index.cjs"
       }
     },
     "./native": {
@@ -94,6 +111,9 @@
       ],
       "navigation": [
         "./dist/navigation/index.d.ts"
+      ],
+      "vanilla": [
+        "./dist/vanilla/index.d.ts"
       ]
     }
   },
@@ -132,6 +152,9 @@
   },
   "peerDependenciesMeta": {
     "react-native": {
+      "optional": true
+    },
+    "react": {
       "optional": true
     }
   },
@@ -224,6 +247,21 @@
       "name": "CJS (/navigation)",
       "path": "dist/navigation/index.cjs",
       "limit": "1 KB"
+    },
+    {
+      "name": "ESM (/vanilla)",
+      "path": "dist/vanilla/index.js",
+      "limit": "4 KB"
+    },
+    {
+      "name": "CJS (/vanilla)",
+      "path": "dist/vanilla/index.cjs",
+      "limit": "4 KB"
+    },
+    {
+      "name": "IIFE (global)",
+      "path": "dist/omh.global.js",
+      "limit": "3.5 KB"
     }
   ],
   "packageManager": "pnpm@11.0.9+sha512.34ce82e6780233cf9cad8685029a8f81d2e06196c5a9bad98879f7424940c6817c4e4524fb7d38b8553ceed48b9758b8ebaf1abd3600c232c4c8cf7366086f38",

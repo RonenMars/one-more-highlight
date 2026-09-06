@@ -4,7 +4,9 @@ Project-specific guidance for AI coding assistants (Claude Code, Cursor, etc.) w
 
 ## What this project is
 
-A small, focused, TypeScript-first React library for highlighting substrings in text — with first-class support for **multi-state per-match styling** (every match in one style, specific occurrences layered on by single index, range, or arbitrary list).
+A small, focused, TypeScript-first library for highlighting substrings in text — with first-class support for **multi-state per-match styling** (every match in one style, specific occurrences layered on by single index, range, or arbitrary list).
+
+React is the primary entry point, but the matching pipeline is framework-free and ships as `one-more-highlight/vanilla` for plain JS, other frameworks, and `<script src>` pages.
 
 It is *not*: a full-text search engine, a syntax highlighter (like Prism), an HTML renderer, or a Markdown parser. Reject scope creep aggressively.
 
@@ -45,7 +47,7 @@ These come from the project's design conversation. They override generic "best p
 - When fixing a bug, fix only that bug. When adding a feature, add only that feature.
 - Clean up *your own* mess (imports/variables your changes orphaned). Leave pre-existing dead code alone unless asked.
 
-## Architecture (current — v0.1)
+## Architecture
 
 ```
 src/
@@ -58,12 +60,47 @@ src/
 ├── buildSegments.ts  Walks tagged chunks → alternating Segment[] covering full text.
 ├── useHighlight.ts   The hook. useMemo with structural search-key + states-key. SSR-safe.
 ├── Highlight.tsx     The component. Default <mark>, role=mark fallback, render-prop.
-└── index.ts          Public re-exports.
+├── index.ts          Public re-exports.
+├── css/              `/css` — CSS Custom Highlight API engine. No DOM mutation.
+├── native/           `/native` — React Native. RN-typed states via WithNativeStyle.
+├── a11y/             `/a11y` — <AccessibleHighlight> + <MatchAnnouncer>.
+├── navigation/       `/navigation` — useRovingMatchFocus.
+└── vanilla/          `/vanilla` — no framework. See below.
 ```
 
 **Pipeline**: `findMatches` (or `fromRanges`) → `combineChunks(strategy)` → `applyStates(states)` → `buildSegments` → React render (or hook return).
 
+The first six files import no React values and touch no DOM — that is what makes
+the `/vanilla` entry an extraction rather than a rewrite. Keep it that way: a
+React import in the matching pipeline breaks the vanilla entry silently, because
+`import type` is erased and the build still succeeds.
+
 Each pure function is independently testable; tests in `tests/` mirror this structure 1-to-1.
+
+### The `/vanilla` sub-export
+
+```
+src/vanilla/
+├── core.ts             The pipeline composition minus React/memoization. Text in, Segment[] out.
+├── walk.ts             TextIndex: TreeWalker → flattened text + offset↔(node,offset) mapping.
+├── Highlighter.ts      Public class. Resolves strategy, owns teardown.
+├── types.ts            Vanilla state union — core selectors, DOM `style` dropped.
+└── renderers/
+    ├── css.ts          Registers Ranges with CSS.highlights. Lifted from CssHighlight.tsx.
+    └── mark.ts         <mark> injection fallback. Splits text nodes, restores on teardown.
+```
+
+Two things to know before changing it:
+
+- **`walk.ts` is the risky file.** Offsets are linear only *within* a piece; a
+  new piece starts at every node boundary and wherever a collapsed whitespace run
+  dropped characters. Anything that changes flattening must keep `slices()`
+  mapping back to real source offsets — that is what `tests/vanilla/walk.test.ts`
+  guards.
+- **The React entry and the vanilla entry do not share a rendering contract.**
+  `<Highlight>` renders its own flat text node; `TextIndex` walks a subtree it
+  does not own and matches across element boundaries. They are not expected to
+  stay in lockstep. See `docs/adr/0005-framework-agnostic-vanilla-entry.md`.
 
 ## Doing common tasks
 
@@ -78,6 +115,7 @@ coupled. A change in one usually obliges a change in another:
 | Library source affecting rendering | The above + regenerate visual snapshots (`pnpm test:visual:update`) |
 | Playground demo styling | Visual snapshots for that demo |
 | `examples/playground/src/index.css` (tokens, classes) | `docs/site/src/css/custom.css` (see palette note below) + visual snapshots |
+| `src/vanilla/**` | A test in `tests/vanilla/` + `docs/site/docs/engines/vanilla.md`; re-check `examples/vanilla/index.html` in a real browser (jsdom has no `CSS.highlights`) |
 | Anything visual | `pnpm test:visual` must be green before committing |
 
 See `tests/visual/README.md` for the snapshot workflow and the 5-project
@@ -131,9 +169,9 @@ Do **not** introduce a `match.<form>` builder; the union carries the ergonomics 
 | `pnpm test:watch` | Vitest watch |
 | `pnpm test:visual` | Playwright visual regression — desktop ×3 (2× DPR for rendering precision) + mobile-iphone + mobile-android (3× DPR, native viewports). See `tests/visual/README.md`. |
 | `pnpm test:visual:update` | Regenerate visual baselines after any rendering change. Commit the PNGs. |
-| `pnpm build` | tsup → ESM + CJS + `.d.ts` + `.d.cts` in `dist/` |
+| `pnpm build` | tsup → ESM + CJS + `.d.ts` + `.d.cts` in `dist/`, plus the IIFE bundle `dist/omh.global.js` (global `OMH`) |
 | `pnpm lint:pkg` | publint + attw — publish-readiness checks |
-| `pnpm size` | size-limit — 4 KB brotlied per entry, 4.5 KB for `/a11y`, 1 KB for `/navigation` |
+| `pnpm size` | size-limit — 13 budgets: 4 KB per entry (`/a11y` 4.5 KB, `/navigation` 1 KB, IIFE 3.5 KB) |
 | `pnpm verify` | All of the above. **Run before committing.** |
 
 ## Commit conventions — what triggers a release
@@ -149,6 +187,7 @@ not internal demo/doc/test changes.
 | `feat!: …` / `BREAKING CHANGE:` footer | Major | Library API break |
 | `chore(playground): …` / `feat(playground): …` | **No bump** | Playground-only changes (`examples/playground/`) |
 | `chore(docs): …` / `feat(docs): …` | **No bump** | Docs site changes (`docs/site/`) |
+| `feat(vanilla): …` / `fix(vanilla): …` | Minor / Patch | The `/vanilla` entry — it *is* public library surface, so it bumps |
 | `chore(visual): …` / `test(visual): …` | **No bump** | Visual regression infra (`tests/visual/`) |
 | `chore(workspaces): …` / `docs(workspaces): …` | **No bump** | Nested workspace config / CLAUDE.md edits |
 | `refactor: …` / `docs: …` / `chore: …` (no scope) | **No bump** | Repo-wide changes without runtime impact |

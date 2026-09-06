@@ -25,7 +25,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Engines',
-      items: ['engines/css-highlights', 'engines/react-native'],
+      items: ['engines/css-highlights', 'engines/react-native', 'engines/vanilla'],
     },
     {
       type: 'category',

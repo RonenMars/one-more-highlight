@@ -133,7 +133,7 @@ Do **not** introduce a `match.<form>` builder; the union carries the ergonomics 
 | `pnpm test:visual:update` | Regenerate visual baselines after any rendering change. Commit the PNGs. |
 | `pnpm build` | tsup → ESM + CJS + `.d.ts` + `.d.cts` in `dist/` |
 | `pnpm lint:pkg` | publint + attw — publish-readiness checks |
-| `pnpm size` | size-limit — enforces 3 KB brotlied budget |
+| `pnpm size` | size-limit — 4 KB brotlied per entry, 4.5 KB for `/a11y`, 1 KB for `/navigation` |
 | `pnpm verify` | All of the above. **Run before committing.** |
 
 ## Commit conventions — what triggers a release

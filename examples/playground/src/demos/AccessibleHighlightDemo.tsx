@@ -23,12 +23,17 @@ export function AccessibleHighlightDemo() {
           <option value="annotated">annotated</option>
         </select>
       </label>
-      <AccessibleHighlight
-        text={text}
-        searchWords={['React']}
-        mode={mode}
-        highlightClassName="hl-base"
-      />
+      {/* Capture target for the visual suite: the mode picker above renders
+          its own selected value, so a snapshot of the whole demo differs
+          between modes for a reason that has nothing to do with highlighting. */}
+      <div data-testid="a11y-output">
+        <AccessibleHighlight
+          text={text}
+          searchWords={['React']}
+          mode={mode}
+          highlightClassName="hl-base"
+        />
+      </div>
     </div>
   );
 }

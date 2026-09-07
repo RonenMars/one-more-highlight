@@ -170,3 +170,9 @@ body {
 ::highlight(match)  { background: var(--hl-yellow); color: var(--hl-text); }
 ::highlight(active) { background: var(--hl-green);  color: var(--hl-text); }
 ::highlight(pinned) { background: var(--hl-pink);   color: var(--hl-text); }
+
+/* Vanilla engine demo. Names are namespaced because CSS.highlights is a
+   document-global registry keyed by name. */
+::highlight(v-term-fox) { background: var(--hl-yellow); color: var(--hl-text); }
+::highlight(v-term-dog) { background: var(--hl-pink);   color: var(--hl-text); }
+

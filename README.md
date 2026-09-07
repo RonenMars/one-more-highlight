@@ -72,32 +72,48 @@ A single match can be in multiple states at once; their `className`s concatenate
 
 See [engines/css-highlights](https://one-more-highlight.vercel.app/docs/engines/css-highlights), [engines/react-native](https://one-more-highlight.vercel.app/docs/engines/react-native) and [engines/vanilla](https://one-more-highlight.vercel.app/docs/engines/vanilla).
 
-### No framework? No build step?
+### Vanilla JS — no framework, no build step
 
-`one-more-highlight/vanilla` highlights text in any DOM subtree — including markup you don't own — matching across element boundaries and painting with the CSS Custom Highlight API, with a `<mark>` fallback where that's missing.
+`one-more-highlight/vanilla` highlights text in **any DOM subtree**, including markup you don't own. It matches across element boundaries, paints with the CSS Custom Highlight API without touching the DOM, and falls back to `<mark>` injection where that API is missing.
+
+**Install it the same way** — `react` is an optional peer dependency, so a plain-JS project pulls in nothing extra:
+
+```bash
+pnpm add one-more-highlight
+# or: npm i one-more-highlight / yarn add one-more-highlight
+```
 
 ```js
 import { Highlighter } from 'one-more-highlight/vanilla';
 
 const h = new Highlighter(document.querySelector('#article'));
-h.mark('time', {
-  states: [{ name: 'active', index: 2 }],
+h.mark(['ipsum', 'dolor'], {
+  states: [
+    { name: 'term-ipsum', term: 'ipsum' },
+    { name: 'term-dolor', term: 'dolor' },
+  ],
 });
 ```
 
+Nothing renders until you style the highlight names — the package ships zero CSS by design:
+
 ```css
-::highlight(match)  { background: #FFF166; }
-::highlight(active) { background: #A8FF80; }
+::highlight(term-ipsum) { background: #FFF166; color: #1b1b1d; }
+::highlight(term-dolor) { background: #FFADD6; color: #1b1b1d; }
 ```
 
-Or with no bundler at all — the package ships an IIFE build that defines a global:
+**Or skip the bundler entirely.** The package ships an IIFE build (~3.2 KB brotlied) that defines a global, served straight from npm by jsDelivr and unpkg:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/one-more-highlight/dist/omh.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/one-more-highlight@1/dist/omh.global.js"></script>
 <script>
   new OMH.Highlighter(document.body).mark('time');
 </script>
 ```
+
+Everything the React entry can select — `index`, `range`, `indices`, `term`, `nth`, a `match` predicate — works identically here, plus `markRanges()` for precomputed offsets and the three overlap strategies.
+
+📖 **[Full vanilla guide →](https://one-more-highlight.vercel.app/docs/engines/vanilla)** — API reference, the two renderers, CDN pinning and SRI, cross-element matching, shadow DOM, and the document-global highlight-name registry (the one real footgun). Runnable examples live in [`examples/vanilla/`](./examples/vanilla/).
 
 ## Accessibility & navigation
 
@@ -122,7 +138,8 @@ React 18+/19 (optional), Node 18+, modern evergreens (Chrome 112+, Firefox 140+,
 | Guides — basic highlighting, headless hook, multi-state styling, render-prop | [docs site → guides](https://one-more-highlight.vercel.app/docs/guides/basic-highlighting) |
 | API reference — `<Highlight>` props, `useHighlight`, types, `HighlightState` selectors | [docs site → api](https://one-more-highlight.vercel.app/docs/api/highlight-props) |
 | Recipes — accessibility, diacritic-insensitive search, overlap strategies, browser support | [docs site → recipes](https://one-more-highlight.vercel.app/docs/recipes/accessibility) |
-| Engines — CSS Custom Highlight API, React Native, vanilla | [docs site → engines](https://one-more-highlight.vercel.app/docs/engines/css-highlights) |
+| Engines — CSS Custom Highlight API, React Native | [docs site → engines](https://one-more-highlight.vercel.app/docs/engines/css-highlights) |
+| **Vanilla JS** — no-framework engine, CDN usage, DOM walking | [docs site → engines/vanilla](https://one-more-highlight.vercel.app/docs/engines/vanilla) |
 | Roadmap (v2+ plan) | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
 | Architecture decisions | [`docs/adr/`](./docs/adr/) |
 

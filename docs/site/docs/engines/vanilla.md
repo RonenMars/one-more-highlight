@@ -41,10 +41,11 @@ const count = h.mark('time');
 `react` is an optional peer dependency — a non-React project installs nothing
 extra.
 
-## No build step
+## From a CDN, with no build step
 
-The package ships an IIFE bundle that defines a global. Drop it into any HTML
-page:
+The package ships an IIFE bundle (`dist/omh.global.js`) that defines a single
+global, `OMH`. There is nothing to deploy — jsDelivr and unpkg mirror npm
+automatically, so every published version is already there.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/one-more-highlight/dist/omh.global.js"></script>
@@ -53,6 +54,60 @@ page:
   h.mark('time');
 </script>
 ```
+
+The package declares `unpkg` and `jsdelivr` fields pointing at that file, so the
+bare URL resolves to it too:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/one-more-highlight"></script>
+<script src="https://unpkg.com/one-more-highlight"></script>
+```
+
+The bundle is ~9 kB raw, **~3.2 kB brotlied over the wire**, with
+`escape-string-regexp` inlined and `process.env` compiled out. Everything the
+`Highlighter` API offers is on `OMH` — `Highlighter`, `highlight`, `TextIndex`,
+`supported`, `defaultFindChunks`.
+
+### Pin the version, and add an integrity hash
+
+The examples above are unversioned, which is fine while you are trying it out and
+wrong in production — the file changes under you on every release. Pin it:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/one-more-highlight@1.7.0/dist/omh.global.js"></script>
+```
+
+A pinned URL can also carry [Subresource Integrity][sri], so a compromised or
+mistaken CDN response is rejected by the browser instead of executed. Generate
+the hash once per version:
+
+```bash
+curl -s https://cdn.jsdelivr.net/npm/one-more-highlight@1.7.0/dist/omh.global.js \
+  | openssl dgst -sha384 -binary | openssl base64 -A
+```
+
+```html
+<script
+  src="https://cdn.jsdelivr.net/npm/one-more-highlight@1.7.0/dist/omh.global.js"
+  integrity="sha384-REPLACE_WITH_THE_HASH_ABOVE"
+  crossorigin="anonymous"></script>
+```
+
+`crossorigin="anonymous"` is required — without it the browser cannot read the
+response to verify it, and the script is blocked. Note that SRI only works
+against a **pinned** version: a range URL like `@1` serves different bytes over
+time, so any hash you compute for it will start failing at the next release.
+
+If you would rather have ESM than a global, `esm.sh` serves the real subpath:
+
+```html
+<script type="module">
+  import { Highlighter } from 'https://esm.sh/one-more-highlight/vanilla';
+  new Highlighter(document.body).mark('time');
+</script>
+```
+
+[sri]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
 
 ## Multi-state styling
 
@@ -78,6 +133,46 @@ h.mark('time', {
 
 Under the `mark` renderer the same states contribute their `className` to the
 injected element instead, and the element carries `data-omh-states="active"`.
+
+### Highlight names are global to the document
+
+This is the one thing about the `css` renderer that surprises people, and it is
+not a quirk of this library — it is how the platform API works. `CSS.highlights`
+is a **document-wide registry keyed by name**. Two `Highlighter` instances that
+use the same state name write into the *same* bucket:
+
+```js
+// Both instances register under the name 'match'.
+const a = new Highlighter(document.querySelector('#sidebar'));
+const b = new Highlighter(document.querySelector('#article'));
+a.mark('term');
+b.mark('term');
+
+a.unmark();   // b's highlights survive — each instance deletes only its own
+              // ranges, and drops the name only once the bucket is empty.
+```
+
+Sharing a name is often exactly what you want: one `::highlight(match)` rule
+styles every highlighter on the page. It becomes a problem when two instances
+mean different things by the same name — a search highlighter and a
+spell-checker both calling their state `'active'` will paint each other's
+matches.
+
+So when a page runs more than one highlighter for different purposes, namespace
+the names:
+
+```js
+const search = new Highlighter(el, { name: 'search-match' });
+search.mark(query, {
+  states: [{ name: 'search-active', index: cursor }],
+});
+```
+
+Teardown is reference-counted and per-instance, so instances that *do* share a
+name coexist safely — `unmark()` removes only the ranges that instance added,
+and deletes the registry entry only when nothing is left in it. The `mark`
+renderer has no such consideration: it writes elements into the DOM it was given
+and touches nothing else.
 
 ## Matching across element boundaries
 

@@ -35,6 +35,8 @@
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
+  "unpkg": "dist/omh.global.js",
+  "jsdelivr": "dist/omh.global.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {

@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/RonenMars/one-more-highlight/compare/v1.6.0...v1.7.0) (2026-09-07)
+
+
+### Features
+
+* **vanilla:** add a framework-agnostic engine as the /vanilla sub-export ([#63](https://github.com/RonenMars/one-more-highlight/issues/63)) ([e316a10](https://github.com/RonenMars/one-more-highlight/commit/e316a1028a072b88a28abf48456aab904147fe13))
+
 # [1.6.0](https://github.com/RonenMars/one-more-highlight/compare/v1.5.0...v1.6.0) (2026-09-05)
 
 

@@ -649,8 +649,9 @@
       <p class="hero-sub">
         A TypeScript-first library for substring highlighting with first-class
         multi-state per-match styling. Every match gets a base style. Specific matches —
-        by index, range, or list — get layered styles on top. ~2.7 KB brotlied. Two
-        micro-dependencies. SSR-safe. React, React Native, or no framework at all.
+        by index, range, list, or your own predicate — get layered styles on top. Bring
+        precomputed ranges when your own matcher already found them. ~2.7 KB brotlied.
+        Two micro-dependencies. SSR-safe. React, React Native, or no framework at all.
       </p>
 
       <div class="preview" aria-label="Rendered output preview">
@@ -714,9 +715,11 @@
           </span>
           <h2>Tiny</h2>
           <p>
-            ~2.7 KB brotlied for the core (ESM); ~3.1 KB for <code>/vanilla</code>,
-            ~3.2 KB for the CDN bundle. Two micro-deps (<code>clsx</code>,
-            <code>escape-string-regexp</code>), both MIT, ~400 B combined.
+            ~2.7 KB brotlied for the core (ESM); ~3.2 KB for the CDN bundle.
+            Two micro-deps (<code>clsx</code>, <code>escape-string-regexp</code>),
+            both MIT, ~400 B combined. <code>/css</code>, <code>/vanilla</code>,
+            <code>/native</code>, <code>/a11y</code> and <code>/navigation</code>
+            are opt-in — you only pay for what you import.
           </p>
         </div>
 

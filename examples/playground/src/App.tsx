@@ -18,6 +18,7 @@ import { RangesDemo } from './demos/RangesDemo.js';
 import { RegexDemo } from './demos/RegexDemo.js';
 import { RenderPropDemo } from './demos/RenderPropDemo.js';
 import { SelectorsDemo } from './demos/SelectorsDemo.js';
+import { VanillaEngineDemo } from './demos/VanillaEngineDemo.js';
 
 interface DemoPageProps {
   title: string;
@@ -49,6 +50,7 @@ const demos = [
   { path: 'per-term',         title: 'Per-search-term — { term, nth } selectors',          Component: PerTermDemo },
   { path: 'selectors',        title: 'Selectors — index / range / indices',                 Component: SelectorsDemo },
   { path: 'css-engine',       title: 'CSS Custom Highlight API engine',                    Component: CssEngineDemo },
+  { path: 'vanilla-engine',   title: 'Vanilla engine — no framework, cross-element',       Component: VanillaEngineDemo },
   { path: 'ranges',           title: 'Controlled ranges — offsets from a search backend',   Component: RangesDemo },
   { path: 'accessible-highlight', title: 'Accessible highlight — native / dual / annotated', Component: AccessibleHighlightDemo },
   { path: 'keyboard-navigation',  title: 'Keyboard navigation — roving focus + announcer',   Component: KeyboardNavigationDemo },

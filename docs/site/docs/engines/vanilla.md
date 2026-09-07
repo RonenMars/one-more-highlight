@@ -78,8 +78,9 @@ wrong in production — the file changes under you on every release. Pin it:
 ```
 
 A pinned URL can also carry [Subresource Integrity][sri], so a compromised or
-mistaken CDN response is rejected by the browser instead of executed. Generate
-the hash once per version:
+mistaken CDN response is rejected by the browser instead of executed. The hash
+below is the real one for `1.7.0`; regenerate it whenever you move to a new
+version:
 
 ```bash
 curl -s https://cdn.jsdelivr.net/npm/one-more-highlight@1.7.0/dist/omh.global.js \
@@ -89,7 +90,7 @@ curl -s https://cdn.jsdelivr.net/npm/one-more-highlight@1.7.0/dist/omh.global.js
 ```html
 <script
   src="https://cdn.jsdelivr.net/npm/one-more-highlight@1.7.0/dist/omh.global.js"
-  integrity="sha384-REPLACE_WITH_THE_HASH_ABOVE"
+  integrity="sha384-JGLvWQ+yeOWtQ9yyfV7aZJO2/hJnSGGHdXZZexQt8sXMz9dlqsm2KXW6xT0HTEa2"
   crossorigin="anonymous"></script>
 ```
 

@@ -14,7 +14,7 @@ Build the React text-highlighting library that staff engineers actually want to 
 
 We are not trying to replace `react-highlight-words` for everyone — we are trying to be the obvious choice for anyone who needs typed multi-state highlighting on a modern stack.
 
-## Where we are — v0.4 (2026-05)
+## Where we are — v1.7.0 (2026-09)
 
 ### Shipped
 
@@ -27,7 +27,8 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - Unit, SSR and React Native suites plus 1000-iteration property-based fuzz. `pnpm verify` runs them all and is the source of truth for the counts — a number written here goes stale on the next PR.
 - Playwright visual regression across 5 device projects — `pnpm test:visual`, run by its own CI job and not by `pnpm verify`.
 - 2.73 KB ESM / 3.04 KB CJS brotlied for the default entry, inside a 4 KB `size-limit` budget. Zero CSS shipped.
-  Sub-exports: `/css` 3.21 KB ESM, `/native` 2.85 KB ESM, `/a11y` 3.18 KB ESM, `/navigation` 410 B ESM.
+  Sub-exports: `/css` 3.22 KB ESM, `/vanilla` 3.13 KB ESM, `/a11y` 3.18 KB ESM,
+  `/native` 2.85 KB ESM, `/navigation` 410 B ESM, plus a 3.19 KB IIFE global build.
   Measured with `pnpm size` after #48 — re-measure and update this line when it moves, rather than quoting it from memory.
   The budgets were raised from 3 KB to 4 KB here: they were calibrated when the core was 1.89 KB and had drifted to within 20-30 bytes of failing on unrelated changes. `/navigation` stays at 1 KB, because a 4 KB limit on a 410 B bundle guards nothing.
 - **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
@@ -43,11 +44,11 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - `pnpm test` ✅ green, `pnpm test:native` ✅ green
 - `pnpm build` ✅ tsup ESM+CJS+types
 - `pnpm lint:pkg` ✅ publint + attw all green
-- `pnpm size` ✅ under 3 KB brotlied budget
+- `pnpm size` ✅ 13 budgets green — 4 KB per entry, 4.5 KB `/a11y`, 1 KB `/navigation`, 3.5 KB IIFE
 
-## Near-term (v0.3 — v0.4)
+## Delivered — v0.3 and v0.4
 
-### v0.3 — Quality of life (in progress)
+### v0.3 — Quality of life
 
 - [x] **Live docs site** — deployed to Vercel with interactive demos.
 - [x] **CI pipeline** — GitHub Actions + semantic-release on `main`.
@@ -63,9 +64,10 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - [x] **`getMatchCount()` helper** exported from `useHighlight` results so consumers can validate `states` config before passing it.
 - [x] **`forwardRef` support** on `<Highlight>` — open issue on `react-highlight-words` (#127) suggests demand.
 
-## Mid-term (v1.0)
+## The v1.0 line — mostly delivered
 
-Earning the major version. Stability commitment + a feature that meaningfully differentiates us from `react-highlight-words`.
+The major version shipped, and the differentiating features below landed with it.
+Two commitments remain open.
 
 ### v1.0 candidates
 
@@ -76,7 +78,8 @@ Earning the major version. Stability commitment + a feature that meaningfully di
 
 ## Long-term (v2.x)
 
-Bigger investments. Each is its own design conversation.
+Bigger investments, each its own design conversation. The CSS engine below has
+already shipped; the rest are still open.
 
 ### v2.0 — CSS Custom Highlight API engine ✅ shipped
 

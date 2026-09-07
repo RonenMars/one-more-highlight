@@ -54,3 +54,6 @@ dist-ssr
 .superpowers/
 .vercel
 .env*.local
+
+# Locally generated demo screenshots (reproducible from the HTML)
+examples/vanilla/*.png

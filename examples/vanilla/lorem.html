@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>one-more-highlight — vanilla, two terms, two colors</title>
+
+<style>
+  :root {
+    --hl-yellow: #FFF166;
+    --hl-pink:   #FFADD6;
+    --hl-text:   #1b1b1d;
+  }
+
+  body {
+    font: 16px/1.75 ui-serif, Georgia, "Times New Roman", serif;
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 5rem;
+    color: #1b1b1d;
+    background: #fdfdfc;
+  }
+
+  header { font-family: ui-sans-serif, system-ui, sans-serif; margin-bottom: 2.5rem; }
+  h1 { font-size: 1.5rem; margin: 0 0 .5rem; }
+
+  .legend { display: flex; gap: 1.25rem; flex-wrap: wrap; font-size: .875rem; margin: 0 0 .5rem; }
+  .swatch { display: inline-block; width: .85em; height: .85em; border-radius: 3px; vertical-align: -1px; margin-right: .4em; }
+  .swatch.yellow { background: var(--hl-yellow); }
+  .swatch.pink   { background: var(--hl-pink); }
+  .meta { font-size: .8125rem; color: #55554f; margin: 0; }
+
+  /* --- This is the entire styling contract. ---------------------------
+     The library paints via the CSS Custom Highlight API and ships no CSS
+     of its own, so nothing is visible until these rules exist. Each state
+     name declared in JS becomes one ::highlight() pseudo-element.        */
+  ::highlight(term-ipsum) { background: var(--hl-yellow); color: var(--hl-text); }
+  ::highlight(term-dolor) { background: var(--hl-pink);   color: var(--hl-text); }
+
+  /* Fallback path: only used if the browser lacks the Highlight API and
+     the library falls back to injecting <mark> elements. */
+  mark.omh-match      { background: transparent; color: inherit; }
+  mark.hl-yellow      { background: var(--hl-yellow); color: var(--hl-text); }
+  mark.hl-pink        { background: var(--hl-pink);   color: var(--hl-text); }
+</style>
+
+<header>
+  <h1>Lorem ipsum, two terms, two colors</h1>
+  <p class="legend">
+    <span><i class="swatch yellow"></i><strong>ipsum</strong> — <span id="n-ipsum">0</span> matches</span>
+    <span><i class="swatch pink"></i><strong>dolor</strong> — <span id="n-dolor">0</span> matches</span>
+  </p>
+  <p class="meta">renderer: <strong id="renderer">…</strong> · total matches painted: <strong id="n-total">0</strong></p>
+</header>
+
+<article id="content">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+  nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+  fugiat nulla pariatur.</p>
+
+  <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+  deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus
+  error sit voluptatem accusantium doloremque laudantium, totam rem aperiam,
+  eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae
+  dicta sunt explicabo.</p>
+
+  <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,
+  sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+  Neque porro quisquam est, qui <em>dolorem ipsum quia dolor</em> sit amet,
+  consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut
+  labore et dolore magnam aliquam quaerat voluptatem.</p>
+
+  <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit
+  laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure
+  reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur,
+  vel illum qui <strong>dolor</strong>em eum fugiat quo voluptas nulla pariatur?</p>
+
+  <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
+  praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
+  excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
+  officia deserunt mollitia animi, id est laborum et dolor um fuga.</p>
+
+  <p>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore,
+  cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod
+  maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor
+  repellendus. Lorem ipsum dolor sit amet again, because ipsum repeats and so
+  does dolor.</p>
+
+  <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus
+  saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
+  Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis
+  voluptatibus maiores alias consequatur aut perferendis doloribus asperiores
+  repellat. Lorem ipsum, once more, with dolor trailing behind it.</p>
+
+  <p>Sed ut perspiciatis: ipsum here, dolor there, ipsum everywhere. A final
+  paragraph so the page scrolls a little, with one last <b>ipsum</b> and one last
+  <i>dolor</i> to round the counts out.</p>
+</article>
+
+<!-- In production this is the CDN line:
+     <script src="https://cdn.jsdelivr.net/npm/one-more-highlight/dist/omh.global.js"></script>
+     Here it points at the local build, which is the identical bundle. -->
+<script src="../../dist/omh.global.js"></script>
+<script>
+  const h = new OMH.Highlighter(document.getElementById('content'));
+
+  // One instance, one pass, two terms. The `term` selector picks out every
+  // match of a specific search word, so each gets its own highlight name.
+  const total = h.mark(['ipsum', 'dolor'], {
+    states: [
+      { name: 'term-ipsum', term: 'ipsum', className: 'hl-yellow' },
+      { name: 'term-dolor', term: 'dolor', className: 'hl-pink' },
+    ],
+  });
+
+  const segments = OMH.highlight({
+    text: h.text,
+    searchWords: ['ipsum', 'dolor'],
+    states: [
+      { name: 'term-ipsum', term: 'ipsum' },
+      { name: 'term-dolor', term: 'dolor' },
+    ],
+  });
+  const count = (name) =>
+    segments.filter((s) => s.isMatch && s.states.includes(name)).length;
+
+  document.getElementById('renderer').textContent = h.renderer;
+  document.getElementById('n-total').textContent = total;
+  document.getElementById('n-ipsum').textContent = count('term-ipsum');
+  document.getElementById('n-dolor').textContent = count('term-dolor');
+</script>
+</html>

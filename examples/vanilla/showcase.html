@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>one-more-highlight — vanilla showcase</title>
+
+<style>
+  :root {
+    --yellow: #FFF166;
+    --green:  #A8FF80;
+    --pink:   #FFADD6;
+    --blue:   #A8D8FF;
+    --ink:    #1b1b1d;
+    --muted:  #55554f;
+    --rule:   #e4e4dd;
+    --paper:  #fdfdfc;
+    --card:   #fff;
+  }
+
+  body {
+    font: 15px/1.7 ui-sans-serif, system-ui, -apple-system, sans-serif;
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 5rem;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  h1 { font-size: 1.6rem; margin: 0 0 .35rem; }
+  h2 {
+    font-size: 1.05rem; margin: 0 0 .2rem;
+    display: flex; align-items: baseline; gap: .55rem;
+  }
+  h2 .num {
+    font-variant-numeric: tabular-nums; font-size: .75rem; font-weight: 600;
+    color: var(--muted); border: 1px solid var(--rule); border-radius: 999px;
+    padding: .05rem .45rem; flex: none;
+  }
+  .lede { color: var(--muted); margin: 0 0 2.5rem; }
+  .note { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+
+  section { border-top: 1px solid var(--rule); padding-top: 1.5rem; margin-top: 2.25rem; }
+
+  .prose { font-family: ui-serif, Georgia, serif; font-size: 1rem; line-height: 1.8; }
+
+  pre {
+    background: #1e1e2e; color: #cdd6f4; border-radius: 6px;
+    padding: .7rem .9rem; overflow-x: auto; font-size: .78rem; line-height: 1.55;
+    margin: 0 0 .9rem;
+  }
+  pre .k { color: #cba6f7; } pre .s { color: #a6e3a1; } pre .c { color: #7f849c; }
+
+  .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+  .card {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: .85rem 1rem;
+  }
+  .card h3 { font-size: .82rem; margin: 0 0 .1rem; text-transform: uppercase; letter-spacing: .04em; }
+  .card .stat { font-size: .78rem; color: var(--muted); margin: 0 0 .6rem; font-variant-numeric: tabular-nums; }
+  .card .sample { font-family: ui-serif, Georgia, serif; font-size: .98rem; line-height: 1.75; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .6rem; }
+  .chip {
+    font-size: .72rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: #f2f2ec; border: 1px solid var(--rule); border-radius: 4px; padding: .1rem .35rem;
+  }
+
+  table.legend { border-collapse: collapse; font-size: .82rem; margin: 0 0 1rem; }
+  table.legend td { padding: .12rem .6rem .12rem 0; }
+  .sw { display: inline-block; width: .85em; height: .85em; border-radius: 3px; vertical-align: -1px; margin-right: .4em; }
+
+  /* ------------------------------------------------------------------ *
+   * The whole styling contract. Every state name declared in JS becomes *
+   * one ::highlight() pseudo-element. Nothing renders without these.    *
+   * Names are GLOBAL to the document, so each section namespaces its    *
+   * own to avoid colliding with the others.                            *
+   * ------------------------------------------------------------------ */
+  ::highlight(t-ipsum) { background: var(--yellow); color: var(--ink); }
+  ::highlight(t-dolor) { background: var(--pink);   color: var(--ink); }
+
+  ::highlight(ov-merge)  { background: var(--yellow); color: var(--ink); }
+  ::highlight(ov-nest-a) { background: var(--yellow); color: var(--ink); }
+  ::highlight(ov-nest-b) { background: var(--pink);   color: var(--ink); }
+  ::highlight(ov-first)  { background: var(--green);  color: var(--ink); }
+
+  ::highlight(sel-base)  { background: #f0f0e6; color: var(--ink); }
+  ::highlight(sel-idx)   { background: var(--green);  color: var(--ink); }
+  ::highlight(sel-range) { background: var(--blue);   color: var(--ink); }
+  ::highlight(sel-list)  { background: var(--pink);   color: var(--ink); }
+  ::highlight(sel-nth)   { background: var(--yellow); color: var(--ink); text-decoration: underline; }
+  ::highlight(sel-pred)  { background: #d9c2ff; color: var(--ink); }
+
+  ::highlight(rx-num)   { background: var(--blue);   color: var(--ink); }
+  ::highlight(rx-caps)  { background: var(--yellow); color: var(--ink); }
+
+  ::highlight(rx-ci)    { background: var(--yellow); color: var(--ink); }
+  ::highlight(rx-cs)    { background: var(--green);  color: var(--ink); }
+
+  ::highlight(rng-cite) { background: var(--green); color: var(--ink); }
+
+  ::highlight(xel)      { background: var(--yellow); color: var(--ink); }
+
+  ::highlight(css-side) { background: var(--green); color: var(--ink); }
+
+  ::highlight(flt)      { background: var(--yellow); color: var(--ink); }
+
+  /* Fallback path, used only by the `mark` renderer section below. */
+  mark.omh-match { background: var(--pink); color: var(--ink); }
+</style>
+
+<h1>one-more-highlight — vanilla showcase</h1>
+<p class="lede">
+  Every section below runs against a real DOM subtree with no framework.
+  Renderer in use: <strong id="renderer">…</strong>.
+</p>
+
+<!-- ================================================================= -->
+<section>
+  <h2><span class="num">1</span> Two terms, two colors</h2>
+  <p class="note">
+    The <code>term</code> selector picks out every match of one search word, so a
+    single pass can paint each term differently.
+  </p>
+<pre><span class="c">// one instance, one pass, two terms</span>
+h.mark([<span class="s">'ipsum'</span>, <span class="s">'dolor'</span>], { states: [
+  { name: <span class="s">'t-ipsum'</span>, term: <span class="s">'ipsum'</span> },
+  { name: <span class="s">'t-dolor'</span>, term: <span class="s">'dolor'</span> },
+]});</pre>
+  <table class="legend"><tr>
+    <td><i class="sw" style="background:var(--yellow)"></i>ipsum — <b id="n-ipsum">0</b></td>
+    <td><i class="sw" style="background:var(--pink)"></i>dolor — <b id="n-dolor">0</b></td>
+  </tr></table>
+  <div class="prose" id="s1">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Neque porro quisquam est,
+    qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet again,
+    because ipsum repeats and so does dolor.</p>
+  </div>
+</section>
+
+<!-- ================================================================= -->
+<section>
+  <h2><span class="num">2</span> Overlap strategies</h2>
+  <p class="note">
+    Same input every time: the search words <code>'Lorem ipsum'</code> and
+    <code>'ipsum dolor'</code>, which overlap on <em>ipsum</em>. Only
+    <code>overlapStrategy</code> changes.
+  </p>
+<pre>h.mark([<span class="s">'Lorem ipsum'</span>, <span class="s">'ipsum dolor'</span>])  <span class="c">// overlapping terms</span>
+<span class="c">// overlapStrategy: 'merge' (default) | 'nest' | 'first-wins'</span></pre>
+  <div class="grid">
+    <div class="card">
+      <h3>merge <span style="font-weight:400;text-transform:none">(default)</span></h3>
+      <p class="stat"><b id="ov-merge-n">0</b> match — overlaps fuse into one wider span</p>
+      <div class="sample" id="ov-merge">Lorem ipsum dolor sit amet.</div>
+      <div class="chips" id="ov-merge-chips"></div>
+    </div>
+    <div class="card">
+      <h3>nest</h3>
+      <p class="stat"><b id="ov-nest-n">0</b> matches — both kept, overlapping</p>
+      <div class="sample" id="ov-nest">Lorem ipsum dolor sit amet.</div>
+      <div class="chips" id="ov-nest-chips"></div>
+    </div>
+    <div class="card">
+      <h3>first-wins</h3>
+      <p class="stat"><b id="ov-first-n">0</b> match — the later overlapper is dropped</p>
+      <div class="sample" id="ov-first">Lorem ipsum dolor sit amet.</div>
+      <div class="chips" id="ov-first-chips"></div>
+    </div>
+  </div>
+  <p class="note" style="margin-top:.9rem">
+    The chips show each strategy's actual matched substrings. Note that
+    <code>merge</code> and <code>nest</code> paint the same pixels — the
+    difference is the <em>match count</em>, which is what index- and
+    range-based selectors then address.
+  </p>
+</section>
+
+<!-- ================================================================= -->
+<section>
+  <h2><span class="num">3</span> Selector forms</h2>
+  <p class="note">
+    Fifteen occurrences of <code>one</code>. Every selector form in the
+    <code>HighlightState</code> union, layered over one grey base.
+  </p>
+<pre>states: [
+  { name: <span class="s">'sel-idx'</span>,   index: <span class="k">1</span> },                      <span class="c">// a single match</span>
+  { name: <span class="s">'sel-range'</span>, range: [<span class="k">3</span>, <span class="k">4</span>] },                 <span class="c">// an inclusive span</span>
+  { name: <span class="s">'sel-list'</span>,  indices: [<span class="k">6</span>, <span class="k">8</span>] },               <span class="c">// an arbitrary list</span>
+  { name: <span class="s">'sel-pred'</span>,  match: (m) =&gt; m.start &gt; <span class="k">120</span> },   <span class="c">// a predicate</span>
+]</pre>
+  <table class="legend"><tr>
+    <td><i class="sw" style="background:#f0f0e6;border:1px solid #ddd"></i>base</td>
+    <td><i class="sw" style="background:var(--green)"></i><code>index: 1</code></td>
+    <td><i class="sw" style="background:var(--blue)"></i><code>range: [3,4]</code></td>
+    <td><i class="sw" style="background:var(--pink)"></i><code>indices: [6,8]</code></td>
+    <td><i class="sw" style="background:#d9c2ff"></i><code>match: fn</code></td>
+  </tr></table>
+  <div class="prose" id="s3">
+    <p>one two one three one four one five one six one seven one eight one nine
+    one ten one eleven one twelve one thirteen one fourteen one fifteen one.</p>
+  </div>
+</section>
+
+<!-- ================================================================= -->
+<section>
+  <h2><span class="num">4</span> RegExp search words &amp; case sensitivity</h2>
+  <p class="note">
+    A search word can be a <code>RegExp</code>, not just a string. Strings are
+    escaped by default (<code>autoEscape</code>), so regex metacharacters in user
+    input are literal.
+  </p>
+<pre>h.mark([<span class="k">/\d+(\.\d+)?/g</span>, <span class="k">/\b[A-Z]{2,}\b/g</span>], { states: [
+  { name: <span class="s">'rx-num'</span>,  term: <span class="k">0</span> },   <span class="c">// term can be an index into searchWords</span>
+  { name: <span class="s">'rx-caps'</span>, term: <span class="k">1</span> },
+]});</pre>
+  <table class="legend"><tr>
+    <td><i class="sw" style="background:var(--blue)"></i>numbers</td>
+    <td><i class="sw" style="background:var(--yellow)"></i>ALLCAPS words</td>
+  </tr></table>
+  <div class="prose" id="s4">
+    <p>The HTTP response returned 404 after 1.5 seconds, then the CDN served a
+    cached copy in 0.28 seconds. The API budget is 3 KB brotlied; the IIFE bundle
+    measured 3.19 KB across 13 size-limit entries.</p>
+  </div>
+
+  <p class="note" style="margin-top:1.2rem">
+    And <code>caseSensitive</code>, which is <code>false</code> by default:
+  </p>
+  <div class="grid">
+    <div class="card">
+      <h3>caseSensitive: false <span style="font-weight:400;text-transform:none">(default)</span></h3>
+      <p class="stat">searching <code>'api'</code> — <b id="ci-n">0</b> matches</p>
+      <div class="sample" id="s4ci">The API is stable. Read the api docs, then call Api.get().</div>
+    </div>
+    <div class="card">
+      <h3>caseSensitive: true</h3>
+      <p class="stat">searching <code>'api'</code> — <b id="cs-n">0</b> match</p>
+      <div class="sample" id="s4cs">The API is stable. Read the api docs, then call Api.get().</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================= -->
+<section>
+  <h2><span class="num">5</span> Bring your own matches</h2>
+  <p class="note">
+    <code>markRanges()</code> takes precomputed offsets instead of searching —
+    for hits from a server-side matcher, a search service, an NLP tokenizer, or
+    AI citations. <code>h.text</code> exposes the flattened text the offsets
+    index into.
+  </p>
+<pre><span class="c">// offsets someone else computed</span>
+h.markRanges([{ start: <span class="k">18</span>, end: <span class="k">37</span> }, { start: <span class="k">61</span>, end: <span class="k">76</span> }]);</pre>
+  <div class="prose" id="s5">
+    <p>The verdict rests on a load-bearing claim that nobody checked, and the
+    footnote quietly contradicts it four pages later.</p>
+  </div>
+  <p class="note">Highlighted purely by character offset — no search term involved.</p>
+</section>
+
+<!-- ================================================================= -->
+<section>
+  <h2><span class="num">6</span> Matching across element boundaries</h2>
+  <p class="note">
+    The walker flattens every text node under the root before matching, so a
+    phrase broken up by inline markup is still one match. This is the thing a
+    string-based highlighter cannot do.
+  </p>
+<pre>h.mark(<span class="s">'an element boundary'</span>)  <span class="c">// → 1 match, spanning 3 text nodes</span></pre>
+  <div class="prose" id="s6">
+    <p>A phrase can cross <b>an eleme<em>nt bound</em>ary</b> and still count as
+    a single match.</p>
+  </div>
+  <p class="note" id="s6-note"></p>
+</section>
+
+<!-- ================================================================= -->
+<section>
+  <h2><span class="num">7</span> Two renderers</h2>
+  <p class="note">
+    <code>strategy: 'auto'</code> uses the CSS Custom Highlight API when the
+    browser has it, and injects <code>&lt;mark&gt;</code> elements when it does
+    not. Both are forced here, side by side.
+  </p>
+  <div class="grid">
+    <div class="card">
+      <h3>strategy: 'css'</h3>
+      <p class="stat">DOM untouched — <b id="css-nodes">0</b> elements injected</p>
+      <div class="sample" id="s7css">No DOM mutation happens here at all.</div>
+    </div>
+    <div class="card">
+      <h3>strategy: 'mark'</h3>
+      <p class="stat">wraps matches — <b id="mark-nodes">0</b> elements injected</p>
+      <div class="sample" id="s7mark">No DOM mutation happens here at all.</div>
+    </div>
+  </div>
+  <p class="note" style="margin-top:.9rem">
+    The <code>mark</code> renderer restores the original DOM exactly on
+    <code>unmark()</code> — verified byte-for-byte:
+    <b id="restore-check">…</b>
+  </p>
+</section>
+
+<!-- ================================================================= -->
+<section>
+  <h2><span class="num">8</span> Excluding parts of the subtree</h2>
+  <p class="note">
+    <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code> and
+    <code>&lt;noscript&gt;</code> are always skipped. A <code>filter</code>
+    excludes anything else — here, the blockquote.
+  </p>
+<pre>new Highlighter(el, {
+  filter: (node) =&gt; !node.parentElement.closest(<span class="s">'.skip'</span>),
+});</pre>
+  <div class="prose" id="s8">
+    <p>This paragraph mentions signal and signal again.</p>
+    <blockquote class="skip" style="border-left:3px solid var(--rule);margin:0;padding-left:1rem;color:var(--muted)">
+      This quoted block mentions signal twice too — signal — but is filtered out.
+    </blockquote>
+  </div>
+  <p class="note" id="s8-note"></p>
+</section>
+
+<script src="../../dist/omh.global.js"></script>
+<script>
+  const { Highlighter, highlight } = OMH;
+  const $ = (id) => document.getElementById(id);
+
+  /* 1 — two terms, two colors ------------------------------------- */
+  const h1 = new Highlighter($('s1'));
+  h1.mark(['ipsum', 'dolor'], {
+    states: [
+      { name: 't-ipsum', term: 'ipsum' },
+      { name: 't-dolor', term: 'dolor' },
+    ],
+  });
+  $('renderer').textContent = h1.renderer;
+  {
+    const segs = highlight({
+      text: h1.text,
+      searchWords: ['ipsum', 'dolor'],
+      states: [
+        { name: 't-ipsum', term: 'ipsum' },
+        { name: 't-dolor', term: 'dolor' },
+      ],
+    });
+    const n = (s) => segs.filter((x) => x.isMatch && x.states.includes(s)).length;
+    $('n-ipsum').textContent = n('t-ipsum');
+    $('n-dolor').textContent = n('t-dolor');
+  }
+
+  /* 2 — overlap strategies ---------------------------------------- */
+  const WORDS = ['Lorem ipsum', 'ipsum dolor'];
+
+  function overlapDemo(elId, chipsId, countId, strategy, states) {
+    const el = $(elId);
+    const h = new Highlighter(el, { strategy: 'css', overlapStrategy: strategy });
+    const total = h.mark(WORDS, states ? { states } : {});
+    // Recompute headlessly so the chips can show what each strategy produced.
+    const segs = highlight({
+      text: h.text, searchWords: WORDS, overlapStrategy: strategy,
+    });
+    const matches = segs.filter((s) => s.isMatch);
+    $(countId).textContent = matches.length;
+    $(chipsId).innerHTML = matches
+      .map((m) => '<span class="chip">' + h.text.slice(m.start, m.end) + '</span>')
+      .join('');
+    return { total, matches };
+  }
+
+  overlapDemo('ov-merge', 'ov-merge-chips', 'ov-merge-n', 'merge',
+    [{ name: 'ov-merge', indices: [0, 1, 2] }]);
+  // `nest` keeps both overlapping matches, so each can take its own color.
+  overlapDemo('ov-nest', 'ov-nest-chips', 'ov-nest-n', 'nest',
+    [{ name: 'ov-nest-a', index: 0 }, { name: 'ov-nest-b', index: 1 }]);
+  overlapDemo('ov-first', 'ov-first-chips', 'ov-first-n', 'first-wins',
+    [{ name: 'ov-first', indices: [0, 1, 2] }]);
+
+  /* 3 — selector forms -------------------------------------------- */
+  new Highlighter($('s3')).mark('one', {
+    states: [
+      { name: 'sel-base', match: () => true },
+      { name: 'sel-idx',   index: 1 },
+      { name: 'sel-range', range: [3, 4] },
+      { name: 'sel-list',  indices: [6, 8] },
+      { name: 'sel-pred',  match: (m) => m.start > 120 },
+    ],
+  });
+
+  /* 4 — RegExp + term-by-index ------------------------------------ */
+  new Highlighter($('s4')).mark([/\d+(\.\d+)?/g, /\b[A-Z]{2,}\b/g], {
+    states: [
+      { name: 'rx-num',  term: 0 },
+      { name: 'rx-caps', term: 1 },
+    ],
+  });
+
+  {
+    const ci = new Highlighter($('s4ci'), { strategy: 'css' });
+    $('ci-n').textContent = ci.mark('api', {
+      states: [{ name: 'rx-ci', match: () => true }],
+    });
+    const cs = new Highlighter($('s4cs'), { strategy: 'css' });
+    $('cs-n').textContent = cs.mark('api', {
+      caseSensitive: true,
+      states: [{ name: 'rx-cs', match: () => true }],
+    });
+  }
+
+  /* 5 — controlled ranges ----------------------------------------- */
+  {
+    const h = new Highlighter($('s5'));
+    const t = h.text;
+    const a = t.indexOf('load-bearing claim');
+    const b = t.indexOf('quietly contradicts');
+    h.markRanges(
+      [{ start: a, end: a + 'load-bearing claim'.length },
+       { start: b, end: b + 'quietly contradicts'.length }],
+      [{ name: 'rng-cite', indices: [0, 1] }],
+    );
+  }
+
+  /* 6 — cross-element --------------------------------------------- */
+  {
+    const h = new Highlighter($('s6'));
+    const n = h.mark('an element boundary', { states: [{ name: 'xel', indices: [0] }] });
+    const ranges = [...(CSS.highlights.get('xel') || [])];
+    $('s6-note').textContent =
+      n + ' match, painted as ' + ranges.length + ' Range spanning ' +
+      'the <b>/<em> boundary — its text is "' + (ranges[0] ? ranges[0].toString() : '') + '".';
+  }
+
+  /* 7 — css vs mark ----------------------------------------------- */
+  {
+    const cssEl = $('s7css');
+    new Highlighter(cssEl, { strategy: 'css' })
+      .mark('DOM', { states: [{ name: 'css-side', indices: [0] }] });
+    $('css-nodes').textContent = cssEl.querySelectorAll('mark').length;
+
+    const markEl = $('s7mark');
+    const before = markEl.innerHTML;
+    const hm = new Highlighter(markEl, { strategy: 'mark' });
+    hm.mark('DOM');
+    $('mark-nodes').textContent = markEl.querySelectorAll('mark').length;
+
+    // Prove the teardown restores the DOM, then re-paint for the screenshot.
+    hm.unmark();
+    $('restore-check').textContent =
+      markEl.innerHTML === before ? 'identical ✓' : 'MISMATCH ✗';
+    hm.mark('DOM');
+  }
+
+  /* 8 — filter ----------------------------------------------------- */
+  {
+    const el = $('s8');
+    const h = new Highlighter(el, {
+      filter: (node) => !node.parentElement.closest('.skip'),
+    });
+    const n = h.mark('signal', { states: [{ name: 'flt', indices: [0, 1, 2, 3] }] });
+    const all = (el.textContent.match(/signal/g) || []).length;
+    $('s8-note').textContent =
+      n + ' of ' + all + ' occurrences highlighted — the ' + (all - n) +
+      ' inside the filtered blockquote were never walked.';
+  }
+</script>
+</html>

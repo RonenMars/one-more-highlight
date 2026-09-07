@@ -20,7 +20,10 @@ yarn add one-more-highlight
 pnpm add react react-dom
 ```
 
-Requires **React 18 or 19**.
+Requires **React 18 or 19** — but only if you use a React entry point. `react` is
+declared as an *optional* peer dependency, so a plain-JS project using
+[`one-more-highlight/vanilla`](../engines/vanilla) installs nothing extra and gets
+no unmet-peer warning.
 
 ## Runtime dependencies
 
@@ -43,8 +46,11 @@ Alongside the default `'one-more-highlight'` entry, the package ships:
 | `one-more-highlight/native` | `<HighlightText>` — React Native engine. See [engines/react-native](../engines/react-native). |
 | `one-more-highlight/a11y` | `<AccessibleHighlight>`, `<MatchAnnouncer>`. See [api/accessible-highlight](../api/accessible-highlight), [api/match-announcer](../api/match-announcer). |
 | `one-more-highlight/navigation` | `useRovingMatchFocus`. See [api/use-roving-match-focus](../api/use-roving-match-focus). |
+| `one-more-highlight/vanilla` | `Highlighter`, `highlight()`, `TextIndex` — no framework. See [engines/vanilla](../engines/vanilla). |
 
 Each subpath is its own tree-shaking root — you pay nothing for a subpath you don't import.
+
+The package also ships `dist/omh.global.js`, an IIFE build of the vanilla entry that defines a global `OMH` for pages with no bundler.
 
 ## Node.js requirement
 

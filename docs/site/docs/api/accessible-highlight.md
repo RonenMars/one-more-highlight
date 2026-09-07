@@ -9,18 +9,27 @@ import { AccessibleHighlight } from 'one-more-highlight/a11y';
 ```
 
 A drop-in replacement for `<Highlight>` — it accepts every `HighlightProps`
-prop, plus a `mode` prop. DOM `<mark>` and CSS Custom Highlights give
-assistive technology different (unequal) results; `mode` makes that choice
-explicit rather than accidental.
+prop, plus `mode` and `engine`. DOM `<mark>` and CSS Custom Highlights give
+assistive technology different (unequal) results; these props make that
+choice explicit rather than accidental.
+
+`mode` decides what assistive technology gets. `engine` decides what paints
+the pixels. They are independent: **a given `mode` produces the same
+accessible output under either engine.**
 
 ## Signature
 
 ```ts
 type AccessibilityMode = 'native' | 'dual' | 'annotated';
+type HighlightEngine = 'dom' | 'css';
 
 interface AccessibleHighlightProps extends HighlightProps {
   /** Defaults to `'native'`. */
   mode?: AccessibilityMode;
+  /** Defaults to `'dom'`. */
+  engine?: HighlightEngine;
+  /** Unsupported-browser behaviour of the CSS engine. `engine="css"` only. */
+  fallback?: 'dom' | 'none' | 'throw';
 }
 ```
 
@@ -50,12 +59,61 @@ If you need a custom tag or full render-prop control *and* boundary markers,
 use `'dual'` with your own custom markers inside the visually-hidden copy, or
 file a request — this is a known gap, not an oversight.
 
-## Semantic parity with the CSS engine
+## The `engine` prop — semantic parity with the CSS engine
 
-`<AccessibleHighlight>` only wraps the DOM `<Highlight>` engine. Bringing
-these modes to `<CssHighlight>` (`one-more-highlight/css`) is tracked
-separately and is out of scope here — see the project's issue tracker for
-the CSS-engine accessibility work.
+```tsx
+<AccessibleHighlight text={text} searchWords={['cat']} mode="dual" engine="css" />
+```
+
+`<CssHighlight>` paints matches through the CSS Custom Highlight API. Those
+painted ranges have **no DOM at all**, so on its own the CSS engine gives
+assistive technology nothing — switching engines for the performance win
+silently drops every semantic affordance.
+
+`engine="css"` closes that gap. It renders the painted layer `aria-hidden`
+and puts the accessible layer beside it, visually hidden — so the accessible
+output for a given `mode` is identical to `engine="dom"`. That holds in
+browsers without CSS Custom Highlight support too: the CSS engine's DOM
+fallback lands inside the `aria-hidden` layer, where it cannot change what
+assistive technology reads.
+
+You still author the visual styling with `::highlight(name)` — see the
+[CSS engine page](../engines/css-highlights.md). `highlightTag`,
+`renderMatch` and per-state `className` / `style` do not reach the painted
+layer.
+
+### What it costs
+
+Element counts for a wrapper containing *N* matches, measured in a browser
+that supports the API:
+
+| `mode` | `engine="dom"` | `engine="css"` |
+|---|---|---|
+| `'native'` | 1 + *N* | 5 + *N* |
+| `'dual'` | 4 + *N* | **4 — constant** |
+| `'annotated'` | 1 + 3*N* | 5 + 3*N* |
+
+Under `engine="css"` the text is always in the DOM twice — once in the
+painted layer, once in the accessible one. Under `engine="dom"` only
+`mode="dual"` duplicates it.
+
+**`mode="dual"` is the mode to use with `engine="css"`.** It is the only
+combination that keeps the CSS engine's reason to exist: its accessible
+layer is one unbroken copy of the text, so the node count does not move as
+matches are added — 4 elements whether there is 1 match or 500.
+
+`mode` still defaults to `'native'` under `engine="css"` — deliberately. If
+the default flipped with the engine, adding `engine="css"` to an existing
+component would quietly change what assistive technology reads, which is the
+exact failure this prop exists to prevent. Set `mode="dual"` explicitly.
+
+`'native'` and `'annotated'` reach parity by rendering, hidden, exactly the
+`<mark>` tree the DOM engine would have rendered. The per-match node count
+is therefore the same as the DOM engine's, plus four wrapper elements and a
+second copy of the text — which means `engine="css"` in those two modes is
+strictly more DOM than `engine="dom"`. Reach for them only when you need
+`::highlight()` painting specifically (unfragmented visible text runs); if
+you just want accessible highlights, `engine="dom"` is cheaper.
 
 ## Refs
 

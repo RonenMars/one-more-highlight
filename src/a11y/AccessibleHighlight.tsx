@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { Fragment, createElement, forwardRef } from 'react';
 import type { CSSProperties, ElementRef } from 'react';
+import { CssHighlight } from '../css/CssHighlight.js';
 import { Highlight, resolveStateStyles } from '../Highlight.js';
 import { useHighlight } from '../useHighlight.js';
 import { visuallyHiddenStyle } from './visuallyHidden.js';
@@ -13,25 +14,38 @@ export const AccessibleHighlight = forwardRef<
   // Not rest-destructured: object rest over a discriminated union loses the
   // correlation between `searchWords`/`ranges` and the rest of the source.
   const mode = props.mode ?? 'native';
+  const isCss = props.engine === 'css';
 
-  if (mode === 'native') {
-    return <Highlight ref={ref} {...props} />;
+  // The DOM engine's `native` and `annotated` output is already accessible as
+  // rendered, so it needs no second layer.
+  if (!isCss) {
+    if (mode === 'native') return <Highlight ref={ref} {...props} />;
+    if (mode === 'annotated') return <AnnotatedHighlight ref={ref} {...props} />;
   }
 
-  if (mode === 'dual') {
-    // Fragmented visual layer is hidden from AT; an unbroken copy of the
-    // source text carries the accessible content instead.
-    return (
-      <span ref={ref}>
-        <span aria-hidden="true">
-          <Highlight {...props} />
-        </span>
-        <span style={visuallyHiddenStyle}>{props.text}</span>
+  // Everything else splits in two: an aria-hidden visual layer plus a
+  // visually-hidden accessible one. For `dual` because the visual layer is
+  // fragmented and reads badly; for every CSS-engine mode because painted
+  // ranges carry no DOM to be accessible with. Building the accessible layer
+  // from `mode` alone is what makes it engine-independent — including on
+  // browsers where CssHighlight degrades to <mark>, since that degraded
+  // markup lands inside the aria-hidden layer too.
+  return (
+    <span ref={ref}>
+      <span aria-hidden="true">
+        {isCss ? <CssHighlight {...props} /> : <Highlight {...props} />}
       </span>
-    );
-  }
-
-  return <AnnotatedHighlight ref={ref} {...props} />;
+      <span style={visuallyHiddenStyle}>
+        {mode === 'dual' ? (
+          props.text
+        ) : mode === 'native' ? (
+          <Highlight {...props} />
+        ) : (
+          <AnnotatedHighlight {...props} />
+        )}
+      </span>
+    </span>
+  );
 });
 
 // `annotated` lives in its own component because it needs useHighlight, and the

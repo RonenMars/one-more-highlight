@@ -12,7 +12,7 @@ import { expect, test } from '@playwright/test';
 for (const mode of ['native', 'dual', 'annotated'] as const) {
   test(`accessible-highlight ${mode} light`, async ({ page }) => {
     await page.goto('/accessible-highlight');
-    await page.locator('select').selectOption(mode);
+    await page.getByLabel('Mode').selectOption(mode);
     await expect(page.locator('[data-testid="a11y-output"]')).toHaveScreenshot(
       `accessible-highlight-${mode}-light.png`,
     );
@@ -20,7 +20,7 @@ for (const mode of ['native', 'dual', 'annotated'] as const) {
 
   test(`accessible-highlight ${mode} dark`, async ({ page }) => {
     await page.goto('/dark/accessible-highlight');
-    await page.locator('select').selectOption(mode);
+    await page.getByLabel('Mode').selectOption(mode);
     await expect(page.locator('[data-testid="a11y-output"]')).toHaveScreenshot(
       `accessible-highlight-${mode}-dark.png`,
     );

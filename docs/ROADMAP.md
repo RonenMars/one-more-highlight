@@ -27,15 +27,15 @@ We are not trying to replace `react-highlight-words` for everyone — we are try
 - Unit, SSR and React Native suites plus 1000-iteration property-based fuzz. `pnpm verify` runs them all and is the source of truth for the counts — a number written here goes stale on the next PR.
 - Playwright visual regression across 5 device projects — `pnpm test:visual`, run by its own CI job and not by `pnpm verify`.
 - 2.73 KB ESM / 3.04 KB CJS brotlied for the default entry, inside a 4 KB `size-limit` budget. Zero CSS shipped.
-  Sub-exports: `/css` 3.22 KB ESM, `/vanilla` 3.13 KB ESM, `/a11y` 3.18 KB ESM,
+  Sub-exports: `/css` 3.22 KB ESM, `/vanilla` 3.13 KB ESM, `/a11y` 3.73 KB ESM,
   `/native` 2.85 KB ESM, `/navigation` 410 B ESM, plus a 3.19 KB IIFE global build.
-  Measured with `pnpm size` after #48 — re-measure and update this line when it moves, rather than quoting it from memory.
+  Measured with `pnpm size` after #41 — re-measure and update this line when it moves, rather than quoting it from memory.
   The budgets were raised from 3 KB to 4 KB here: they were calibrated when the core was 1.89 KB and had drifted to within 20-30 bytes of failing on unrelated changes. `/navigation` stays at 1 KB, because a 4 KB limit on a 410 B bundle guards nothing.
 - **Docusaurus docs site** deployed at [one-more-highlight.vercel.app](https://one-more-highlight.vercel.app) — Getting Started, Guides, API, Recipes, Playground sections; dark mode default; live inline demos.
 - **CI pipeline** (GitHub Actions) — `pnpm verify` on every push; semantic-release auto-publishes on `fix:`/`feat:` commits to `main`.
 - **Interactive playground** — StackBlitz-backed editor linked from docs; inline Monaco editor demos on guide pages.
 - **Playwright visual regression tests** — 10 demos × light/dark across 5 projects (desktop Chromium/Firefox/WebKit at 2× DPR + mobile-iphone + mobile-android); CI job on every PR and push to `main`.
-- **Accessibility and navigation sub-exports** — `one-more-highlight/a11y` ships `<AccessibleHighlight>` (`native` / `dual` / `annotated` modes for the screen-reader fragmentation problem) and a debounced `<MatchAnnouncer>` live region; `one-more-highlight/navigation` ships `useRovingMatchFocus`. Core `useHighlight` gained `matchRef`, `getMatchNode`, `getMatchByIndex`, `getMatchAt` and `scrollToMatch`.
+- **Accessibility and navigation sub-exports** — `one-more-highlight/a11y` ships `<AccessibleHighlight>` (`native` / `dual` / `annotated` modes for the screen-reader fragmentation problem) and a debounced `<MatchAnnouncer>` live region; `one-more-highlight/navigation` ships `useRovingMatchFocus`. Core `useHighlight` gained `matchRef`, `getMatchNode`, `getMatchByIndex`, `getMatchAt` and `scrollToMatch`. `<AccessibleHighlight>` also takes `engine: 'dom' | 'css'`, so a given `mode` exposes the same accessible output whether matches are `<mark>` elements or CSS Custom Highlight ranges.
 - Per-search-term match selectors — `{ term }` and `{ term, nth }` on `HighlightState`, with `termMatch: 'all' | 'first'` and `silent` modifiers.
 
 ### Verified

@@ -117,7 +117,7 @@ Everything the React entry can select — `index`, `range`, `indices`, `term`, `
 
 ## Accessibility & navigation
 
-`one-more-highlight/a11y` ships `<AccessibleHighlight>`, a drop-in replacement for `<Highlight>` with a `mode` prop (`'native' | 'dual' | 'annotated'`) that makes the DOM-`<mark>`-vs-assistive-technology tradeoff explicit instead of accidental, plus `<MatchAnnouncer>`, a debounced `role="status"` live region for announcing result count and navigation position. `one-more-highlight/navigation` ships `useRovingMatchFocus`, a standard roving-tabindex hook for keyboard-navigating matches (arrow keys, Home/End) that composes with the core hook's `getMatchNode`.
+`one-more-highlight/a11y` ships `<AccessibleHighlight>`, a drop-in replacement for `<Highlight>` with a `mode` prop (`'native' | 'dual' | 'annotated'`) that makes the DOM-`<mark>`-vs-assistive-technology tradeoff explicit instead of accidental, and an `engine` prop (`'dom' | 'css'`) that gives the CSS Custom Highlight engine the same accessible output as the DOM one, plus `<MatchAnnouncer>`, a debounced `role="status"` live region for announcing result count and navigation position. `one-more-highlight/navigation` ships `useRovingMatchFocus`, a standard roving-tabindex hook for keyboard-navigating matches (arrow keys, Home/End) that composes with the core hook's `getMatchNode`.
 
 ```tsx
 import { AccessibleHighlight, MatchAnnouncer } from 'one-more-highlight/a11y';

@@ -90,6 +90,23 @@ describe('SSR: <AccessibleHighlight>', () => {
   });
 });
 
+describe('SSR: <AccessibleHighlight engine="css">', () => {
+  for (const mode of MODES) {
+    it(`mode="${mode}" is deterministic and hydrates cleanly`, () => {
+      const tree = (
+        <AccessibleHighlight
+          text="cat hat cat"
+          searchWords={['cat']}
+          mode={mode}
+          engine="css"
+        />
+      );
+      expect(renderToString(tree)).toBe(renderToString(tree));
+      expectHydratesCleanly(tree);
+    });
+  }
+});
+
 describe('SSR: <MatchAnnouncer>', () => {
   it('renders safely server-side where timers never fire', () => {
     expect(() =>

@@ -138,6 +138,29 @@ the same page using the state name `active` share that bucket and paint
 identically. If you need per-instance scoping, prefix your state names
 yourself (e.g., `chat-active`, `feed-active`).
 
+## Accessibility
+
+`<CssHighlight>` on its own is **invisible to assistive technology**. Painted
+ranges have no DOM, so there is no `<mark>`, no role, nothing for a screen
+reader to encounter — the accessible output is the plain, unhighlighted text.
+That is not a bug in the API; it is what "zero DOM nodes per match" means.
+
+If your highlights carry meaning, use `<AccessibleHighlight>` with
+`engine="css"` instead. It keeps the painted visual layer and adds the
+accessible layer beside it, so the accessible output matches the DOM engine's
+for the same `mode`:
+
+```tsx
+import { AccessibleHighlight } from 'one-more-highlight/a11y';
+
+<AccessibleHighlight text={text} searchWords={['cat']} mode="dual" engine="css" />
+```
+
+`mode="dual"` is the pairing to reach for — it is the only one that keeps the
+node count constant as matches are added. See
+[`<AccessibleHighlight>`](../api/accessible-highlight.md) for the other modes
+and what each costs.
+
 ## Limitations vs. the DOM engine
 
 | Feature | DOM `<Highlight>` | CSS `<CssHighlight>` |
@@ -148,6 +171,7 @@ yourself (e.g., `chat-active`, `feed-active`).
 | Inline `style` / `className` on `HighlightState` | ✅ | ❌ (use `::highlight(name)` CSS instead) |
 | `as`, `className`, `style` on the wrapper | ✅ | ✅ |
 | Multi-state stacking | ✅ (via `className` array on `<mark>`) | ✅ (via `highlight-order` CSS) |
+| Semantics for assistive technology | ✅ (`<mark>`) | ❌ — none; use `<AccessibleHighlight engine="css">` |
 | Server-side rendering | ✅ | ✅ (wrapper + Text node only) |
 | Browser support | Universal | [Chromium 105+, Safari 17.2+, Firefox 140+](https://caniuse.com/?search=CSS%20Custom%20Highlight%20API) |
 

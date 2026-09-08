@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Introduction
 
-**one-more-highlight** is a TypeScript-first React and React Native library for highlighting substrings in text — with first-class support for **multi-state per-match styling**.
+**one-more-highlight** is a TypeScript-first library for highlighting substrings in text — with first-class support for **multi-state per-match styling**. React and React Native are the primary entry points; the [`/vanilla` entry](../engines/vanilla) does the same job in any framework, or none.
 
 Every match gets a base style. Specific occurrences — by single index, index range, or arbitrary list — get additional layered styles on top. Classes concatenate, styles shallow-merge.
 
@@ -30,6 +30,7 @@ import { Highlight } from 'one-more-highlight';
 - **Headless `useHighlight` hook** for DIY rendering
 - **`renderMatch` render-prop** for full per-match output control
 - **React Native support** — `HighlightText` from the optional `/native` entry point
+- **No framework required** — `Highlighter` from [`/vanilla`](../engines/vanilla) highlights any DOM subtree; also ships as an IIFE for `<script src>` pages
 - **~2.7 KB brotlied** — ESM + CJS dual build, SSR-safe, zero CSS shipped
 
 ## When to use this library
